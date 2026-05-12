@@ -1,4 +1,7 @@
+import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
+import 'package:anaytikas_frontend/presentation/pages/stok/homeStok.dart';
+import 'package:anaytikas_frontend/presentation/widgets/navbar.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,10 +18,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1A237E)),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primary),
+
         textTheme: AppTheme.textTheme,
       ),
-      home: Text("halo"),
+      home: Homestok(),
+
       debugShowCheckedModeBanner: false,
     );
   }

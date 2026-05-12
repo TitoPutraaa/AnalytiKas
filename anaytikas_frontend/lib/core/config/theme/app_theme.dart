@@ -13,6 +13,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
+    iconTheme: const IconThemeData(color: Color(0xFF1A237E), fill: 1.0),
   );
 
   static final textTheme = TextTheme(
