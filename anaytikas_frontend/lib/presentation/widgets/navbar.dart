@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 
 class Navbar extends StatefulWidget {
+  @Preview(name: "Navbar", brightness: Brightness.light)
   const Navbar({super.key});
 
   @override
@@ -15,50 +16,46 @@ class _NavbarState extends State<Navbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (index) {
-          setState(() {
-            curentPage = index;
-            if (index == 0) {
-              Homestok();
-            }
-          });
-        },
-        indicatorColor: AppColor.gray,
-        selectedIndex: curentPage,
-        destinations: <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.point_of_sale_outlined, color: AppColor.gray),
-            selectedIcon: Icon(Icons.point_of_sale, color: AppColor.primary),
-            label: 'Kasir',
+    return NavigationBar(
+      onDestinationSelected: (index) {
+        setState(() {
+          curentPage = index;
+          if (index == 0) {
+            Homestok();
+          }
+        });
+      },
+      indicatorColor: AppColor.gray,
+      backgroundColor: Colors.white70,
+      selectedIndex: curentPage,
+      destinations: <Widget>[
+        NavigationDestination(
+          icon: Icon(Icons.point_of_sale_outlined, color: AppColor.gray),
+          selectedIcon: Icon(Icons.point_of_sale, color: AppColor.primary),
+          label: 'Kasir',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.history_edu, color: AppColor.gray),
+          selectedIcon: Icon(
+            Icons.history_edu_outlined,
+            color: AppColor.primary,
           ),
-          NavigationDestination(
-            icon: Icon(Icons.history_edu, color: AppColor.gray),
-            selectedIcon: Icon(
-              Icons.history_edu_outlined,
-              color: AppColor.primary,
-            ),
-            label: 'Riwayat',
+          label: 'Riwayat',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.inventory, color: AppColor.gray),
+          selectedIcon: Icon(
+            Icons.inventory_2_outlined,
+            color: AppColor.primary,
           ),
-          NavigationDestination(
-            icon: Icon(Icons.inventory, color: AppColor.gray),
-            selectedIcon: Icon(
-              Icons.inventory_2_outlined,
-              color: AppColor.primary,
-            ),
-            label: 'Stok',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.analytics_outlined, color: AppColor.gray),
-            selectedIcon: Icon(
-              Icons.analytics_rounded,
-              color: AppColor.primary,
-            ),
-            label: 'Kasir',
-          ),
-        ],
-      ),
+          label: 'Stok',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.analytics_outlined, color: AppColor.gray),
+          selectedIcon: Icon(Icons.analytics_rounded, color: AppColor.primary),
+          label: 'Kasir',
+        ),
+      ],
       // body: <Widget>[Homestok(), Text("data")],
     );
   }

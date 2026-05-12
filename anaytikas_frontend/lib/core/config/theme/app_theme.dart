@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static final mainTheme = ThemeData(
-    primaryColor: AppColor.primary,
+    primaryColor: AppColor.black,
     scaffoldBackgroundColor: AppColor.white,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
