@@ -1,7 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
-import 'package:anaytikas_frontend/presentation/pages/stok/homeStok.dart';
-import 'package:anaytikas_frontend/presentation/widgets/navbar.dart';
+import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
         textTheme: AppTheme.textTheme,
       ),
 
-      home: Homestok(),
+      home: MainSheel(),
 
       debugShowCheckedModeBanner: false,
     );
