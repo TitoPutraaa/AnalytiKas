@@ -5,6 +5,10 @@ class Homekasir extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Home Kasir", style: TextStyle(fontSize: 40));
+    return Column(
+      children: [
+        Text("Home Kasir", style: TextStyle(fontSize: 40, fontFamily: 'Rubik')),
+      ],
+    );
   }
 }

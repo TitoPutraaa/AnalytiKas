@@ -30,23 +30,24 @@ class _MainSheelState extends State<MainSheel> {
       appBar: AppBar(
         title: Text("AnalytiKas"),
         titleTextStyle: TextStyle(
-          color: Colors.white70,
-          fontSize: 20,
+          color: AppColor.white,
+          fontSize: 22,
           fontWeight: FontWeight.w600,
+          fontFamily: "Rubik",
         ),
         centerTitle: true,
-
         backgroundColor: AppColor.primary,
       ),
       body: IndexedStack(index: _currentPageIndex, children: _screen),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentPageIndex,
+        selectedItemColor: AppColor.primary,
+        unselectedItemColor: AppColor.lowGray,
         onTap: (index) => setState(() => _currentPageIndex = index),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.point_of_sale),
             label: "Kasir",
-            backgroundColor: Colors.greenAccent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history_edu),
