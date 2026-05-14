@@ -24,19 +24,33 @@ class _MainSheelState extends State<MainSheel> {
     Homeanalisis(),
   ];
 
+  String headerTitle() {
+    if (_currentPageIndex == 0) {
+      return "KASIR";
+    } else if (_currentPageIndex == 1) {
+      return "RIWAYAT TRANSAKSI";
+    } else if (_currentPageIndex == 2) {
+      return "STOK";
+    } else {
+      return "ANALISIS";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("AnalytiKas"),
+        leading: Icon(Icons.account_circle),
+        title: Text(headerTitle()),
+        centerTitle: true,
+        backgroundColor: AppColor.white,
+        toolbarHeight: 60,
         titleTextStyle: TextStyle(
-          color: AppColor.white,
+          color: AppColor.primary,
           fontSize: 22,
           fontWeight: FontWeight.w600,
           fontFamily: "Rubik",
         ),
-        centerTitle: true,
-        backgroundColor: AppColor.primary,
       ),
       body: IndexedStack(index: _currentPageIndex, children: _screen),
       bottomNavigationBar: BottomNavigationBar(
