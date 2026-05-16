@@ -1,5 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
-import 'package:anaytikas_frontend/features/kasir/presentation/widgets/produkStok.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/widgets/produkStokCard.dart';
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
 

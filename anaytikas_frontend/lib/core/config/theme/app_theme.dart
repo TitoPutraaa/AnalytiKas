@@ -5,6 +5,7 @@ class AppTheme {
   static final mainTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Rubik',
+    scaffoldBackgroundColor: AppColor.white,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColor.primary,
       brightness: Brightness.light,
@@ -28,6 +29,11 @@ class AppTheme {
       labelLarge: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w300,
+      ), // buat nama barang
+      labelMedium: TextStyle(
+        color: AppColor.white,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
       ), // buat nama barang
       labelSmall: TextStyle(fontSize: 8, fontWeight: FontWeight.w200),
     ),
