@@ -5,9 +5,9 @@ class ProductStockCard extends StatelessWidget {
   final String namaBarang;
   final String kodeBarang;
   final int jumlahStok;
-  final int minStok; // Minimum stock before warning
+  final int minStok;
   final double hargaJual;
-  final String Kategori;
+  final String kategori;
 
   const ProductStockCard({
     super.key,
@@ -16,7 +16,7 @@ class ProductStockCard extends StatelessWidget {
     required this.jumlahStok,
     required this.minStok,
     required this.hargaJual,
-    required this.Kategori,
+    required this.kategori,
   });
 
   @override
@@ -65,7 +65,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Kategori: $Kategori",
+                        "Kategori: $kategori",
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade600,

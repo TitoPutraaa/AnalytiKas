@@ -1,5 +1,4 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/widgets/produkStokCard.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/produk_stok_card.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +63,7 @@ class Homestok extends StatelessWidget {
               jumlahStok: 12,
               minStok: 10,
               hargaJual: 10000,
-              Kategori: "Minuman",
+              kategori: "Minuman",
             ),
           ),
         ],
