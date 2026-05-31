@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/widgets/produkStokCard.dart';
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
 
@@ -14,21 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Rubik',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColor.primary,
-          brightness: Brightness.light,
-        ),
-        appBarTheme: AppBarThemeData(backgroundColor: Colors.red),
-        textTheme: AppTheme.textTheme,
-      ),
+      theme: AppTheme.mainTheme,
 
       home: MainSheel(),
-
-      debugShowCheckedModeBanner: false,
     );
   }
 }
