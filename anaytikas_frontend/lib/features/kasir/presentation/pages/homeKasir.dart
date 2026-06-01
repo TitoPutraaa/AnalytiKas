@@ -1,3 +1,5 @@
+import 'package:anaytikas_frontend/features/kasir/presentation/pages/keranjang_page.dart';
+
 import '../../../../core/config/theme/app_color.dart';
 import '../widgets/product_card_item.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +128,12 @@ class _HomekasirState extends State<Homekasir> {
         elevation: 1,
         backgroundColor: AppColor.primary,
 
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => KeranjangPage()),
+          );
+        },
       ),
     );
   }
