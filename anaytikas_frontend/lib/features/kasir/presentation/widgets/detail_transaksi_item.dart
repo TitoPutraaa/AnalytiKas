@@ -18,9 +18,8 @@ class DetailTransaksiItem extends StatelessWidget {
             Text(
               'Kopi Arabica 250g',
               style: TextStyle(
-                fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: AppColor.darkGray.withValues(alpha: 0.8),
+                color: AppColor.darkGray.withValues(alpha: 0.7),
               ),
             ),
             Text(
@@ -34,11 +33,10 @@ class DetailTransaksiItem extends StatelessWidget {
           ],
         ),
         Text(
-          'Rp. 90.000',
+          'Rp. 70.000',
           style: TextStyle(
-            fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: AppColor.darkGray.withValues(alpha: 0.8),
+            color: AppColor.darkGray.withValues(alpha: 0.7),
           ),
         ),
       ],
