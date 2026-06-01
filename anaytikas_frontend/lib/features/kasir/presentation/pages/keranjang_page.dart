@@ -1,5 +1,6 @@
-import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
-import 'package:anaytikas_frontend/features/kasir/presentation/widgets/cart_card_item.dart';
+import '../../../../core/config/theme/app_color.dart';
+import 'pembayaran_page.dart';
+import '../widgets/cart_card_item.dart';
 // import 'package:anaytikas_frontend/features/kasir/presentation/widgets/product_card_item.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +91,12 @@ class KeranjangPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PembayaranPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(
