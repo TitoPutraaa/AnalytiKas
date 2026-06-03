@@ -1,5 +1,4 @@
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/pages/tambah_stok.dart';
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
 
@@ -18,14 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: AppTheme.mainTheme,
 
-      home: Tambahstok(
-        namaBarang: "Kopi Arabica 250g",
-        kodeBarang: '12fds13',
-        jumlahStok: 12,
-        minStok: 10,
-        hargaJual: 10000,
-        kategori: "Minuman",
-      ),
+      home: MainSheel(),
     );
   }
 }

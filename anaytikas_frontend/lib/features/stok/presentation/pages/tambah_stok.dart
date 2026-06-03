@@ -1,23 +1,11 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
 import 'package:flutter/material.dart';
 
 class Tambahstok extends StatefulWidget {
-  final String namaBarang;
-  final String kodeBarang;
-  final int jumlahStok;
-  final int minStok;
-  final double hargaJual;
-  final String kategori;
+  final Product product;
 
-  const Tambahstok({
-    super.key,
-    required this.namaBarang,
-    required this.kodeBarang,
-    required this.jumlahStok,
-    required this.minStok,
-    required this.hargaJual,
-    required this.kategori,
-  });
+  const Tambahstok({super.key, required this.product});
 
   @override
   State<Tambahstok> createState() => _TambahstokState();
@@ -26,7 +14,7 @@ class Tambahstok extends StatefulWidget {
 class _TambahstokState extends State<Tambahstok> {
   @override
   Widget build(BuildContext context) {
-    bool isLowStok = widget.jumlahStok <= widget.minStok;
+    bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
     return Scaffold(
       appBar: AppBar(
         title: Text("Tambah Stok"),
@@ -70,7 +58,7 @@ class _TambahstokState extends State<Tambahstok> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.namaBarang,
+                                widget.product.namaProduct,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -80,7 +68,7 @@ class _TambahstokState extends State<Tambahstok> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "Kode Barang: ${widget.kodeBarang}",
+                                "Kode Barang: ${widget.product.idProduct}",
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.grey.shade600,
@@ -90,7 +78,7 @@ class _TambahstokState extends State<Tambahstok> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "Kategori: ${widget.kategori}",
+                                "Kategori: ${widget.product.idKategori}",
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.grey.shade600,
@@ -98,7 +86,7 @@ class _TambahstokState extends State<Tambahstok> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "Rp ${widget.hargaJual.toStringAsFixed(0)}",
+                                "Rp ${widget.product.harga.toStringAsFixed(0)}",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -124,7 +112,7 @@ class _TambahstokState extends State<Tambahstok> {
                               ),
 
                               Text(
-                                "${widget.jumlahStok}",
+                                "${widget.product.jmlhStok}",
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,

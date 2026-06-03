@@ -1,9 +1,14 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/barang_baru.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/opsStok.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/produk_stok_card.dart';
 import 'package:flutter/material.dart';
 
 class Homestok extends StatelessWidget {
-  const Homestok({super.key});
+  Product? product;
+
+  Homestok({super.key, Product? product}) : product = product ?? Product.dummy;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,13 @@ class Homestok extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const BarangBaru(),
+                          ),
+                        );
+                      },
                       icon: const Icon(Icons.add),
                       label: const Text(
                         "Barang Baru",
@@ -37,7 +48,13 @@ class Homestok extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const OpsStok(),
+                          ),
+                        );
+                      },
                       icon: const Icon(Icons.add),
                       label: const Text(
                         "Operasional",
@@ -56,14 +73,16 @@ class Homestok extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            child: ProductStockCard(
-              namaBarang: "Kopi Arabica 250g",
-              kodeBarang: '12fds13',
-              jumlahStok: 12,
-              minStok: 10,
-              hargaJual: 10000,
-              kategori: "Minuman",
+
+          Expanded(
+            child: ListView.builder(
+              itemCount: 4,
+              itemBuilder: (BuildContext context, int index) {
+                return ProductStockCard(
+                  product: product!,
+                  key: ValueKey(product!.idProduct),
+                );
+              },
             ),
           ),
         ],
