@@ -1,6 +1,10 @@
+import 'dart:ffi' hide Size;
+import 'dart:ui';
+
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Size;
+import 'package:flutter/services.dart' hide Size;
 
 class Tambahstok extends StatefulWidget {
   final Product product;
@@ -12,6 +16,8 @@ class Tambahstok extends StatefulWidget {
 }
 
 class _TambahstokState extends State<Tambahstok> {
+  final stokBaruController = TextEditingController();
+  final hargaBeliController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
@@ -129,6 +135,147 @@ class _TambahstokState extends State<Tambahstok> {
                   ],
                 ),
               ),
+            ),
+          ),
+          const SizedBox(height: 25),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Jumlah Stok Baru",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 5),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColor.darkGray),
+                  ),
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(onPressed: () {}, icon: Icon(Icons.remove)),
+                      Expanded(
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.number,
+                          controller: stokBaruController,
+
+                          inputFormatters: [
+                            FilteringTextInputFormatter
+                                .digitsOnly, // Blocks letters/symbols
+                          ],
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "0",
+                          ),
+                        ),
+                      ),
+                      IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 25),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Total Harga Beli",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 5),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColor.darkGray),
+                  ),
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          controller: hargaBeliController,
+
+                          inputFormatters: [
+                            FilteringTextInputFormatter
+                                .digitsOnly, // Blocks letters/symbols
+                          ],
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "0",
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.cancel_outlined,
+                      color: AppColor.primary,
+                    ),
+                    label: const Text(
+                      "Batal",
+                      style: TextStyle(
+                        color: AppColor.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      minimumSize: const Size(0, 55),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                        side: BorderSide(color: AppColor.black, width: 1),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.check_circle_outline),
+                    label: const Text(
+                      "Konfirmasi Tambah Stok",
+                      style: TextStyle(
+                        color: AppColor.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.fromLTRB(20, 5, 10, 5),
+                      minimumSize: const Size(0, 55),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
