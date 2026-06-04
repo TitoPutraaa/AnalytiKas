@@ -1,5 +1,5 @@
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/pages/editStok.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/edit_produk.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/tambah_stok.dart';
 import 'package:flutter/material.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
@@ -121,7 +121,7 @@ class ProductStockCard extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const EditStok(),
+                          builder: (context) => EditProduk(product: product),
                         ),
                       );
                     },

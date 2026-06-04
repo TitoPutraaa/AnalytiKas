@@ -1,29 +1,27 @@
-import 'dart:ffi' hide Size;
-import 'dart:ui';
-
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
-import 'package:flutter/material.dart' hide Size;
-import 'package:flutter/services.dart' hide Size;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class Tambahstok extends StatefulWidget {
+class EditProduk extends StatefulWidget {
   final Product product;
-
-  const Tambahstok({super.key, required this.product});
+  const EditProduk({super.key, required this.product});
 
   @override
-  State<Tambahstok> createState() => _TambahstokState();
+  State<EditProduk> createState() => _EditProdukState();
 }
 
-class _TambahstokState extends State<Tambahstok> {
-  final stokBaruController = TextEditingController();
-  final hargaBeliController = TextEditingController();
+class _EditProdukState extends State<EditProduk> {
+  var editStokController = TextEditingController(text: "0");
+  var hargaJualController = TextEditingController(text: "0");
   @override
   Widget build(BuildContext context) {
     bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
+    var currentStok = widget.product.jmlhStok;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tambah Stok"),
+        title: Text("Edit Produk"),
         centerTitle: true,
         backgroundColor: AppColor.white,
         toolbarHeight: 60,
@@ -36,7 +34,6 @@ class _TambahstokState extends State<Tambahstok> {
       ),
       body: Column(
         children: [
-          // Product Card
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
             width: double.infinity,
@@ -138,8 +135,6 @@ class _TambahstokState extends State<Tambahstok> {
               ),
             ),
           ),
-          const SizedBox(height: 25),
-          // input stock card
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -159,21 +154,25 @@ class _TambahstokState extends State<Tambahstok> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.remove)),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            currentStok--;
+                          });
+                        },
+                        icon: Icon(Icons.remove),
+                      ),
                       Expanded(
                         child: TextField(
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.number,
-                          controller: stokBaruController,
+                          controller: editStokController,
 
                           inputFormatters: [
                             FilteringTextInputFormatter
                                 .digitsOnly, // Blocks letters/symbols
                           ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "0",
-                          ),
+                          decoration: InputDecoration(border: InputBorder.none),
                         ),
                       ),
                       IconButton(onPressed: () {}, icon: Icon(Icons.add)),
@@ -183,15 +182,13 @@ class _TambahstokState extends State<Tambahstok> {
               ],
             ),
           ),
-          const SizedBox(height: 25),
-          // form
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Total Harga Beli",
+                  "Harga Jual",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 5),
@@ -207,25 +204,30 @@ class _TambahstokState extends State<Tambahstok> {
                       Expanded(
                         child: TextField(
                           keyboardType: TextInputType.number,
-                          controller: hargaBeliController,
+                          controller: hargaJualController,
                           inputFormatters: [
                             FilteringTextInputFormatter
                                 .digitsOnly, // Blocks letters/symbols
                           ],
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "0",
+                            prefixText: "  Rp. ",
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
+                Text(
+                  "Harga yang akan dibayar oleh pelanggan.",
+                  style: TextStyle(
+                    color: const Color.fromRGBO(128, 128, 128, 0.9),
+                  ),
+                ),
               ],
             ),
           ),
           const Spacer(),
-          // Confirm button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
