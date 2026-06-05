@@ -1,4 +1,4 @@
-import 'package:anaytikas_frontend/features/kasir/domain/entities/product_per_penjualan_entity.dart';
+import '../../domain/entities/product_per_penjualan_entity.dart';
 
 class ProductPerPenjualanModel extends ProductPerPenjualanEntity {
   ProductPerPenjualanModel({
@@ -9,16 +9,16 @@ class ProductPerPenjualanModel extends ProductPerPenjualanEntity {
 
   factory ProductPerPenjualanModel.fromMap(Map<String, dynamic> map) {
     return ProductPerPenjualanModel(
-      idPenjualan: map['id-penjualan'] as int,
-      idProduct: map['id-product'] as int,
+      idPenjualan: map['id_penjualan'] as int,
+      idProduct: map['id_product'] as int,
       jumlah: map['jumlah'] as int,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id-penjualan': idProduct,
-      'idProduct': idProduct,
+      'id_penjualan': idProduct,
+      'id_product': idProduct,
       'jumlah': jumlah,
     };
   }

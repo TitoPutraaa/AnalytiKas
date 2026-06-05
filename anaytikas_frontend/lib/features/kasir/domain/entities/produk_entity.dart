@@ -1,7 +1,7 @@
 class ProdukEntity {
   final int idProduct;
   final String namaProduct;
-  final int jumlahStok;
+  final int jmlhStok;
   final bool isGrosir;
   final bool isActivate;
   final int idKategori;
@@ -10,7 +10,7 @@ class ProdukEntity {
   ProdukEntity({
     required this.idProduct,
     required this.namaProduct,
-    required this.jumlahStok,
+    required this.jmlhStok,
     required this.isGrosir,
     required this.isActivate,
     required this.idKategori,

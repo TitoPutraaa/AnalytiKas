@@ -1,4 +1,4 @@
-import 'package:anaytikas_frontend/features/kasir/domain/entities/harga_entity.dart';
+import '../../domain/entities/harga_entity.dart';
 
 class HargaModel extends HargaEntity {
   HargaModel({
@@ -6,25 +6,25 @@ class HargaModel extends HargaEntity {
     required super.hargaJual,
     required super.hargaBeli,
     required super.satuan,
-    required super.jumlahSatuan,
+    required super.jmlhSatuan,
   });
 
   factory HargaModel.fromMap(Map<String, dynamic> map) {
     return HargaModel(
-      idHarga: map['id-harga'] as int,
-      hargaJual: (map['harga-jual'] as num).toDouble(),
-      hargaBeli: (map['harga-beli'] as num).toDouble(),
+      idHarga: map['id_harga'] as int,
+      hargaJual: (map['harga_jual'] as num).toDouble(),
+      hargaBeli: (map['harga_beli'] as num).toDouble(),
       satuan: map['satuan'] as String,
-      jumlahSatuan: map['jmlh-satuan'] as int,
+      jmlhSatuan: map['jmlh_satuan'] as int,
     );
   }
   Map<String, dynamic> toMap() {
     return {
-      'id-harga': idHarga,
-      'harga-jual': hargaJual,
-      'harga-beli': hargaBeli,
+      'id_harga': idHarga,
+      'harga_jual': hargaJual,
+      'harga_beli': hargaBeli,
       'satuan': satuan,
-      'jmlh-satuan': jumlahSatuan,
+      'jmlh_satuan': jmlhSatuan,
     };
   }
 }

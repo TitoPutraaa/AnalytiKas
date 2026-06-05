@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/kasir/data/models/product_per_penjualan_model.dart';
-import 'package:anaytikas_frontend/features/kasir/domain/entities/penjualan_entity.dart';
+import '../../domain/entities/penjualan_entity.dart';
+import 'product_per_penjualan_model.dart';
 
 class PenjualanModel extends PenjualanEntity {
   PenjualanModel({
@@ -16,23 +16,23 @@ class PenjualanModel extends PenjualanEntity {
     List<ProductPerPenjualanModel> items = const [],
   }) {
     return PenjualanModel(
-      idPenjualan: map['id-penjualan'] as int,
+      idPenjualan: map['id_penjualan'] as int,
       tanggal: map['tanggal'] as String,
       waktu: map['waktu'] as String,
-      totalItem: map['total-item'] as int,
-      totalHarga: (map['total-harga'] as num).toDouble(),
-      uangMasuk: (map['uang-masuk'] as num).toDouble(),
+      totalItem: map['total_item'] as int,
+      totalHarga: (map['total_harga'] as num).toDouble(),
+      uangMasuk: (map['uang_masuk'] as num).toDouble(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id-penjualan': idPenjualan,
+      'id_penjualan': idPenjualan,
       'tanggal': tanggal,
       'waktu': waktu,
-      'total-item': totalItem,
-      'total-harga': totalHarga,
-      'uang-masuk': uangMasuk,
+      'total_item': totalItem,
+      'total_harga': totalHarga,
+      'uang_masuk': uangMasuk,
     };
   }
 }
