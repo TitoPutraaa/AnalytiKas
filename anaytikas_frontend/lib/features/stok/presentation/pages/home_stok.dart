@@ -1,7 +1,7 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/barang_baru.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/pages/opsStok.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/ops_stok.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/produk_stok_card.dart';
 import 'package:flutter/material.dart';
 

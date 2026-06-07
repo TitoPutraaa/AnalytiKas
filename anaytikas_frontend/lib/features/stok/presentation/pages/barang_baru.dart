@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +71,7 @@ class _BarangBaruState extends State<BarangBaru> {
               ),
               const SizedBox(height: 16),
 
-              //  Kategori + Grosir toggle ─
+              //  Kategori + Grosir toggle (belom logic togle cuyy)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -80,7 +81,13 @@ class _BarangBaruState extends State<BarangBaru> {
                       children: [
                         _label('Kategori'),
                         const SizedBox(height: 6),
-                        _categoryDropdown(),
+                        CategoriDropdown(
+                          selectedItem: _selectedCategory,
+                          categories: _categories,
+                          onChanged: (v) {
+                            setState(() => _selectedCategory = v);
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -194,53 +201,4 @@ class _BarangBaruState extends State<BarangBaru> {
       color: AppColor.black,
     ),
   );
-
-  Widget _categoryDropdown() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColor.darkGray),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _selectedCategory,
-          isExpanded: true,
-          hint: Row(
-            children: const [
-              Icon(Icons.category_outlined, color: AppColor.lowGray, size: 18),
-              SizedBox(width: 8),
-              Text(
-                'Pilih Kategori...',
-                style: TextStyle(color: AppColor.lowGray, fontSize: 14),
-              ),
-            ],
-          ),
-          icon: const Icon(
-            Icons.keyboard_arrow_down,
-            color: AppColor.lowGray,
-            size: 20,
-          ),
-          dropdownColor: AppColor.white,
-          borderRadius: BorderRadius.circular(10),
-          items: _categories
-              .map(
-                (c) => DropdownMenuItem(
-                  value: c,
-                  child: Text(
-                    c,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColor.primary,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
-          onChanged: (v) => setState(() => _selectedCategory = v),
-        ),
-      ),
-    );
-  }
 }
