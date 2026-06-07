@@ -1,4 +1,4 @@
-import '../../domain/entities/product_per_penjualan_entity.dart';
+import '../entities/product_per_penjualan_entity.dart';
 
 class ProductPerPenjualanModel extends ProductPerPenjualanEntity {
   ProductPerPenjualanModel({

@@ -1,4 +1,4 @@
-import '../../domain/entities/produk_entity.dart';
+import '../entities/produk_entity.dart';
 
 class ProductModel extends ProdukEntity {
   ProductModel({
@@ -9,6 +9,7 @@ class ProductModel extends ProdukEntity {
     required super.isActivate,
     required super.idKategori,
     required super.idHarga,
+    required super.warningStok,
   });
 
   // to read data from sql
@@ -21,6 +22,7 @@ class ProductModel extends ProdukEntity {
       isActivate: (map['is_active'] as int) == 1,
       idKategori: map['id_kategori'] as int,
       idHarga: map['id_harga'] as int,
+      warningStok: map['warning_stok'] as int,
     );
   }
   // to send data to sql
@@ -33,6 +35,7 @@ class ProductModel extends ProdukEntity {
       'is_active': isActivate ? 1 : 0,
       'id_kategori': idKategori,
       'id_harga': idHarga,
+      'warning_stok': warningStok,
     };
   }
 }

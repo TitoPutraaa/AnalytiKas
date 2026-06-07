@@ -1,4 +1,4 @@
-import '../../domain/entities/kategori_entity.dart';
+import '../entities/kategori_entity.dart';
 
 class KategoriModel extends KategoriEntity {
   KategoriModel({required super.idKategori, required super.namaKategori});

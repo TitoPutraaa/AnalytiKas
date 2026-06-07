@@ -1,5 +1,4 @@
-import '../../domain/entities/penjualan_entity.dart';
-import 'product_per_penjualan_model.dart';
+import '../entities/penjualan_entity.dart';
 
 class PenjualanModel extends PenjualanEntity {
   PenjualanModel({
@@ -11,10 +10,7 @@ class PenjualanModel extends PenjualanEntity {
     required super.uangMasuk,
   });
 
-  factory PenjualanModel.fromMap(
-    Map<String, dynamic> map, {
-    List<ProductPerPenjualanModel> items = const [],
-  }) {
+  factory PenjualanModel.fromMap(Map<String, dynamic> map) {
     return PenjualanModel(
       idPenjualan: map['id_penjualan'] as int,
       tanggal: map['tanggal'] as String,

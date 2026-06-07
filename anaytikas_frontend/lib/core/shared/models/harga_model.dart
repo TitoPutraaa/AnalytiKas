@@ -1,4 +1,4 @@
-import '../../domain/entities/harga_entity.dart';
+import '../entities/harga_entity.dart';
 
 class HargaModel extends HargaEntity {
   HargaModel({

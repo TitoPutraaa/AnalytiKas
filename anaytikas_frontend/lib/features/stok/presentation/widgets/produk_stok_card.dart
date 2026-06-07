@@ -1,27 +1,17 @@
+import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/edit_produk.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/tambah_stok.dart';
 import 'package:flutter/material.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 
 class ProductStockCard extends StatelessWidget {
-  final String namaBarang;
-  final String kodeBarang;
-  final int jumlahStok;
-  final int minStok; // Minimum stock before warning
-  final double hargaJual;
-  final String Kategori;
+  final Product product;
 
-  const ProductStockCard({
-    super.key,
-    required this.namaBarang,
-    required this.kodeBarang,
-    required this.jumlahStok,
-    required this.minStok,
-    required this.hargaJual,
-    required this.Kategori,
-  });
+  const ProductStockCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStock = jumlahStok <= minStok;
+    bool isLowStock = product.jmlhStok <= product.minStok;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
@@ -45,7 +35,7 @@ class ProductStockCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        namaBarang,
+                        product.namaProduct,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -55,7 +45,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Kode Barang: $kodeBarang",
+                        "Kode Barang: ${product.idProduct}",
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade600,
@@ -65,7 +55,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Kategori: $Kategori",
+                        "Kategori: ${product.idKategori}",
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade600,
@@ -73,7 +63,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Rp ${hargaJual.toStringAsFixed(0)}",
+                        "Rp ${product.harga.toStringAsFixed(0)}",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -99,7 +89,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
 
                       Text(
-                        "$jumlahStok",
+                        "${product.jmlhStok}",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -128,7 +118,13 @@ class ProductStockCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => EditProduk(product: product),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.white,
                       shadowColor: Colors.transparent,
@@ -151,7 +147,13 @@ class ProductStockCard extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Tambahstok(product: product),
+                        ),
+                      );
+                    },
                     label: Text(
                       "Stok",
                       style: Theme.of(context).textTheme.labelMedium,
