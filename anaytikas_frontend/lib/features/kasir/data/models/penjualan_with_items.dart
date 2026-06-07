@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/kasir/domain/entities/penjualan_entity.dart';
-import 'package:anaytikas_frontend/features/kasir/domain/entities/product_per_penjualan_entity.dart';
+import 'package:anaytikas_frontend/core/shared/entities/penjualan_entity.dart';
+import 'package:anaytikas_frontend/core/shared/entities/product_per_penjualan_entity.dart';
 
 class PenjualanWithItems {
   final PenjualanEntity penjualan;

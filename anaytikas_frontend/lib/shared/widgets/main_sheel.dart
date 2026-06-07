@@ -1,6 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/pages/homeAnalisis.dart';
-import 'package:anaytikas_frontend/features/kasir/presentation/pages/homeKasir.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/pages/home_kasir.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/pages/homeRiwayat.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/homeStok.dart';
 import 'package:flutter/material.dart';
