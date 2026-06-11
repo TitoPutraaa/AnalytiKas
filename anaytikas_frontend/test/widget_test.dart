@@ -30,11 +30,3 @@
 // }
 
 // import 'package:flutter/material.dart';
-
-void main() {
-  List<Map<String, dynamic>> items = [
-    {'test': '1', 'harga': 'grosir'},
-    {'test': '2', 'harga': 'eceran'},
-  ];
-  print(items[1]);
-}

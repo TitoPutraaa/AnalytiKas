@@ -6,7 +6,6 @@ class HargaModel extends HargaEntity {
     required super.hargaJual,
     required super.hargaBeli,
     required super.satuan,
-    required super.jmlhSatuan,
   });
 
   factory HargaModel.fromMap(Map<String, dynamic> map) {
@@ -15,7 +14,6 @@ class HargaModel extends HargaEntity {
       hargaJual: (map['harga_jual'] as num).toDouble(),
       hargaBeli: (map['harga_beli'] as num).toDouble(),
       satuan: map['satuan'] as String,
-      jmlhSatuan: map['jmlh_satuan'] as int,
     );
   }
   Map<String, dynamic> toMap() {
@@ -24,7 +22,6 @@ class HargaModel extends HargaEntity {
       'harga_jual': hargaJual,
       'harga_beli': hargaBeli,
       'satuan': satuan,
-      'jmlh_satuan': jmlhSatuan,
     };
   }
 }

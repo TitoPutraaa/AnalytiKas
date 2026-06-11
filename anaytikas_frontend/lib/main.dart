@@ -24,7 +24,7 @@ void main() {
           create: (_) => KasirProvider(
             getAllProduct: GetAllProductUsecase(kasirRepo),
             saveTransaction: SaveTransactionUsecase(kasirRepo),
-          ),
+          )..loadProduct(),
         ),
       ],
       child: MyApp(),

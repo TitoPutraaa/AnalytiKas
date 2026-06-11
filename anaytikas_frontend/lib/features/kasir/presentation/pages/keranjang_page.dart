@@ -1,3 +1,5 @@
+import 'package:anaytikas_frontend/features/kasir/data/models/cart_item_models.dart';
+
 import '../../../../core/config/theme/app_color.dart';
 import 'pembayaran_page.dart';
 import '../widgets/cart_card_item.dart';
@@ -5,7 +7,8 @@ import '../widgets/cart_card_item.dart';
 import 'package:flutter/material.dart';
 
 class KeranjangPage extends StatelessWidget {
-  const KeranjangPage({super.key});
+  final CartItemModels product;
+  const KeranjangPage({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {

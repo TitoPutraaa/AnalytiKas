@@ -1,9 +1,14 @@
+import 'package:anaytikas_frontend/core/shared/models/product_with_details.dart';
+import 'package:anaytikas_frontend/features/kasir/data/models/cart_item_models.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/pages/keranjang_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/config/theme/app_color.dart';
 
 class ProductCardItem extends StatelessWidget {
-  const ProductCardItem({super.key});
+  final ProductWithDetails product;
+
+  const ProductCardItem({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +28,16 @@ class ProductCardItem extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'Kopi Arabika Premium Flores Gayo',
+                    product.product.namaProduct,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     // maxLines: 1,
                     // overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'KODE: KOP-0011212',
+                    '${product.product.idHarga}',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   SizedBox(height: 8),
@@ -42,7 +47,7 @@ class ProductCardItem extends StatelessWidget {
                       style: TextStyle(),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Rp. 10.000',
+                          text: 'Rp. ${(product.harga.hargaJual)}',
                           style: TextStyle(
                             color: AppColor.primary,
                             fontWeight: FontWeight.w500,
@@ -100,7 +105,18 @@ class ProductCardItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              final CartItemModels itemCart =
+                                  CartItemModels.fromMap(product);
+                              return KeranjangPage(product: itemCart);
+                            },
+                          ),
+                        );
+                      },
                       child: const Icon(Icons.shopping_cart, size: 18),
                     ),
                   ],

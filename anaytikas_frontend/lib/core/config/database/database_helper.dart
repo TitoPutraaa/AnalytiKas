@@ -69,25 +69,24 @@ class DatabaseHelper {
         id_harga $idTypeInc,
         harga_jual $doubleType,
         harga_beli $doubleType,
-        satuan $textType,
-        jmlh_satuan $intType
+        satuan $textType
       )
     ''');
 
     // 5. Tabel product
     await db.execute('''
       CREATE TABLE product (
-        id_product INTEGER,
+        id_product $idType,
         nama_product $textType,
-        jmlh_stok $intType, 
+        jmlh_stok $intType,
         is_grosir $intType,
         is_active $intType,
         id_kategori $intType,
         id_harga $intType,
         warning_stok $intType,
-        PRIMARY KEY (id_product, id_harga),
-        FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategory) ON DELETE RESTRICT,
+        FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategori) ON DELETE RESTRICT,
         FOREIGN KEY (id_harga) REFERENCES harga_product (id_harga) ON DELETE RESTRICT
+      )
     ''');
 
     // 6. Tabel penjualan
@@ -115,8 +114,8 @@ class DatabaseHelper {
     // 8. Tabel product per penjualan
     await db.execute('''
       CREATE TABLE product_per_penjualan (
-        id_penjualan INTEGER,
-        id_product INTEGER,
+        id_penjualan $intType,
+        id_product $intType,
         jumlah $intType,
         PRIMARY KEY (id_penjualan, id_product)
         FOREIGN KEY (id_penjualan) REFERENCES pembelian (id_penjualan) ON DELETE CASCADE,
@@ -126,14 +125,68 @@ class DatabaseHelper {
     // 9. Tabel product per pembelian
     await db.execute('''
       CREATE TABLE product_per_pembelian (
-        id_pembelian INTEGER,
-        id_product INTEGER,
+        id_pembelian $intType,
+        id_product $intType,
         jumlah $intType,
         PRIMARY KEY (id_pembelian, id_product)
         FOREIGN KEY (id_pembelian) REFERENCES pembelian (id_pembelian) ON DELETE CASCADE,
         FOREIGN KEY (id_product) REFERENCES product (id_product) ON DELETE RESTRICT
       )
     ''');
+
+    // Data Dummy
+    // Kategori
+    await db.insert('kategori', {'nama_kategori': 'Makanan'});
+    await db.insert('kategori', {'nama_kategori': 'Minuman'});
+
+    // Harga
+    // ID 1: Eceran, ID 2: Grosir
+    await db.insert('harga_product', {
+      'harga_jual': 3000.0,
+      'harga_beli': 2500.0,
+      'satuan': 'Pcs',
+    });
+    await db.insert('harga_product', {
+      'harga_jual': 33000.0,
+      'harga_beli': 30000.0,
+      'satuan': 'Dus',
+    });
+
+    // Indomie Eceran (id_product: 101)
+    await db.insert('product', {
+      'id_product': 101,
+      'nama_product': 'Indomie Goreng (Ecer)',
+      'jmlh_stok': 100,
+      'is_grosir': 0,
+      'is_active': 1,
+      'id_kategori': 1,
+      'id_harga': 1,
+      'warning_stok': 10,
+    });
+
+    // Indomie Grosir (id_product: 102)
+    await db.insert('product', {
+      'id_product': 102,
+      'nama_product': 'Indomie Goreng (Dus)',
+      'jmlh_stok': 50,
+      'is_grosir': 1,
+      'is_active': 1,
+      'id_kategori': 1,
+      'id_harga': 2,
+      'warning_stok': 5,
+    });
+
+    // Coca Cola Eceran (id_product: 201)
+    await db.insert('product', {
+      'id_product': 201,
+      'nama_product': 'Coca Cola (Ecer)',
+      'jmlh_stok': 50,
+      'is_grosir': 0,
+      'is_active': 1,
+      'id_kategori': 2,
+      'id_harga': 1,
+      'warning_stok': 5,
+    });
 
     // Future close() async {
     //   final db = await instance.database;

@@ -25,7 +25,7 @@ class KasirProvider extends ChangeNotifier {
       _allProducts = await getAllProduct.call();
       _filteredProduct = _allProducts;
     } catch (e) {
-      debugPrint('Error:  $e');
+      debugPrint('Data tidak masuk! Error:  $e');
     } finally {
       _isLoading = false;
       notifyListeners();

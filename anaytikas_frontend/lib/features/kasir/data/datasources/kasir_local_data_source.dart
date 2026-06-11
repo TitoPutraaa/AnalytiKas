@@ -17,27 +17,14 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
     final db = await dbHelper.database;
     return await db.rawQuery('''
         SELECT 
-          p.id_product, p.nama_product, p.jmlh_stok, p.is_grosir, p.is_active, p.id_kategori, p.id_harga
-          k.id_kategori k.nama_kategori,
-
-          -- Data Eceran
-          h_eceran.id_harga
-          h_eceran.harga_jual AS harga_jual, 
-          h_eceran.harga_beli AS harga_beli,
-          h_eceran.satuan AS satuan,
-          h_eceran.jmlh_satuan AS jmlh_satuan
-
-          -- Data grosir
-          h_grosir.id_harga AS id_harga_grosir
-          h_grosir.harga_jual AS harga_jual_grosir, 
-          h_grosir.harga_beli AS harga_beli_grosir,
-          h_grosir.satuan AS satuan_grosir,
-          h_grosir.jmlh_satuan AS jmlh_satuan_grosir,
+          p.id_product, p.nama_product, p.jmlh_stok, p.is_grosir, p.is_active, p.id_kategori, p.id_harga, warning_stok,
+          k.id_kategori, k.nama_kategori,
+          h.id_harga, h.harga_jual, h.harga_beli, h.satuan 
 
         FROM product p
         INNER JOIN kategori k ON p.id_kategori = k.id_kategori
-        LEFT JOIN harga_product h_eceran ON p.id_product = h_eceran.id_product AND h_eceran.satuan = 'eceran'
-        LEFT JOIN harga_product h_grosir ON p.id_product = h_grosir.id_product AND h_grosir.satuan = 'grosir'
+        INNER JOIN harga_product h ON p.id_harga = h.id_harga
+        
         WHERE p.is_active = 1;
     ''');
   }

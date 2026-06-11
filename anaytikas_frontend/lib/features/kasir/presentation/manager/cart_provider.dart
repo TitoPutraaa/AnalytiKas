@@ -15,13 +15,21 @@ class CartProvider extends ChangeNotifier {
         namaProduct: product.product.namaProduct,
         jmlhStok: product.product.jmlhStok,
         isGrosir: product.product.isGrosir,
-        jmlSatuanEceran: product.hargaEceran.jmlhSatuan,
-        hargaEceran: product.hargaEceran.hargaJual,
-        jmlSatuanGrosir: product.hargaGrosir?.jmlhSatuan,
-        hargaGrosir: product.hargaGrosir?.hargaJual,
+        hargaJual: product.harga.hargaJual,
+        satuan: product.harga.satuan,
+        quantity: 0,
       );
     }
     notifyListeners();
+  }
+
+  void reduceItem(int idProduct) {
+    if (_items.containsKey(idProduct)) {
+      items[idProduct]!.reduce();
+    }
+    if (_items[idProduct]!.quantity <= 0) {
+      items.remove(idProduct);
+    }
   }
 
   void clearCart() {
