@@ -2,11 +2,13 @@ import '../../../../core/config/database/database_helper.dart';
 
 abstract class KasirLocalDataSource {
   Future<List<Map<String, dynamic>>> getAllProduct();
-  Future<void> saveTransaction(
-    Map<String, dynamic> header,
+  Future<int> saveTransaction(
+    Map<String, dynamic> penjualan,
     List<Map<String, dynamic>> items,
   );
+  Future<List<Map<String, dynamic>>> getAllCategory();
   Future<int> genereteNextId(String tableName, String idColumn);
+  Future<List<Map<String, dynamic>>> getNota(int idPenjualan);
 }
 
 class KasirLocalDataSourceImpl implements KasirLocalDataSource {
@@ -17,7 +19,7 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
     final db = await dbHelper.database;
     return await db.rawQuery('''
         SELECT 
-          p.id_product, p.nama_product, p.jmlh_stok, p.is_grosir, p.is_active, p.id_kategori, p.id_harga, warning_stok,
+          p.id_product, p.nama_product, p.jmlh_stok, p.is_grosir, p.is_active, p.id_kategori, p.id_harga, stok_warning,
           k.id_kategori, k.nama_kategori,
           h.id_harga, h.harga_jual, h.harga_beli, h.satuan 
 
@@ -30,24 +32,30 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
   }
 
   @override
-  Future<void> saveTransaction(
-    Map<String, dynamic> header,
+  Future<int> saveTransaction(
+    Map<String, dynamic> penjualan,
     List<Map<String, dynamic>> items,
   ) async {
     final db = await dbHelper.database;
-    await db.transaction((txn) async {
-      // 1. Save header penjualan
-      await txn.insert('penjualan', header);
+    int newId = await db.transaction((txn) async {
+      // 1. Save penjualan
+      int id = await txn.insert('penjualan', penjualan);
       // 2. Save detail item & update stok
       for (var item in items) {
-        await txn.insert('product_per_penjualan', item);
+        await txn.insert('product_per_penjualan', {
+          'id_penjualan': id,
+          'id_product': item['id_product'],
+          'jumlah': item['jumlah'],
+        });
         // Less stok barang
         await txn.rawUpdate(
           'UPDATE product set jmlh_stok = jmlh_stok - ? WHERE id_product = ?',
           [item['jumlah'], item['id_product']],
         );
       }
+      return id;
     });
+    return newId;
   }
 
   @override
@@ -58,5 +66,40 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
     );
     int currentMax = result.first['max_id'] as int? ?? 0;
     return currentMax + 1;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getAllCategory() async {
+    final db = await dbHelper.database;
+    return await db.query('kategori');
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getNota(int idPenjualan) async {
+    final db = await dbHelper.database;
+    return await db.rawQuery(
+      '''
+        SELECT
+          p.id_penjualan,
+          p.tanggal,
+          p.waktu,
+          p.total_item,
+          p.total_harga,
+          p.uang_masuk,
+          pr.nama_product,
+          pp.jumlah,
+          h.satuan,
+          (p.uang_masuk - p.total_harga) AS uang_kembali,
+          (pp.jumlah * h.harga_jual) AS total_harga_product,
+          (SELECT nama_toko FROM toko LIMIT 1) AS nama_toko,
+          (SELECT alamat FROM toko LIMIT 1) AS alamat
+        FROM penjualan p
+        JOIN product_per_penjualan pp ON pp.id_penjualan = p.id_penjualan
+        JOIN product pr ON pr.id_product = pp.id_product
+        JOIN harga_product h ON h.id_harga = pr.id_harga
+        WHERE p.id_penjualan = ?
+    ''',
+      [idPenjualan],
+    );
   }
 }

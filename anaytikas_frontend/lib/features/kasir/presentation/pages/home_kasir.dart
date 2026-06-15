@@ -1,26 +1,14 @@
-import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/config/theme/app_color.dart';
+import '../manager/cart_provider.dart';
+import '../manager/kasir_provider.dart';
 import '../widgets/product_card_item.dart';
+import 'keranjang_page.dart';
 
-class Homekasir extends StatefulWidget {
+class Homekasir extends StatelessWidget {
   const Homekasir({super.key});
-
-  @override
-  State<Homekasir> createState() => _HomekasirState();
-}
-
-class _HomekasirState extends State<Homekasir> {
-  String? _selectedFilter;
-  final List<String> categories = [
-    'Alat Mandi',
-    'Snack',
-    'Alat Tulis',
-    'Minuman',
-    'Mie Instant',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +16,26 @@ class _HomekasirState extends State<Homekasir> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Search Bar
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Search
                 Expanded(
                   child: TextField(
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        context.read<KasirProvider>().resetSearch();
+                      } else {
+                        context.read<KasirProvider>().filterProducts(
+                          query: value,
+                        );
+                      }
+                    },
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: AppColor.lowGray),
@@ -73,53 +72,66 @@ class _HomekasirState extends State<Homekasir> {
             ),
             const SizedBox(height: 16),
 
+            // Filter
             Consumer<KasirProvider>(
-              builder: (context, value, child) {
-                if (value.isLoading) {
+              builder: (context, kasir, child) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownMenu(
+                      width: 200,
+                      hintText: 'Pilih Kategori',
+                      onSelected: (value) {
+                        if (value != null) {
+                          if (value == 0) {
+                            kasir.resetSearch();
+                          } else {
+                            kasir.filterProducts(categoryId: value);
+                          }
+                        }
+                      },
+                      dropdownMenuEntries: kasir.allCategory
+                          .map(
+                            (item) => DropdownMenuEntry(
+                              value: item.idKategori,
+                              label: item.namaKategori,
+                            ),
+                          )
+                          .toList(),
+                      textStyle: TextStyle(fontSize: 14),
+                      inputDecorationTheme: InputDecorationTheme(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+                  ],
+                );
+              },
+            ),
+            Consumer<KasirProvider>(
+              builder: (context, kasir, child) {
+                if (kasir.isLoading) {
                   return Center(child: CircularProgressIndicator());
+                }
+                if (kasir.allProducts.isEmpty) {
+                  return Center(
+                    child: Text(
+                      kasir.isSearching
+                          ? 'Produk tidak ditemukan.'
+                          : 'Produk anda masih kosong.',
+                    ),
+                  );
                 }
                 return Expanded(
                   child: ListView.builder(
-                    itemCount: value.allProducts.length + 1,
+                    itemCount: kasir.allProducts.length,
                     itemBuilder: (context, index) {
-                      final product = value.allProducts;
-                      // Filter
-                      if (index == 0) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DropdownMenu<String>(
-                              hintText: 'Pilih Kategori',
-                              onSelected: (String? value) {
-                                setState(() {
-                                  _selectedFilter = value;
-                                });
-                              },
-                              dropdownMenuEntries: [
-                                const DropdownMenuEntry(
-                                  value: 'all',
-                                  label: 'All',
-                                ),
-                                ...categories.map(
-                                  (item) => DropdownMenuEntry(
-                                    value: item,
-                                    label: item,
-                                  ),
-                                ),
-                              ],
-                              textStyle: TextStyle(fontSize: 14),
-                              inputDecorationTheme: InputDecorationTheme(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                          ],
-                        );
-                      }
+                      final product = kasir.allProducts[index];
                       // CardList
-                      return ProductCardItem(product: product[index - 1]);
+                      return ProductCardItem(product: product);
                     },
                   ),
                 );
@@ -128,22 +140,36 @@ class _HomekasirState extends State<Homekasir> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.shopping_cart_rounded, color: Colors.white),
-        label: Text(
-          '3 Produk',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-          ),
-        ),
-        extendedPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 1,
-        backgroundColor: AppColor.primary,
+      floatingActionButton: Consumer<CartProvider>(
+        builder: (context, cart, child) => cart.items.isEmpty
+            ? SizedBox()
+            : FloatingActionButton.extended(
+                icon: Icon(Icons.shopping_cart_rounded, color: Colors.white),
+                label: Text(
+                  '${cart.items.length} Produk',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                ),
+                extendedPadding: EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 5,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 1,
+                backgroundColor: AppColor.primary,
 
-        onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => KeranjangPage()),
+                  );
+                },
+              ),
       ),
     );
   }

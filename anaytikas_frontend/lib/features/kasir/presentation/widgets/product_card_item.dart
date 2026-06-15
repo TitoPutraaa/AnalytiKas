@@ -1,12 +1,13 @@
-import 'package:anaytikas_frontend/core/shared/models/product_with_details.dart';
-import 'package:anaytikas_frontend/features/kasir/data/models/cart_item_models.dart';
-import 'package:anaytikas_frontend/features/kasir/presentation/pages/keranjang_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/config/theme/app_color.dart';
+import '../../../../core/shared/entities/product_with_details_entity.dart';
+import '../../../../core/shared/extensions/currency_extension.dart';
+import '../manager/cart_provider.dart';
 
 class ProductCardItem extends StatelessWidget {
-  final ProductWithDetails product;
+  final ProductWithDetailsEntity product;
 
   const ProductCardItem({super.key, required this.product});
 
@@ -19,7 +20,7 @@ class ProductCardItem extends StatelessWidget {
         border: BoxBorder.all(color: AppColor.lowGray, width: 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -37,17 +38,16 @@ class ProductCardItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    '${product.product.idHarga}',
+                    'KODE: ${product.product.idProduct}',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   SizedBox(height: 8),
                   Text.rich(
                     TextSpan(
                       text: 'Harga:  ',
-                      style: TextStyle(),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Rp. ${(product.harga.hargaJual)}',
+                          text: product.harga.hargaJual.toRupiah(),
                           style: TextStyle(
                             color: AppColor.primary,
                             fontWeight: FontWeight.w500,
@@ -96,7 +96,7 @@ class ProductCardItem extends StatelessWidget {
                         ),
                         padding: EdgeInsets.symmetric(
                           horizontal: 14,
-                          vertical: 18,
+                          vertical: 14,
                         ),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -106,16 +106,25 @@ class ProductCardItem extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              final CartItemModels itemCart =
-                                  CartItemModels.fromMap(product);
-                              return KeranjangPage(product: itemCart);
-                            },
-                          ),
-                        );
+                        final cart = context.read<CartProvider>();
+                        if (cart.isProductInCart(product.product.idProduct)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${product.product.namaProduct} sudah di keranjang!',
+                              ),
+                            ),
+                          );
+                        } else {
+                          cart.addItemToCart(product);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${product.product.namaProduct} berhasil ditambahkan!',
+                              ),
+                            ),
+                          );
+                        }
                       },
                       child: const Icon(Icons.shopping_cart, size: 18),
                     ),

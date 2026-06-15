@@ -83,7 +83,7 @@ class DatabaseHelper {
         is_active $intType,
         id_kategori $intType,
         id_harga $intType,
-        warning_stok $intType,
+        stok_warning $intType,
         FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategori) ON DELETE RESTRICT,
         FOREIGN KEY (id_harga) REFERENCES harga_product (id_harga) ON DELETE RESTRICT
       )
@@ -118,7 +118,7 @@ class DatabaseHelper {
         id_product $intType,
         jumlah $intType,
         PRIMARY KEY (id_penjualan, id_product)
-        FOREIGN KEY (id_penjualan) REFERENCES pembelian (id_penjualan) ON DELETE CASCADE,
+        FOREIGN KEY (id_penjualan) REFERENCES penjualan (id_penjualan) ON DELETE CASCADE,
         FOREIGN KEY (id_product) REFERENCES product (id_product) ON DELETE RESTRICT
       )
     ''');
@@ -135,6 +135,14 @@ class DatabaseHelper {
     ''');
 
     // Data Dummy
+    // Toko
+    await db.insert('toko', {
+      'nama_toko': 'Toko Sembako Maju Jaya',
+      'email': 'toko.majujaya@gmail.com',
+      'no_telp': '081234567890',
+      'password': 'password123',
+      'alamat': 'Jl. Contoh Alamat No. 123, Denpasar, Bali',
+    });
     // Kategori
     await db.insert('kategori', {'nama_kategori': 'Makanan'});
     await db.insert('kategori', {'nama_kategori': 'Minuman'});
@@ -161,7 +169,7 @@ class DatabaseHelper {
       'is_active': 1,
       'id_kategori': 1,
       'id_harga': 1,
-      'warning_stok': 10,
+      'stok_warning': 10,
     });
 
     // Indomie Grosir (id_product: 102)
@@ -173,7 +181,7 @@ class DatabaseHelper {
       'is_active': 1,
       'id_kategori': 1,
       'id_harga': 2,
-      'warning_stok': 5,
+      'stok_warning': 5,
     });
 
     // Coca Cola Eceran (id_product: 201)
@@ -185,7 +193,7 @@ class DatabaseHelper {
       'is_active': 1,
       'id_kategori': 2,
       'id_harga': 1,
-      'warning_stok': 5,
+      'stok_warning': 5,
     });
 
     // Future close() async {
