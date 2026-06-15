@@ -1,7 +1,7 @@
 class BiayaOperasional {
   final int idBiaya;
   final String nama;
-  final String tanggal;
+  final DateTime tanggal;
   final double totalBiaya;
 
   BiayaOperasional({
