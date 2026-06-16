@@ -15,7 +15,7 @@ class ProductModel extends ProdukEntity {
   // to read data from sql
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      idProduct: map['id_product'] as int,
+      idProduct: map['id_product'] as String,
       namaProduct: map['nama_product'] as String,
       jmlhStok: map['jmlh_stok'] as int,
       isGrosir: (map['is_grosir'] as int) == 1,

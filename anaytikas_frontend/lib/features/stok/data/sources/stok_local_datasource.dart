@@ -1,7 +1,7 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
-import 'package:anaytikas_frontend/core/shared/models/product_per_pembelian_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
+import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class StokLocalDatasource {

@@ -77,7 +77,7 @@ class DatabaseHelper {
     // 5. Tabel product
     await db.execute('''
       CREATE TABLE product (
-        id_product $intType,
+        id_product $textType,
         nama_product $textType,
         jmlh_stok $intType, 
         is_grosir $intType,

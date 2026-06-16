@@ -8,7 +8,7 @@ class AddBiayaOperasional {
   Future<void> call(
     int idBiaya,
     String nama,
-    String tanggal,
+    DateTime tanggal,
     double totalBiaya,
   ) {
     return stokRepository.addBiayaOperasional(

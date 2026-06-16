@@ -1,11 +1,12 @@
 import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 
 abstract class StokRepository {
-  Future<List<Product>> getAllProducts();
+  Future<List<ProductEntity>> getAllProducts();
   Future<void> addBarangBaru(
+    String idProduct,
     Kategori kategori,
     HargaProduct harga,
     String namaProduct,
@@ -17,10 +18,10 @@ abstract class StokRepository {
   Future<void> addBiayaOperasional(
     int idBiaya,
     String nama,
-    String tanggal,
+    DateTime tanggal,
     double totalBiaya,
   );
-  Future<void> addStok(Pembelian pembelian, Product product);
+  Future<void> addStok(Pembelian pembelian, ProductEntity product);
   Future<void> updateProduct(
     String idProduct,
     Kategori kategori,

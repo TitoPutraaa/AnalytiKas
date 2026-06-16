@@ -8,6 +8,7 @@ class AddBarangBaru {
   AddBarangBaru({required this.stokRepository});
 
   Future<void> call(
+    String idProduct,
     Kategori kategori,
     HargaProduct harga,
     String namaProduct,
@@ -17,6 +18,7 @@ class AddBarangBaru {
     bool isActivate,
   ) {
     return stokRepository.addBarangBaru(
+      idProduct,
       kategori,
       harga,
       namaProduct,

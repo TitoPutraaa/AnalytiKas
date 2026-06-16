@@ -1,0 +1,112 @@
+import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
+import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
+import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
+import 'package:anaytikas_frontend/features/stok/data/sources/stok_local_datasource.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
+import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
+import 'package:sqflite/sqflite.dart';
+
+class StokRepositoryImpl implements StokRepository {
+  final StokLocalDatasourceImpl datasource;
+
+  StokRepositoryImpl({required this.datasource});
+
+  @override
+  Future<void> addBarangBaru(
+    String idProduct,
+    Kategori kategori,
+    HargaProduct harga,
+    String namaProduct,
+    int jmlhStok,
+    int stokWarning,
+    bool isGrosir,
+    bool isActivate,
+  ) async {
+    try {
+      final model = ProductModel(
+        idProduct: idProduct,
+        namaProduct: namaProduct,
+        jmlhStok: jmlhStok,
+        isGrosir: isGrosir,
+        isActivate: isActivate,
+        kategori: kategori,
+        harga: harga,
+        stokWarning: stokWarning,
+      );
+      return await datasource.addBarangBaruData(model);
+    } on DatabaseException catch (e) {
+      throw ArgumentError("gagal mengambil produk. err: ${e.toString()}");
+    }
+  }
+
+  @override
+  Future<void> addBiayaOperasional(
+    int idBiaya,
+    String nama,
+    DateTime tanggal,
+    double totalBiaya,
+  ) async {
+    try {
+      final model = BiayaOperasionalModel(
+        idBiaya: idBiaya,
+        nama: nama,
+        tanggal: tanggal,
+        totalBiaya: totalBiaya,
+      );
+      return await datasource.addBiayaOperasionalData(model);
+    } catch (e) {
+      throw ArgumentError(
+        "gagal menambahkan biaya operasional. err: ${e.toString()}",
+      );
+    }
+  }
+
+  @override
+  Future<void> addStok(Pembelian pembelian, ProductEntity product) async {
+    try {
+      final model = ProductPerPembelianModel(
+        pembelian: pembelian,
+        product: product,
+      );
+      return await datasource.addStokData(model);
+    } catch (e) {
+      throw ArgumentError("gagal menambahkan stok baru. err: ${e.toString()}");
+    }
+  }
+
+  @override
+  Future<void> updateProduct(
+    String idProduct,
+    Kategori kategori,
+    HargaProduct harga,
+    String namaProduct,
+    int jmlhStok,
+    int stokWarning,
+    bool isGrosir,
+    bool isActivate,
+  ) async {
+    final model = ProductModel(
+      idProduct: idProduct,
+      kategori: kategori,
+      harga: harga,
+      namaProduct: namaProduct,
+      jmlhStok: jmlhStok,
+      stokWarning: stokWarning,
+      isActivate: isActivate,
+      isGrosir: isGrosir,
+    );
+    return await datasource.updateProductData(model);
+  }
+
+  @override
+  Future<List<ProductEntity>> getAllProducts() async {
+    try {
+      return await datasource.getAllProductsData();
+    } on DatabaseException catch (e) {
+      throw ArgumentError("gagal mengambil produk. err: ${e.toString()}");
+    }
+  }
+}

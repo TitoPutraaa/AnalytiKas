@@ -1,5 +1,5 @@
 class ProdukEntity {
-  final int idProduct;
+  final String idProduct;
   final String namaProduct;
   final int jmlhStok;
   final bool isGrosir;
