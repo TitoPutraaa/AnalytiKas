@@ -1,11 +1,15 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
+import 'package:anaytikas_frontend/features/stok/data/models/kategori_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_category.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class StokLocalDatasource {
   Future<List<ProductModel>> getAllProductsData();
+  Future<List<Kategori>> getAllCategory();
   Future<void> addBarangBaruData(ProductModel addBarang);
   Future<void> addBiayaOperasionalData(BiayaOperasionalModel addBiayaOps);
   Future<void> addStokData(ProductPerPembelianModel addStok);
@@ -66,6 +70,14 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
       where: "id_product = ?",
       whereArgs: [updProduct.idProduct],
     );
+  }
+
+  @override
+  Future<List<Kategori>> getAllCategory() async {
+    final db = await dbHelper.database;
+    List<Map<String, dynamic>> data = await db.query("kategori");
+
+    return data.map((map) => KategoriModel.fromMap(map)).toList();
   }
 
   final String queryGetAll = '''

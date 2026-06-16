@@ -1,3 +1,4 @@
+import 'package:anaytikas_frontend/features/stok/domain/entities/biaya_operasional.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
@@ -32,4 +33,5 @@ abstract class StokRepository {
     bool isGrosir,
     bool isActivate,
   );
+  Future<List<Kategori>> getAllCategory();
 }

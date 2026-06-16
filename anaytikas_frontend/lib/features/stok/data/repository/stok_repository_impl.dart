@@ -109,4 +109,15 @@ class StokRepositoryImpl implements StokRepository {
       throw ArgumentError("gagal mengambil produk. err: ${e.toString()}");
     }
   }
+
+  @override
+  Future<List<Kategori>> getAllCategory() async {
+    try {
+      return await datasource.getAllCategory();
+    } catch (e) {
+      throw ArgumentError(
+        "gagal mengambil data kategori Impl. err: ${e.toString()}",
+      );
+    }
+  }
 }
