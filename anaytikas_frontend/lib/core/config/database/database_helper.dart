@@ -133,6 +133,16 @@ class DatabaseHelper {
         FOREIGN KEY (id_product) REFERENCES product (id_product) ON DELETE RESTRICT
       )
     ''');
+    // 10. Tabel biaya operasional
+    await db.execute('''
+      CREATE TABLE biaya_operasional (
+        id_biaya $intType,
+        nama $textType,
+        total_biaya $intType,
+        tanggal $textType,
+        PRIMARY KEY (id_biaya)
+      )
+    ''');
 
     // Future close() async {
     //   final db = await instance.database;
