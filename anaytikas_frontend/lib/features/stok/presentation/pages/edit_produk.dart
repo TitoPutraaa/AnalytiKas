@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +18,10 @@ class _EditProdukState extends State<EditProduk> {
   var editNamaProduct = TextEditingController();
   var editWarningStok = TextEditingController();
   var hargaJualController = TextEditingController();
+
+  final List<String> _categories = ['Makanan', 'Minuman', 'Rokok Lur'];
   int stokValue = 0;
+  String? _selectedCategory;
 
   @override
   void initState() {
@@ -225,11 +229,53 @@ class _EditProdukState extends State<EditProduk> {
               ],
             ),
 
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _label("Ubah Kategori"),
+                      const SizedBox(height: 6),
+                      CategoriDropdown(
+                        selectedItem: _selectedCategory,
+                        categories: _categories,
+                        onChanged: (v) {
+                          setState(() => _selectedCategory = v);
+                        },
+                        hintTxt: "Kategori",
+                        icon: Icons.category,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Warning stok
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _label('Waring Stok Baru'),
+                      const SizedBox(height: 6),
+                      OutlinedField(
+                        controller: editWarningStok,
+                        prefixIcon: const Icon(
+                          Icons.production_quantity_limits_rounded,
+                          size: 20,
+                        ),
+                        keyboardType: TextInputType.text,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
             // Nama Barang
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label('Nama Barang'),
+                _label('Ubah Nama Barang'),
                 const SizedBox(height: 6),
                 OutlinedField(
                   controller: editNamaProduct,
@@ -250,23 +296,6 @@ class _EditProdukState extends State<EditProduk> {
                   controller: hargaJualController,
                   keyboardType: TextInputType.number,
                   preFixText: "Rp.",
-                ),
-              ],
-            ),
-
-            // Warning stok
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _label('Waring Stok Baru'),
-                const SizedBox(height: 6),
-                OutlinedField(
-                  controller: editWarningStok,
-                  prefixIcon: const Icon(
-                    Icons.production_quantity_limits_rounded,
-                    size: 20,
-                  ),
-                  keyboardType: TextInputType.text,
                 ),
               ],
             ),
