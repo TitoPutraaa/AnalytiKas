@@ -13,19 +13,25 @@ class BarangBaru extends StatefulWidget {
 
 class _BarangBaruState extends State<BarangBaru> {
   final _namaBarangController = TextEditingController();
-  final _jumlahBarangController = TextEditingController();
+  final _warningStok = TextEditingController();
+  final _jumlahStok = TextEditingController();
   final _hargaJualController = TextEditingController();
-  final _kodeBarangController = TextEditingController(text: '56456185');
+  final _hargaBeliController = TextEditingController();
+  final _kodeBarangController = TextEditingController();
 
   final List<String> _categories = ['Makanan', 'Minuman', 'Rokok Lur'];
+  final List<String> _satuan = ['Gram', 'Krat', 'Dus', "Pcs"];
   String? _selectedCategory;
+  String? _selectedSatuan;
   bool _isGrosir = false;
 
   @override
   void dispose() {
     _namaBarangController.dispose();
-    _jumlahBarangController.dispose();
+    _jumlahStok.dispose();
+    _warningStok.dispose();
     _hargaJualController.dispose();
+    _hargaBeliController.dispose();
     _kodeBarangController.dispose();
     super.dispose();
   }
@@ -61,13 +67,21 @@ class _BarangBaruState extends State<BarangBaru> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //  Nama Barang ─
-              _label('Nama Barang'),
-              const SizedBox(height: 6),
-              OutlinedField(
-                controller: _namaBarangController,
-                hintText: 'Contoh: Kopi Arabica 250g',
-                prefixIcon: const Icon(Icons.receipt_long_outlined, size: 20),
-                keyboardType: TextInputType.text,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _label('Nama Barang'),
+                  const SizedBox(height: 6),
+                  OutlinedField(
+                    controller: _namaBarangController,
+                    hintText: 'Contoh: Kopi Arabica 250g',
+                    prefixIcon: const Icon(
+                      Icons.receipt_long_outlined,
+                      size: 20,
+                    ),
+                    keyboardType: TextInputType.text,
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
 
@@ -76,6 +90,7 @@ class _BarangBaruState extends State<BarangBaru> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
+                    flex: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -93,77 +108,242 @@ class _BarangBaruState extends State<BarangBaru> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _label('Grosir'),
-                      const SizedBox(height: 10),
-                      Switch(
-                        value: _isGrosir,
-                        onChanged: (v) => setState(() => _isGrosir = v),
-                        activeThumbColor: AppColor.white,
-                        activeTrackColor: AppColor.primary,
-                        inactiveThumbColor: AppColor.white,
-                        inactiveTrackColor: AppColor.darkGray,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ],
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Satuan'),
+                        const SizedBox(height: 6),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColor.darkGray),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _selectedSatuan,
+                              isExpanded: true,
+                              hint: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Satuan",
+                                      style: TextStyle(
+                                        color: AppColor.lowGray,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                color: AppColor.lowGray,
+                                size: 20,
+                              ),
+                              dropdownColor: AppColor.white,
+                              borderRadius: BorderRadius.circular(10),
+                              items: _satuan
+                                  .map(
+                                    (c) => DropdownMenuItem(
+                                      value: c,
+                                      child: Text(
+                                        c,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: AppColor.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (v) {
+                                setState(() => _selectedSatuan = v);
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     _label('Grosir'),
+                  //     const SizedBox(height: 10),
+                  //     Switch(
+                  //       value: _isGrosir,
+                  //       onChanged: (v) => setState(() => _isGrosir = v),
+                  //       activeThumbColor: AppColor.white,
+                  //       activeTrackColor: AppColor.primary,
+                  //       inactiveThumbColor: AppColor.white,
+                  //       inactiveTrackColor: AppColor.darkGray,
+                  //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
               const SizedBox(height: 16),
 
-              //  Jumlah Barang
-              _label('Jumlah Barang (Satuan)'),
-              const SizedBox(height: 6),
-              OutlinedField(
-                controller: _jumlahBarangController,
-                hintText: '0',
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                textAlign: TextAlign.left,
-              ),
-              const SizedBox(height: 16),
-
               //  Harga Jual ─
-              _label('Harga Jual (Satuan)'),
-              const SizedBox(height: 6),
-              OutlinedField(
-                controller: _hargaJualController,
-                hintText: '0',
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                prefix: const Padding(
-                  padding: EdgeInsets.only(left: 14, right: 4),
-                  child: Text(
-                    'Rp',
-                    style: TextStyle(
-                      color: AppColor.lowGray,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Harga Beli'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: _hargaBeliController,
+                          hintText: '0',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          prefix: const Padding(
+                            padding: EdgeInsets.only(left: 14, right: 4),
+                            child: Text(
+                              'Rp.',
+                              style: TextStyle(
+                                color: AppColor.lowGray,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Harga Jual'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: _hargaJualController,
+                          hintText: '0',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          prefix: const Padding(
+                            padding: EdgeInsets.only(left: 14, right: 4),
+                            child: Text(
+                              'Rp.',
+                              style: TextStyle(
+                                color: AppColor.lowGray,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(height: 16),
+              //  Jumlah Barang
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Jumlah Stok'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: _jumlahStok,
+                          hintText: '0',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Warning Stok'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: _warningStok,
+                          hintText: '0',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 16),
 
               //  Kode Barang
-              _label('Kode Barang'),
-              const SizedBox(height: 6),
-              OutlinedField(
-                controller: _kodeBarangController,
-                hintText: '56456185',
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Icon(
-                    Icons.qr_code_scanner,
-                    color: AppColor.lowGray,
-                    size: 22,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    flex: 0,
+                    child: Column(
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: AppColor.black),
+                            padding: EdgeInsets.zero,
+                            fixedSize: const Size(10, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.document_scanner_rounded,
+                            size: 25,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Kode Barang'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: _kodeBarangController,
+                          hintText: '56456185',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
 

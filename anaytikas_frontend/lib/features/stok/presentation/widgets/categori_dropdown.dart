@@ -6,14 +6,14 @@ class CategoriDropdown extends StatelessWidget {
   final List<String> categories;
   final ValueChanged onChanged;
   final String hintTxt;
-  final IconData icon;
+  final IconData? icon;
   const CategoriDropdown({
     super.key,
     required this.selectedItem,
     required this.categories,
     required this.onChanged,
     required this.hintTxt,
-    required this.icon,
+    this.icon,
   });
 
   @override
