@@ -47,10 +47,13 @@ class _OpsStokState extends State<OpsStok> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _label("Nama Biaya"),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 7),
                   CategoriDropdown(
+                    icon: Icons.list_outlined,
+                    hintTxt: "Pilih Biaya...",
                     selectedItem: selectedCategory,
                     categories: categories,
                     onChanged: (v) {
@@ -59,6 +62,8 @@ class _OpsStokState extends State<OpsStok> {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 14),
               Row(
                 children: [
                   Expanded(
@@ -66,30 +71,84 @@ class _OpsStokState extends State<OpsStok> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _label("Nominal"),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         OutlinedField(
                           controller: _nominalController,
                           hintText: "0",
                           keyboardType: TextInputType.number,
+                          prefix: Padding(
+                            padding: const EdgeInsets.only(left: 6),
+                            child: Text("Rp. "),
+                          ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _label("Tanggal"),
-                        const SizedBox(height: 6),
-                        OutlinedField(
-                          controller: _tanggalController,
-                          hintText: "",
-                          keyboardType: TextInputType.number,
+                        const SizedBox(height: 4),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColor.darkGray),
+                          ),
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            controller: _tanggalController,
+                            readOnly: true,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColor.primary,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            decoration: InputDecoration(
+                              hint: Text("Tanggal"),
+                              hintStyle: const TextStyle(
+                                color: AppColor.lowGray,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: InputBorder.none,
+                              icon: Padding(
+                                padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
+                                child: Icon(Icons.date_range_outlined),
+                              ),
+                            ),
+                            onTap: () {
+                              _selectDate(context);
+                            },
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 50),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: Navigator.of(context).pop,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.primary,
+                    foregroundColor: AppColor.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  icon: const Icon(Icons.add_circle_outline, size: 20),
+                  label: const Text(
+                    'Biaya Operasional',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
               ),
             ],
           ),
@@ -97,13 +156,28 @@ class _OpsStokState extends State<OpsStok> {
       ),
     );
   }
-}
 
-Widget _label(String text) => Text(
-  text,
-  style: const TextStyle(
-    fontSize: 13,
-    fontWeight: FontWeight.w500,
-    color: AppColor.black,
-  ),
-);
+  Widget _label(String text) => Text(
+    text,
+    style: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: AppColor.black,
+    ),
+  );
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? _picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(200),
+      lastDate: DateTime(2100),
+    );
+
+    if (_picked != null) {
+      setState(() {
+        _tanggalController.text = _picked.toString().split(" ")[0];
+      });
+    }
+  }
+}

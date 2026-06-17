@@ -82,6 +82,8 @@ class _BarangBaruState extends State<BarangBaru> {
                         _label('Kategori'),
                         const SizedBox(height: 6),
                         CategoriDropdown(
+                          icon: Icons.category_outlined,
+                          hintTxt: "Pilih Kategori...",
                           selectedItem: _selectedCategory,
                           categories: _categories,
                           onChanged: (v) {
