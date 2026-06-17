@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,8 +13,35 @@ class EditProduk extends StatefulWidget {
 }
 
 class _EditProdukState extends State<EditProduk> {
-  var editStokController = TextEditingController(text: "0");
-  var hargaJualController = TextEditingController(text: "0");
+  var editStokController = TextEditingController();
+  var editNamaProduct = TextEditingController();
+  var editWarningStok = TextEditingController();
+  var hargaJualController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    editNamaProduct = TextEditingController(text: widget.product.namaProduct);
+    editStokController = TextEditingController(
+      text: widget.product.jmlhStok.toString(),
+    );
+    editWarningStok = TextEditingController(
+      text: widget.product.minStok.toString(),
+    );
+    hargaJualController = TextEditingController(
+      text: widget.product.harga.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    editNamaProduct.dispose();
+    editStokController.dispose();
+    editWarningStok.dispose();
+    hargaJualController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
@@ -32,205 +60,211 @@ class _EditProdukState extends State<EditProduk> {
           fontFamily: "Rubik",
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            width: double.infinity,
-            child: Card(
-              shadowColor: AppColor.darkGray,
-              color: AppColor.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: AppColor.lowGray, width: 1),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 20,
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          spacing: 15,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Card(
+                shadowColor: AppColor.darkGray,
+                color: AppColor.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: AppColor.lowGray, width: 1),
                 ),
-                child: Column(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.product.namaProduct,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  "Kode Barang: ${widget.product.idProduct}",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  "Kategori: ${widget.product.idKategori}",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  "Rp ${widget.product.harga.toStringAsFixed(0)}",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColor.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // --- Stok produk
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "STOK",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+
+                                Text(
+                                  "${widget.product.jmlhStok}",
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: isLowStok
+                                        ? Colors.red
+                                        : Colors.green.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.product.namaProduct,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "Kode Barang: ${widget.product.idProduct}",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "Kategori: ${widget.product.idKategori}",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "Rp ${widget.product.harga.toStringAsFixed(0)}",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColor.primary,
-                                ),
-                              ),
-                            ],
+                    Text(
+                      "Jumlah Stok Saat Ini",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 5),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColor.darkGray),
+                      ),
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                currentStok--;
+                              });
+                            },
+                            icon: Icon(Icons.remove),
                           ),
-                        ),
+                          Expanded(
+                            child: TextField(
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              controller: editStokController,
 
-                        // --- Stok produk
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "STOK",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter
+                                    .digitsOnly, // Blocks letters/symbols
+                              ],
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
                               ),
-
-                              Text(
-                                "${widget.product.jmlhStok}",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: isLowStok
-                                      ? Colors.red
-                                      : Colors.green.shade700,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                          IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Jumlah Stok Baru",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColor.darkGray),
-                  ),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            currentStok--;
-                          });
-                        },
-                        icon: Icon(Icons.remove),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          controller: editStokController,
 
-                          inputFormatters: [
-                            FilteringTextInputFormatter
-                                .digitsOnly, // Blocks letters/symbols
-                          ],
-                          decoration: InputDecoration(border: InputBorder.none),
-                        ),
-                      ),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.add)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
+            // Nama Barang
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Harga Jual",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColor.darkGray),
-                  ),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          controller: hargaJualController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter
-                                .digitsOnly, // Blocks letters/symbols
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixText: "  Rp. ",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  "Harga yang akan dibayar oleh pelanggan.",
-                  style: TextStyle(
-                    color: const Color.fromRGBO(128, 128, 128, 0.9),
-                  ),
+                _label('Nama Barang'),
+                const SizedBox(height: 6),
+                OutlinedField(
+                  controller: editNamaProduct,
+                  hintText: 'Contoh: Kopi Arabica 250g',
+                  prefixIcon: const Icon(Icons.receipt_long_outlined, size: 20),
+                  keyboardType: TextInputType.text,
                 ),
               ],
             ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
+
+            // Harga Jual Barang
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _label('Harga Jual Baru'),
+                const SizedBox(height: 6),
+                OutlinedField(
+                  controller: hargaJualController,
+                  keyboardType: TextInputType.number,
+                  preFixText: "Rp.",
+                ),
+              ],
+            ),
+
+            // Warning stok
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _label('Waring Stok Baru'),
+                const SizedBox(height: 6),
+                OutlinedField(
+                  controller: editWarningStok,
+                  prefixIcon: const Icon(
+                    Icons.production_quantity_limits_rounded,
+                    size: 20,
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 35),
+            Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
@@ -239,20 +273,20 @@ class _EditProdukState extends State<EditProduk> {
                     },
                     icon: const Icon(
                       Icons.cancel_outlined,
-                      color: AppColor.primary,
+                      color: AppColor.white,
                     ),
                     label: const Text(
-                      "Batal",
+                      "Hapus Produk",
                       style: TextStyle(
-                        color: AppColor.primary,
+                        color: AppColor.white,
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                       minimumSize: const Size(0, 55),
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadiusGeometry.circular(10),
                         side: BorderSide(color: AppColor.black, width: 1),
@@ -267,11 +301,11 @@ class _EditProdukState extends State<EditProduk> {
                     onPressed: () {},
                     icon: const Icon(Icons.check_circle_outline),
                     label: const Text(
-                      "Konfirmasi Tambah Stok",
+                      "Konfirmasi Edit Stok",
                       style: TextStyle(
                         color: AppColor.white,
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -282,9 +316,18 @@ class _EditProdukState extends State<EditProduk> {
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+  Widget _label(String text) => Text(
+    text,
+    style: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: AppColor.black,
+    ),
+  );
 }
