@@ -18,12 +18,13 @@ class Tambahstok extends StatefulWidget {
 class _TambahstokState extends State<Tambahstok> {
   var stokBaruController = TextEditingController();
   var hargaBeliController = TextEditingController();
+  int stokValue = 0;
 
   @override
   void initState() {
-    super.initState();
-    stokBaruController = TextEditingController(text: 0.toString());
+    stokBaruController.text = stokValue.toString();
     hargaBeliController = TextEditingController(text: 0.toString());
+    super.initState();
   }
 
   @override
@@ -174,7 +175,13 @@ class _TambahstokState extends State<Tambahstok> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.remove)),
+                      IconButton(
+                        onPressed: () => setState(() {
+                          stokValue--;
+                          stokBaruController.text = stokValue.toString();
+                        }),
+                        icon: Icon(Icons.remove),
+                      ),
                       Expanded(
                         child: TextField(
                           textAlign: TextAlign.center,
@@ -191,7 +198,13 @@ class _TambahstokState extends State<Tambahstok> {
                           ),
                         ),
                       ),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+                      IconButton(
+                        onPressed: () => setState(() {
+                          stokValue++;
+                          stokBaruController.text = stokValue.toString();
+                        }),
+                        icon: Icon(Icons.add),
+                      ),
                     ],
                   ),
                 ),

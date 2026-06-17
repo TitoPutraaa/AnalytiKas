@@ -17,10 +17,11 @@ class _EditProdukState extends State<EditProduk> {
   var editNamaProduct = TextEditingController();
   var editWarningStok = TextEditingController();
   var hargaJualController = TextEditingController();
+  int stokValue = 0;
 
   @override
   void initState() {
-    super.initState();
+    stokValue = widget.product.jmlhStok;
     editNamaProduct = TextEditingController(text: widget.product.namaProduct);
     editStokController = TextEditingController(
       text: widget.product.jmlhStok.toString(),
@@ -31,6 +32,7 @@ class _EditProdukState extends State<EditProduk> {
     hargaJualController = TextEditingController(
       text: widget.product.harga.toString(),
     );
+    super.initState();
   }
 
   @override
@@ -45,7 +47,6 @@ class _EditProdukState extends State<EditProduk> {
   @override
   Widget build(BuildContext context) {
     bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
-    var currentStok = widget.product.jmlhStok;
 
     return Scaffold(
       appBar: AppBar(
@@ -188,7 +189,8 @@ class _EditProdukState extends State<EditProduk> {
                           IconButton(
                             onPressed: () {
                               setState(() {
-                                currentStok--;
+                                stokValue--;
+                                editStokController.text = stokValue.toString();
                               });
                             },
                             icon: Icon(Icons.remove),
@@ -208,7 +210,13 @@ class _EditProdukState extends State<EditProduk> {
                               ),
                             ),
                           ),
-                          IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+                          IconButton(
+                            onPressed: () => setState(() {
+                              stokValue++;
+                              editStokController.text = stokValue.toString();
+                            }),
+                            icon: Icon(Icons.add),
+                          ),
                         ],
                       ),
                     ),
