@@ -1,8 +1,8 @@
-import 'dart:ffi' hide Size;
 import 'dart:ui';
 
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart' hide Size;
 import 'package:flutter/services.dart' hide Size;
 
@@ -16,8 +16,23 @@ class Tambahstok extends StatefulWidget {
 }
 
 class _TambahstokState extends State<Tambahstok> {
-  final stokBaruController = TextEditingController();
-  final hargaBeliController = TextEditingController();
+  var stokBaruController = TextEditingController();
+  var hargaBeliController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    stokBaruController = TextEditingController(text: 0.toString());
+    hargaBeliController = TextEditingController(text: 0.toString());
+  }
+
+  @override
+  void dispose() {
+    stokBaruController.dispose();
+    hargaBeliController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
@@ -190,36 +205,17 @@ class _TambahstokState extends State<Tambahstok> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Total Harga Beli",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColor.darkGray),
-                  ),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          controller: hargaBeliController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter
-                                .digitsOnly, // Blocks letters/symbols
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "0",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _label('Total Harga Beli'),
+                    const SizedBox(height: 6),
+                    OutlinedField(
+                      controller: hargaBeliController,
+                      keyboardType: TextInputType.number,
+                      preFixText: "Rp.",
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -285,4 +281,13 @@ class _TambahstokState extends State<Tambahstok> {
       ),
     );
   }
+
+  Widget _label(String text) => Text(
+    text,
+    style: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: AppColor.black,
+    ),
+  );
 }
