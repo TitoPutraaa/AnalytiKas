@@ -66,7 +66,7 @@ class DatabaseHelper {
     // 4. Tabel harga product
     await db.execute('''
       CREATE TABLE harga_product (
-        id_harga $idTypeInc,
+        id_harga $textType,
         harga_jual $doubleType,
         harga_beli $doubleType,
         satuan $textType,
@@ -143,6 +143,67 @@ class DatabaseHelper {
         PRIMARY KEY (id_biaya)
       )
     ''');
+
+    // Toko
+    await db.insert('toko', {
+      'nama_toko': 'Toko Sembako Maju Jaya',
+      'email': 'toko.majujaya@gmail.com',
+      'no_telp': '081234567890',
+      'password': 'password123',
+      'alamat': 'Jl. Contoh Alamat No. 123, Denpasar, Bali',
+    });
+    // Kategori
+    await db.insert('kategori', {'nama_kategori': 'Makanan'});
+    await db.insert('kategori', {'nama_kategori': 'Minuman'});
+
+    // Harga
+    // ID 1: Eceran, ID 2: Grosir
+    await db.insert('harga_product', {
+      'harga_jual': 3000.0,
+      'harga_beli': 2500.0,
+      'satuan': 'Pcs',
+    });
+    await db.insert('harga_product', {
+      'harga_jual': 33000.0,
+      'harga_beli': 30000.0,
+      'satuan': 'Dus',
+    });
+
+    // Indomie Eceran (id_product: 101)
+    await db.insert('product', {
+      'id_product': 101,
+      'nama_product': 'Indomie Goreng (Ecer)',
+      'jmlh_stok': 100,
+      'is_grosir': 0,
+      'is_active': 1,
+      'id_kategori': 1,
+      'id_harga': 1,
+      'stok_warning': 10,
+    });
+
+    // Indomie Grosir (id_product: 102)
+    await db.insert('product', {
+      'id_product': 102,
+      'nama_product': 'Indomie Goreng (Dus)',
+      'jmlh_stok': 50,
+      'is_grosir': 1,
+      'is_active': 1,
+      'id_kategori': 1,
+      'id_harga': 2,
+      'stok_warning': 5,
+    });
+
+    // Coca Cola Eceran (id_product: 201)
+    await db.insert('product', {
+      'id_product': 201,
+      'nama_product': 'Coca Cola (Ecer)',
+      'jmlh_stok': 50,
+      'is_grosir': 0,
+      'is_active': 1,
+      'id_kategori': 2,
+      'id_harga': 1,
+      'stok_warning': 5,
+    });
 
     // Future close() async {
     //   final db = await instance.database;
