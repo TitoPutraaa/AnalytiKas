@@ -27,6 +27,7 @@ class StokHomeProvider with ChangeNotifier {
     notifyListeners();
     try {
       _allProduct = await getAllProduct.call();
+      _filteredProduct = _allProduct;
       status = Status.success;
       notifyListeners();
     } catch (e) {

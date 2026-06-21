@@ -77,7 +77,7 @@ class Homestok extends StatelessWidget {
                 return Center(child: CircularProgressIndicator());
               }
 
-              if (stok.allCategory.isEmpty) {
+              if (stok.allProducts.isEmpty) {
                 return Center(
                   child: Text(
                     "Produk anda masih kosong, silakan menambahakan produk baru",
@@ -87,7 +87,7 @@ class Homestok extends StatelessWidget {
 
               return Expanded(
                 child: ListView.builder(
-                  itemCount: 5 + 1,
+                  itemCount: stok.allProducts.length + 1,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) {
                       return TextField(
@@ -116,7 +116,7 @@ class Homestok extends StatelessWidget {
                         },
                       );
                     }
-                    return ProductStockCard(product: stok.allProducts[index]);
+                    return ProductStockCard(product: stok.allProducts[index - 1]);
                   },
                 ),
               );

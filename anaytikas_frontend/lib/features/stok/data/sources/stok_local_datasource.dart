@@ -85,11 +85,15 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
     product.id_product,
     product.nama_product,
     product.jmlh_stok,
-    product.warning_stok,
+    product.warning_stok AS stok_warning,
+    product.is_active,
+    product.is_grosir,
     kategori.id_kategori,
     kategori.nama_kategori,
     harga_product.id_harga,
-    harga_product.harga_jual
+    harga_product.harga_jual,
+    harga_product.harga_beli,
+    harga_product.satuan
   FROM product
   LEFT JOIN kategori      ON product.id_kategori = kategori.id_kategori
   LEFT JOIN harga_product ON product.id_harga    = harga_product.id_harga

@@ -64,7 +64,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Rp ${product.harga.hargaJual}",
+                        "Rp ${product.harga.hargaJual.toInt()}",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

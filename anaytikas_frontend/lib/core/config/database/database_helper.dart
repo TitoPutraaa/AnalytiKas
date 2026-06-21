@@ -66,7 +66,7 @@ class DatabaseHelper {
     // 4. Tabel harga product
     await db.execute('''
       CREATE TABLE harga_product (
-        id_harga $textType,
+        id_harga $idTypeInc,
         harga_jual $doubleType,
         harga_beli $doubleType,
         satuan $textType,
@@ -86,8 +86,9 @@ class DatabaseHelper {
         id_harga $intType,
         warning_stok $intType,
         PRIMARY KEY (id_product, id_harga),
-        FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategory) ON DELETE RESTRICT,
+        FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategori) ON DELETE RESTRICT,
         FOREIGN KEY (id_harga) REFERENCES harga_product (id_harga) ON DELETE RESTRICT
+      )
     ''');
 
     // 6. Tabel penjualan
@@ -97,7 +98,7 @@ class DatabaseHelper {
         tanggal $textType,
         waktu $textType,
         total_item $intType,
-        total_harga $doubleType,
+        total_harga $doubleType
       )
     ''');
     // 7. Tabel pembelian
@@ -115,10 +116,10 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE product_per_penjualan (
         id_penjualan $intType,
-        id_product $intType,
+        id_product $textType,
         jumlah $intType,
-        PRIMARY KEY (id_penjualan, id_product)
-        FOREIGN KEY (id_penjualan) REFERENCES pembelian (id_penjualan) ON DELETE CASCADE,
+        PRIMARY KEY (id_penjualan, id_product),
+        FOREIGN KEY (id_penjualan) REFERENCES penjualan (id_penjualan) ON DELETE CASCADE,
         FOREIGN KEY (id_product) REFERENCES product (id_product) ON DELETE RESTRICT
       )
     ''');
@@ -126,9 +127,9 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE product_per_pembelian (
         id_pembelian $intType,
-        id_product $intType,
+        id_product $textType,
         jumlah $intType,
-        PRIMARY KEY (id_pembelian, id_product)
+        PRIMARY KEY (id_pembelian, id_product),
         FOREIGN KEY (id_pembelian) REFERENCES pembelian (id_pembelian) ON DELETE CASCADE,
         FOREIGN KEY (id_product) REFERENCES product (id_product) ON DELETE RESTRICT
       )
@@ -162,11 +163,13 @@ class DatabaseHelper {
       'harga_jual': 3000.0,
       'harga_beli': 2500.0,
       'satuan': 'Pcs',
+      'jmlh_satuan': 1,
     });
     await db.insert('harga_product', {
       'harga_jual': 33000.0,
       'harga_beli': 30000.0,
       'satuan': 'Dus',
+      'jmlh_satuan': 12,
     });
 
     // Indomie Eceran (id_product: 101)
@@ -178,7 +181,7 @@ class DatabaseHelper {
       'is_active': 1,
       'id_kategori': 1,
       'id_harga': 1,
-      'stok_warning': 10,
+      'warning_stok': 10,
     });
 
     // Indomie Grosir (id_product: 102)
@@ -190,7 +193,7 @@ class DatabaseHelper {
       'is_active': 1,
       'id_kategori': 1,
       'id_harga': 2,
-      'stok_warning': 5,
+      'warning_stok': 5,
     });
 
     // Coca Cola Eceran (id_product: 201)
@@ -202,7 +205,7 @@ class DatabaseHelper {
       'is_active': 1,
       'id_kategori': 2,
       'id_harga': 1,
-      'stok_warning': 5,
+      'warning_stok': 5,
     });
 
     // Future close() async {

@@ -35,7 +35,7 @@ class _EditProdukState extends State<EditProduk> {
       text: widget.product.stokWarning.toString(),
     );
     hargaJualController = TextEditingController(
-      text: widget.product.harga.toString(),
+      text: widget.product.harga.hargaJual.toInt().toString(),
     );
     super.initState();
   }
@@ -126,7 +126,7 @@ class _EditProdukState extends State<EditProduk> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  "Rp ${widget.product.harga.hargaJual}",
+                                  "Rp. ${widget.product.harga.hargaJual.toInt()}",
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -296,7 +296,7 @@ class _EditProdukState extends State<EditProduk> {
                 OutlinedField(
                   controller: hargaJualController,
                   keyboardType: TextInputType.number,
-                  preFixText: "Rp.",
+                  preFixText: "Rp. ",
                 ),
               ],
             ),
