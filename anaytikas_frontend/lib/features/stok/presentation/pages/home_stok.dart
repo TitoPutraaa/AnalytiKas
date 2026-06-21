@@ -24,12 +24,15 @@ class Homestok extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
+                  onPressed: () async {
+                    final result = await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const BarangBaru(),
                       ),
                     );
+                    if (result == true && context.mounted) {
+                      context.read<StokHomeProvider>().getAllProducts();
+                    }
                   },
                   icon: const Icon(Icons.add),
                   label: const Text(

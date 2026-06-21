@@ -32,11 +32,27 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<void> addBarangBaruData(ProductModel addBarang) async {
     final db = await dbHelper.database;
-    await db.insert(
-      "product",
-      addBarang.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.fail,
-    );
+    await db.transaction((txn) async {
+      final idHarga = await txn.insert(
+        "harga_product",
+        {
+          "harga_jual": addBarang.harga.hargaJual,
+          "harga_beli": addBarang.harga.hargaBeli,
+          "satuan": addBarang.harga.satuan,
+          "jmlh_satuan": 1,
+        },
+        conflictAlgorithm: ConflictAlgorithm.fail,
+      );
+
+      final productMap = addBarang.toMap();
+      productMap["id_harga"] = idHarga;
+
+      await txn.insert(
+        "product",
+        productMap,
+        conflictAlgorithm: ConflictAlgorithm.fail,
+      );
+    });
   }
 
   @override

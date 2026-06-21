@@ -50,9 +50,9 @@ class ProductModel extends ProductEntity {
       "id_harga": harga.idHarga,
       "nama_product": namaProduct,
       "jmlh_stok": jmlhStok,
-      "stok_warning": stokWarning,
-      "is_active": isActivate,
-      "is_grosir": isGrosir,
+      "warning_stok": stokWarning,
+      "is_active": isActivate ? 1 : 0,
+      "is_grosir": isGrosir ? 1 : 0,
     };
   }
 }

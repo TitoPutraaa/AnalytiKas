@@ -10,22 +10,28 @@ class BarangBaruProvider with ChangeNotifier {
 
   BarangBaruProvider({required this.addBarangBaru});
 
-  String message = "";
-  Status status = Status.initial;
+  String _message = "";
+  Status _status = Status.initial;
+  bool _isLoading = true;
 
-  Future<void> barangBaru(
-    String idProduct,
-    Kategori kategori,
-    HargaProduct harga,
-    String namaProduct,
-    int jmlhStok,
-    int stokWarning,
-    bool isGrosir,
-    bool isActivate,
-  ) async {
-    status = Status.loading;
+  String get message => _message;
+  Status get status => _status;
+  bool get isLoading => _isLoading;
+
+  Future<void> barangBaru({
+    required String idProduct,
+    required Kategori kategori,
+    required HargaProduct harga,
+    required String namaProduct,
+    required int jmlhStok,
+    required int stokWarning,
+    required bool isGrosir,
+    required bool isActivate,
+  }) async {
+    _status = Status.loading;
     notifyListeners();
     try {
+      _isLoading = false;
       await addBarangBaru.call(
         idProduct,
         kategori,
@@ -36,8 +42,10 @@ class BarangBaruProvider with ChangeNotifier {
         isGrosir,
         isActivate,
       );
+      _status = Status.success;
     } catch (e) {
-      message = "gagal menambahkan barang baru provider. err${e.toString()}";
+      _message = "gagal menambahkan barang baru provider. err${e.toString()}";
+      _status = Status.error;
       notifyListeners();
     }
   }

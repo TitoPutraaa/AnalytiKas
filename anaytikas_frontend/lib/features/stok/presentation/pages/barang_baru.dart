@@ -1,8 +1,13 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class BarangBaru extends StatefulWidget {
   const BarangBaru({super.key});
@@ -18,12 +23,22 @@ class _BarangBaruState extends State<BarangBaru> {
   final _hargaJualController = TextEditingController();
   final _hargaBeliController = TextEditingController();
   final _kodeBarangController = TextEditingController();
+  GetKategoriProvider get provider => context.read<GetKategoriProvider>();
 
-  final List<String> _categories = ['Makanan', 'Minuman', 'Rokok Lur'];
+  List<String> get _categories =>
+      provider.allCategory.map((kategori) => kategori.namaKategori).toList();
+  Kategori? _selectedCategory;
   final List<String> _satuan = ['Gram', 'Krat', 'Dus', "Pcs"];
-  String? _selectedCategory;
   String? _selectedSatuan;
   bool _isGrosir = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<GetKategoriProvider>().loadCategory();
+    });
+  }
 
   @override
   void dispose() {
@@ -34,6 +49,101 @@ class _BarangBaruState extends State<BarangBaru> {
     _hargaBeliController.dispose();
     _kodeBarangController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final name = _namaBarangController.text.trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nama Barang tidak boleh kosong')),
+      );
+      return;
+    }
+    if (_selectedCategory == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Silakan pilih Kategori')));
+      return;
+    }
+    if (_selectedSatuan == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Silakan pilih Satuan')));
+      return;
+    }
+    final hargaBeliText = _hargaBeliController.text.trim();
+    if (hargaBeliText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Harga Beli tidak boleh kosong')),
+      );
+      return;
+    }
+    final hargaJualText = _hargaJualController.text.trim();
+    if (hargaJualText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Harga Jual tidak boleh kosong')),
+      );
+      return;
+    }
+    final jumlahStokText = _jumlahStok.text.trim();
+    if (jumlahStokText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Jumlah Stok tidak boleh kosong')),
+      );
+      return;
+    }
+    final warningStokText = _warningStok.text.trim();
+    if (warningStokText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Warning Stok tidak boleh kosong')),
+      );
+      return;
+    }
+    final kodeBarang = _kodeBarangController.text.trim();
+    if (kodeBarang.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kode Barang tidak boleh kosong')),
+      );
+      return;
+    }
+
+    final provider = context.read<BarangBaruProvider>();
+
+    final hargaBeli = double.tryParse(hargaBeliText) ?? 0.0;
+    final hargaJual = double.tryParse(hargaJualText) ?? 0.0;
+    final jmlhStok = int.tryParse(jumlahStokText) ?? 0;
+    final stokWarning = int.tryParse(warningStokText) ?? 0;
+
+    final harga = HargaProduct(
+      idHarga: 0,
+      hargaJual: hargaJual,
+      hargaBeli: hargaBeli,
+      satuan: _selectedSatuan!,
+    );
+
+    await provider.barangBaru(
+      idProduct: kodeBarang,
+      kategori: _selectedCategory!,
+      harga: harga,
+      namaProduct: name,
+      jmlhStok: jmlhStok,
+      stokWarning: stokWarning,
+      isGrosir: _isGrosir,
+      isActivate: true,
+    );
+
+    if (mounted) {
+      if (provider.status == Status.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Barang baru berhasil ditambahkan')),
+        );
+        Navigator.of(context).pop(true);
+      } else if (provider.status == Status.error) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(provider.message)));
+      }
+    }
   }
 
   @override
@@ -85,7 +195,7 @@ class _BarangBaruState extends State<BarangBaru> {
               ),
               const SizedBox(height: 16),
 
-              //  Kategori + Grosir toggle (belom logic togle cuyy)
+              //  Kategori
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -99,10 +209,14 @@ class _BarangBaruState extends State<BarangBaru> {
                         CategoriDropdown(
                           icon: Icons.category_outlined,
                           hintTxt: "Pilih Kategori...",
-                          selectedItem: _selectedCategory,
+                          selectedItem: _selectedCategory?.namaKategori,
                           categories: _categories,
                           onChanged: (v) {
-                            setState(() => _selectedCategory = v);
+                            setState(() {
+                              _selectedCategory = provider.allCategory
+                                  .firstWhere((k) => k.namaKategori == v);
+                              // print(_selectedCategory.namaKategori);
+                            });
                           },
                         ),
                       ],
@@ -352,7 +466,7 @@ class _BarangBaruState extends State<BarangBaru> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: Navigator.of(context).pop,
+                  onPressed: _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColor.primary,
                     foregroundColor: AppColor.white,

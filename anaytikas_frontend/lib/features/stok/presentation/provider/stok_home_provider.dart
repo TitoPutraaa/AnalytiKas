@@ -13,7 +13,7 @@ class StokHomeProvider with ChangeNotifier {
   List<ProductEntity> _allProduct = [];
   List<ProductEntity> _filteredProduct = [];
   List<Kategori> _allCategory = [];
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isSearching = false;
   String message = "";
 
@@ -26,6 +26,7 @@ class StokHomeProvider with ChangeNotifier {
     status = Status.loading;
     notifyListeners();
     try {
+      _isLoading = false;
       _allProduct = await getAllProduct.call();
       _filteredProduct = _allProduct;
       status = Status.success;

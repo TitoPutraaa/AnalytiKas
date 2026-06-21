@@ -7,7 +7,11 @@ import 'package:anaytikas_frontend/features/kasir/domain/usecases/save_transacti
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/stok/data/repository/stok_repository_impl.dart';
 import 'package:anaytikas_frontend/features/stok/data/sources/stok_local_datasource.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/add_barang_baru.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_category.dart';
 import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_products.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +40,16 @@ void main() {
           create: (_) => StokHomeProvider(
             getAllProduct: GetAllProducts(stokRepository: stokRepo),
           )..getAllProducts(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => BarangBaruProvider(
+            addBarangBaru: AddBarangBaru(stokRepository: stokRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GetKategoriProvider(
+            getAllCategory: GetAllCategory(stokRepository: stokRepo),
+          ),
         ),
       ],
       child: MyApp(),
