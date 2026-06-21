@@ -1,8 +1,13 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/add_biaya_operasional.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart'
+    hide Status;
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class OpsStok extends StatefulWidget {
   const OpsStok({super.key});
@@ -12,11 +17,53 @@ class OpsStok extends StatefulWidget {
 }
 
 class _OpsStokState extends State<OpsStok> {
-  final _namaBiayaController = TextEditingController();
   final _nominalController = TextEditingController();
   final _tanggalController = TextEditingController();
-  final List<String> categories = ['Makanan', 'Minuman', 'Rokok Lur'];
-  String? selectedCategory;
+  final List<String> namaBiaya = [
+    'Gaji Karyawan',
+    'Sewa Tempat',
+    'Listrik',
+    "Air",
+  ];
+  String? selectedBiaya;
+
+  @override
+  void dispose() {
+    _nominalController.dispose();
+    _tanggalController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onSubmit() async {
+    final nominal = _nominalController.text.trim();
+    final tanggal = _tanggalController.text.trim();
+
+    final provider = context.read<BiayaOperasionalProvider>();
+
+    final nominalParse = double.tryParse(nominal);
+    final tanggalParse = DateTime.tryParse(tanggal);
+
+    await provider.addBiayaOps(
+      idBiaya: 0,
+      nama: selectedBiaya!,
+      tanggal: tanggalParse!,
+      totalBiaya: nominalParse!,
+    );
+
+    if (mounted) {
+      if (provider.succes) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Barang baru berhasil ditambahkan')),
+        );
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(provider.message)));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,10 +101,10 @@ class _OpsStokState extends State<OpsStok> {
                   CategoriDropdown(
                     icon: Icons.list_outlined,
                     hintTxt: "Pilih Biaya...",
-                    selectedItem: selectedCategory,
-                    categories: categories,
+                    selectedItem: selectedBiaya,
+                    categories: namaBiaya,
                     onChanged: (v) {
-                      setState(() => selectedCategory = v);
+                      setState(() => selectedBiaya = v);
                     },
                   ),
                 ],
@@ -134,7 +181,7 @@ class _OpsStokState extends State<OpsStok> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: Navigator.of(context).pop,
+                  onPressed: _onSubmit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColor.primary,
                     foregroundColor: AppColor.white,

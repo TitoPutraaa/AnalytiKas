@@ -153,6 +153,7 @@ class DatabaseHelper {
       'password': 'password123',
       'alamat': 'Jl. Contoh Alamat No. 123, Denpasar, Bali',
     });
+
     // Kategori
     await db.insert('kategori', {'nama_kategori': 'Makanan'});
     await db.insert('kategori', {'nama_kategori': 'Minuman'});

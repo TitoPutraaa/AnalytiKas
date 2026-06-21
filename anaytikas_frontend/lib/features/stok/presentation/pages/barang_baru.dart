@@ -53,6 +53,12 @@ class _BarangBaruState extends State<BarangBaru> {
 
   Future<void> _submit() async {
     final name = _namaBarangController.text.trim();
+    final hargaBeliText = _hargaBeliController.text.trim();
+    final hargaJualText = _hargaJualController.text.trim();
+    final jumlahStokText = _jumlahStok.text.trim();
+    final warningStokText = _warningStok.text.trim();
+    final kodeBarang = _kodeBarangController.text.trim();
+
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Nama Barang tidak boleh kosong')),
@@ -71,35 +77,35 @@ class _BarangBaruState extends State<BarangBaru> {
       ).showSnackBar(const SnackBar(content: Text('Silakan pilih Satuan')));
       return;
     }
-    final hargaBeliText = _hargaBeliController.text.trim();
+
     if (hargaBeliText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Harga Beli tidak boleh kosong')),
       );
       return;
     }
-    final hargaJualText = _hargaJualController.text.trim();
+
     if (hargaJualText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Harga Jual tidak boleh kosong')),
       );
       return;
     }
-    final jumlahStokText = _jumlahStok.text.trim();
+
     if (jumlahStokText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Jumlah Stok tidak boleh kosong')),
       );
       return;
     }
-    final warningStokText = _warningStok.text.trim();
+
     if (warningStokText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Warning Stok tidak boleh kosong')),
       );
       return;
     }
-    final kodeBarang = _kodeBarangController.text.trim();
+
     if (kodeBarang.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Kode Barang tidak boleh kosong')),

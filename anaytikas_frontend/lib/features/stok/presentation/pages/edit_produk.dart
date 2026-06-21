@@ -118,7 +118,7 @@ class _EditProdukState extends State<EditProduk> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  "Kategori: ${widget.product.namaProduct}",
+                                  "Kategori: ${widget.product.kategori.namaKategori}",
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: Colors.grey.shade600,

@@ -9,7 +9,9 @@ class BiayaOperasionalProvider with ChangeNotifier {
 
   List<String> namaBiaya = ["Listrik", "Air", "Sewa", "Karyawan"];
   String message = "";
-  Status status = Status.initial;
+  Status _status = Status.initial;
+  bool succes = false;
+  Status get status => _status;
 
   Future<void> addBiayaOps({
     required int idBiaya,
@@ -17,14 +19,17 @@ class BiayaOperasionalProvider with ChangeNotifier {
     required DateTime tanggal,
     required double totalBiaya,
   }) async {
-    status = Status.loading;
+    _status = Status.loading;
     notifyListeners();
     try {
       await addBiayaOperasional.call(idBiaya, nama, tanggal, totalBiaya);
-      status = Status.success;
+      _status = Status.success;
+      succes = true;
       notifyListeners();
     } catch (e) {
       message = "gagal menyimpan biaya operasional. err:${e.toString()}";
+      _status = Status.error;
+      succes = false;
       notifyListeners();
     }
   }
