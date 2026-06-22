@@ -2,12 +2,13 @@ import 'dart:ui';
 
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart' hide Size;
 import 'package:flutter/services.dart' hide Size;
 
 class Tambahstok extends StatefulWidget {
-  final Product product;
+  final ProductEntity product;
 
   const Tambahstok({super.key, required this.product});
 
@@ -36,7 +37,7 @@ class _TambahstokState extends State<Tambahstok> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
+    bool isLowStok = widget.product.jmlhStok <= widget.product.stokWarning;
     return Scaffold(
       appBar: AppBar(
         title: Text("Tambah Stok"),
@@ -101,7 +102,7 @@ class _TambahstokState extends State<Tambahstok> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "Kategori: ${widget.product.idKategori}",
+                                "Kategori: ${widget.product.kategori.namaKategori}",
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.grey.shade600,
@@ -109,7 +110,7 @@ class _TambahstokState extends State<Tambahstok> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "Rp ${widget.product.harga.toStringAsFixed(0)}",
+                                "Rp ${widget.product.harga.hargaJual}",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,

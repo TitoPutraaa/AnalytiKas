@@ -1,12 +1,13 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EditProduk extends StatefulWidget {
-  final Product product;
+  final ProductEntity product;
   const EditProduk({super.key, required this.product});
 
   @override
@@ -31,7 +32,7 @@ class _EditProdukState extends State<EditProduk> {
       text: widget.product.jmlhStok.toString(),
     );
     editWarningStok = TextEditingController(
-      text: widget.product.minStok.toString(),
+      text: widget.product.stokWarning.toString(),
     );
     hargaJualController = TextEditingController(
       text: widget.product.harga.toString(),
@@ -50,7 +51,7 @@ class _EditProdukState extends State<EditProduk> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStok = widget.product.jmlhStok <= widget.product.minStok;
+    bool isLowStok = widget.product.jmlhStok <= widget.product.stokWarning;
 
     return Scaffold(
       appBar: AppBar(
@@ -117,7 +118,7 @@ class _EditProdukState extends State<EditProduk> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  "Kategori: ${widget.product.idKategori}",
+                                  "Kategori: ${widget.product.namaProduct}",
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: Colors.grey.shade600,
@@ -125,7 +126,7 @@ class _EditProdukState extends State<EditProduk> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  "Rp ${widget.product.harga.toStringAsFixed(0)}",
+                                  "Rp ${widget.product.harga.hargaJual}",
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,

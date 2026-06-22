@@ -171,7 +171,7 @@ class DatabaseHelper {
 
     // Indomie Eceran (id_product: 101)
     await db.insert('product', {
-      'id_product': 101,
+      'id_product': "IDN325MI",
       'nama_product': 'Indomie Goreng (Ecer)',
       'jmlh_stok': 100,
       'is_grosir': 0,
@@ -183,7 +183,7 @@ class DatabaseHelper {
 
     // Indomie Grosir (id_product: 102)
     await db.insert('product', {
-      'id_product': 102,
+      'id_product': "LOT31MI",
       'nama_product': 'Indomie Goreng (Dus)',
       'jmlh_stok': 50,
       'is_grosir': 1,
@@ -195,7 +195,7 @@ class DatabaseHelper {
 
     // Coca Cola Eceran (id_product: 201)
     await db.insert('product', {
-      'id_product': 201,
+      'id_product': "CO5234Co",
       'nama_product': 'Coca Cola (Ecer)',
       'jmlh_stok': 50,
       'is_grosir': 0,
