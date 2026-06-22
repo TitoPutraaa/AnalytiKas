@@ -5,7 +5,7 @@ import '../../domain/entities/cart_item_entity.dart';
 
 class CartProvider extends ChangeNotifier {
   final Map<int, CartItemEntity> _items = {};
-  Map<int, CartItemEntity> get items => {..._items};
+  Map<int, CartItemEntity> get items => Map.unmodifiable(_items);
 
   bool isProductInCart(int idProduct) {
     return _items.containsKey(idProduct);
@@ -44,7 +44,7 @@ class CartProvider extends ChangeNotifier {
 
   void reduceItem(int idProduct) {
     if (_items.containsKey(idProduct)) {
-      items[idProduct]!.reduce();
+      _items[idProduct]!.reduce();
       if (_items[idProduct]!.quantity == 0) {
         _items.remove(idProduct);
       }

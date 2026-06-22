@@ -25,6 +25,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
   @override
   void dispose() {
     _uangPembeliC.dispose();
+
     super.dispose();
   }
 
@@ -86,6 +87,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: products.length,
+                    addRepaintBoundaries: true,
                     separatorBuilder: (context, index) =>
                         const SizedBox(height: 12),
                     itemBuilder: (context, index) {
@@ -174,7 +176,6 @@ class _PembayaranPageState extends State<PembayaranPage> {
                 },
 
                 keyboardType: TextInputType.number,
-                autofocus: true,
                 inputFormatters: [CurrencyInputFormatter()],
                 decoration: InputDecoration(
                   labelText: 'Uang Pembeli',
@@ -183,7 +184,9 @@ class _PembayaranPageState extends State<PembayaranPage> {
                   prefixStyle: TextStyle(),
                   hintText: '0',
                   hintStyle: TextStyle(fontSize: 14, color: AppColor.lowGray),
-                  errorText: context.watch<KasirProvider>().errorUangPembeli,
+                  errorText: context.select<KasirProvider, String?>(
+                    (p) => p.errorUangPembeli,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: AppColor.lowGray),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -217,6 +220,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
                 ],
               ),
               SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: kasirProvider.isLoading
                     ? null
@@ -246,7 +250,6 @@ class _PembayaranPageState extends State<PembayaranPage> {
                           final idPenjualan = kasirProvider.idPenjualan;
                           if (!context.mounted) return;
                           if (idPenjualan != null) {
-                            print(idPenjualan);
                             context.read<CartProvider>().clearCart();
                             Navigator.push(
                               context,

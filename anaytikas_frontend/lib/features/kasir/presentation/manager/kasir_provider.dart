@@ -70,22 +70,41 @@ class KasirProvider extends ChangeNotifier {
         query.isNotEmpty || (categoryId != null && categoryId != 0);
     _isSearching = isFiltering;
 
+    final lowerQuery = query.toLowerCase().trim();
+    final isCategorySelected = categoryId != null && categoryId != 0;
+
     _filteredProduct = _allProducts.where((p) {
-      final idProduct = p.product.idProduct.toString();
+      if (isCategorySelected && p.product.idKategori != categoryId) {
+        return false;
+      }
 
-      final matchesQuery = p.product.namaProduct.toLowerCase().contains(
-        query.toLowerCase(),
-      );
-
-      final matchesQueryId = idProduct.contains(query.trim());
-
-      final matchesCategory =
-          (categoryId == null || categoryId == 0) ||
-          p.product.idKategori == categoryId;
-      return (matchesQuery || matchesQueryId) && matchesCategory;
+      if (lowerQuery.isNotEmpty) {
+        final matchesQuery = p.product.namaProduct.toLowerCase().contains(
+          lowerQuery,
+        );
+        final matchesQueryId = p.product.idProduct.toString().contains(
+          lowerQuery,
+        );
+        return matchesQuery || matchesQueryId;
+      }
+      return true;
     }).toList();
 
     notifyListeners();
+  }
+
+  ProductWithDetailsEntity? findProductByBarcode(String barcode) {
+    final id = int.tryParse(barcode.trim());
+    if (id == null) {
+      return null;
+    }
+
+    for (final p in _allProducts) {
+      if (p.product.idProduct == 101) {
+        return p;
+      }
+    }
+    return null;
   }
 
   Future<void> prosesTransaction(

@@ -40,14 +40,19 @@ class KeranjangPage extends StatelessWidget {
                     color: AppColor.lowGray.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Consumer<CartProvider>(
-                    builder: (context, cart, child) =>
-                        Text('${cart.items.length} unit'),
+                  child: Builder(
+                    builder: (context) {
+                      final length = context.select<CartProvider, int>(
+                        (c) => c.items.length,
+                      );
+                      return Text('$length unit');
+                    },
                   ),
                 ),
               ],
             ),
             SizedBox(height: 20),
+
             Consumer<CartProvider>(
               builder: (context, cart, child) {
                 final listProduct = cart.items.values.toList();
@@ -111,15 +116,21 @@ class KeranjangPage extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Consumer<CartProvider>(
-                    builder: (context, cart, child) => Text(
-                      cart.totalSeluruhHarga.toRupiah(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final totalSeluruhHarga = context
+                          .select<CartProvider, double>(
+                            (c) => c.totalSeluruhHarga,
+                          );
+                      return Text(
+                        totalSeluruhHarga.toRupiah(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColor.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
