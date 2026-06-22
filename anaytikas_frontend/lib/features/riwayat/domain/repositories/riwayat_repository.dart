@@ -1,7 +1,5 @@
-﻿abstract class RiwayatRepository {
-  Future<List<Map<String, dynamic>>> getRiwayatGabunganByTanggal(
-    String tanggal,
-  );
-  Future<Map<String, dynamic>?> getDetailPenjualan(int idPenjualan);
-  Future<Map<String, dynamic>?> getDetailPembelian(int idPembelian);
+﻿import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_transaksi_entity.dart';
+
+abstract class RiwayatRepository {
+  Future<RiwayatTransaksiEntity> getAllRiwayat(String tanggal);
 }

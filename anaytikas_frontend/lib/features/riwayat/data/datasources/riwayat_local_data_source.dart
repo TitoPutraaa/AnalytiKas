@@ -1,9 +1,13 @@
-﻿import '../../../../core/config/database/database_helper.dart';
+﻿import 'package:anaytikas_frontend/features/riwayat/data/models/riwayat_biaya_operasi_model.dart';
+import 'package:anaytikas_frontend/features/riwayat/data/models/riwayat_pembelian_model.dart';
+import 'package:anaytikas_frontend/features/riwayat/data/models/riwayat_penjualan_model.dart';
+
+import '../../../../core/config/database/database_helper.dart';
 
 abstract class RiwayatLocalDataSource {
-  Future<List<Map<String, dynamic>>> getRiwayatGabunganByTanggal(String tanggal);
-  Future<Map<String, dynamic>?> getDetailPenjualan(int idPenjualan);
-  Future<Map<String, dynamic>?> getDetailPembelian(int idPembelian);
+  Future<List<Map<String, dynamic>>> getRiwayatBiayaOperasi();
+  Future<List<Map<String, dynamic>>> getRiwayatPembelian();
+  Future<List<Map<String, dynamic>>> getRiwayatPenjualan();
 }
 
 class RiwayatLocalDataSourceImpl implements RiwayatLocalDataSource {
@@ -12,103 +16,81 @@ class RiwayatLocalDataSourceImpl implements RiwayatLocalDataSource {
   RiwayatLocalDataSourceImpl({required this.dbHelper});
 
   @override
-  Future<List<Map<String, dynamic>>> getRiwayatGabunganByTanggal(String tanggal) async {
+  Future<List<Map<String, dynamic>>> getRiwayatBiayaOperasi() async {
+    final db = await dbHelper.database;
+    return await db.query('biaya_operasi');
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getRiwayatPembelian() async {
     final db = await dbHelper.database;
     return await db.rawQuery('''
-      SELECT
-        id_penjualan AS id_transaksi,
-        tanggal,
-        waktu,
-        total_item,
-        total_harga,
-        uang_masuk,
-        'penjualan' AS jenis
-      FROM penjualan
-      WHERE tanggal = ?
-      UNION ALL
-      SELECT
-        id_pembelian AS id_transaksi,
-        tanggal,
-        waktu,
-        total_item,
-        total_harga,
-        NULL AS uang_masuk,
-        'pembelian' AS jenis
-      FROM pembelian
-      WHERE tanggal = ?
-      ORDER BY waktu ASC
-    ''', [tanggal, tanggal]);
+      SELECT 
+        p.id_pembelian, 
+        p.tanggal, 
+        p.waktu, 
+        p.total_item, 
+        p.total_harga,
+        ppb.jumlah,
+        pr.nama_product,
+        hp.satuan,
+        hp.harga_beli
+      FROM Pembelian p
+      LEFT JOIN [Product-per-Pembelian] ppb ON p.id_pembelian = ppb.id_pembelian
+      LEFT JOIN Product pr ON ppb.id_product = pr.id_product
+      LEFT JOIN [Harga-product] hp ON pr.id_harga = hp.id_harga
+    ''');
   }
 
   @override
-  Future<Map<String, dynamic>?> getDetailPenjualan(int idPenjualan) async {
+  Future<List<Map<String, dynamic>>> getRiwayatPenjualan() async {
     final db = await dbHelper.database;
-    final headerResult = await db.query(
-      'penjualan',
-      where: 'id_penjualan = ?',
-      whereArgs: [idPenjualan],
-    );
-
-    if (headerResult.isEmpty) return null;
-    final items = await db.rawQuery('''
-      SELECT
-        ppp.id_penjualan,
-        ppp.id_product,
+    final List<Map<String, dynamic>> rawData = await db.rawQuery('''
+      SELECT 
+        p.id_penjualan, 
+        p.tanggal, 
+        p.waktu, 
+        p.total_item, 
+        p.total_harga, 
+        p.uang_masuk,
+        (p.uang_masuk - p.total_harga) AS uang_kembali, 
+        (ppp.jumlah * hp.harga_jual) AS total_harga_product,   
+        (SELECT nama_toko FROM Toko LIMIT 1) AS nama_toko,
+        (SELECT alamat FROM Toko LIMIT 1) AS alamat,
         ppp.jumlah,
         pr.nama_product,
-        pr.jmlh_stok,
-        pr.is_grosir,
-        k.nama_kategori,
-        h.harga_jual,
-        h.harga_beli,
-        h.satuan,
-        h.jmlh_satuan
-      FROM product_per_penjualan ppp
-      INNER JOIN product pr ON ppp.id_product = pr.id_product
-      INNER JOIN kategori k ON pr.id_kategori = k.id_kategori
-      INNER JOIN harga_product h ON pr.id_harga = h.id_harga
-      WHERE ppp.id_penjualan = ?
-    ''', [idPenjualan]);
+        hp.satuan,
+        hp.harga_jual
+      FROM penjualan p
+      JOIN product_per_penjualan ppp ON ppp.id_penjualan = p.id_penjualan
+      JOIN product pr ON pr.id_product = ppp.id_product
+      JOIN harga_product hp ON hp.id_harga = pr.id_harga
+     ''');
 
-    return {
-      'header': headerResult.first,
-      'items': items,
-    };
-  }
+    final Map<int, List<Map<String, dynamic>>> groupedMap = {};
+    for (final row in rawData) {
+      final id = row['id_penjualan'] as int;
+      groupedMap.putIfAbsent(id, () => []).add(row);
+    }
 
-  @override
-  Future<Map<String, dynamic>?> getDetailPembelian(int idPembelian) async {
-    final db = await dbHelper.database;
-    final headerResult = await db.query(
-      'pembelian',
-      where: 'id_pembelian = ?',
-      whereArgs: [idPembelian],
-    );
+    // 2. Rekonstruksi struktur Map agar satu ID memiliki satu List internal
+    final List<Map<String, dynamic>> hasilAkhir = [];
 
-    if (headerResult.isEmpty) return null;
-    final items = await db.rawQuery('''
-      SELECT
-        ppp.id_pembelian,
-        ppp.id_product,
-        ppp.jumlah,
-        pr.nama_product,
-        pr.jmlh_stok,
-        pr.is_grosir,
-        k.nama_kategori,
-        h.harga_jual,
-        h.harga_beli,
-        h.satuan,
-        h.jmlh_satuan
-      FROM product_per_pembelian ppp
-      INNER JOIN product pr ON ppp.id_product = pr.id_product
-      INNER JOIN kategori k ON pr.id_kategori = k.id_kategori
-      INNER JOIN harga_product h ON pr.id_harga = h.id_harga
-      WHERE ppp.id_pembelian = ?
-    ''', [idPembelian]);
+    for (final entry in groupedMap.entries) {
+      final listProdukPerId = entry.value;
 
-    return {
-      'header': headerResult.first,
-      'items': items,
-    };
+      // Ambil data nota dari baris pertama (karena data penjualan p pasti sama)
+      final Map<String, dynamic> notaData = Map<String, dynamic>.from(
+        listProdukPerId.first,
+      );
+
+      // Format ulang: Simpan semua baris produk ke dalam key tersendiri
+      // Catatan: Jika menggunakan cara ini, pastikan factory `fromMap` Anda disesuaikan lagi.
+      notaData['products_terjual'] = listProdukPerId;
+
+      hasilAkhir.add(notaData);
+    }
+
+    return hasilAkhir;
   }
 }

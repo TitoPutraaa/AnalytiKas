@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/transaction_card.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/date_filter_dialog.dart';
 
 class Homeriwayat extends StatefulWidget {
@@ -11,252 +10,218 @@ class Homeriwayat extends StatefulWidget {
 }
 
 class _HomeriwayatState extends State<Homeriwayat> {
-  // Data transaksi sample - sesuaikan dengan data dari API/Database
-  final List<Map<String, dynamic>> transactions = [
+  bool isFiltered = false;
+
+  // Data static langsung di UI
+  final List<Map<String, dynamic>> _transactions = [
     {
-      'tanggal': 'Sabtu, 02 Mei 2024',
-      'waktu': '10:30',
-      'total': 231000.0,
-      'items': [
-        TransactionItem(
-          namaProduct: 'Kopi Arabica 250g',
-          jumlah: 1,
-          harga: 10000.0,
-        ),
-        TransactionItem(
-          namaProduct: 'Beras Putri 12kg',
-          jumlah: 1,
-          harga: 210000.0,
-        ),
-      ],
+      'tanggal': 'Sabtu, 02 Mei 2024, 10:30',
+      'total': 'Rp 231.000',
+      'namaItem': 'Kopi Arabica 250g',
+      'jumlah': 1,
+      'hargaItem': 'Rp 10.000',
     },
     {
-      'tanggal': 'Rabu, 03 Mei 2024',
-      'waktu': '14:15',
-      'total': 35000.0,
-      'items': [
-        TransactionItem(namaProduct: 'Telur Ayam', jumlah: 2, harga: 3000.0),
-        TransactionItem(
-          namaProduct: 'Peppodent Kecil',
-          jumlah: 1,
-          harga: 8000.0,
-        ),
-      ],
+      'tanggal': 'Rabu, 03 Mei 2024, 14:15',
+      'total': 'Rp 35.000',
+      'namaItem': 'Telur Ayam',
+      'jumlah': 2,
+      'hargaItem': 'Rp 3.000',
     },
     {
-      'tanggal': 'Jumat, 04 Mei 2024',
-      'waktu': '09:45',
-      'total': 27000.0,
-      'items': [
-        TransactionItem(
-          namaProduct: 'Mie Sedap Goreng',
-          jumlah: 3,
-          harga: 3000.0,
-        ),
-        TransactionItem(
-          namaProduct: 'Minyak Filma 1L',
-          jumlah: 1,
-          harga: 20000.0,
-        ),
-      ],
-    },
-    {
-      'tanggal': 'Minggu, 05 Mei 2024',
-      'waktu': '16:20',
-      'total': 12000.0,
-      'items': [
-        TransactionItem(namaProduct: 'Teh Pucuk', jumlah: 2, harga: 4000.0),
-        TransactionItem(namaProduct: 'Susu Ultramik', jumlah: 1, harga: 8000.0),
-      ],
+      'tanggal': 'Jumat, 04 Mei 2024, 09:45',
+      'total': 'Rp 27.000',
+      'namaItem': 'Mie Sedap Goreng',
+      'jumlah': 3,
+      'hargaItem': 'Rp 3.000',
     },
   ];
 
-  DateTime? filterStartDate;
-  DateTime? filterEndDate;
-  bool isFiltered = false;
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => DateFilterDialog(
+        onApply: (filter) {
+          setState(() {
+            isFiltered =
+                filter.isLast13Months ||
+                (filter.startDate != null && filter.endDate != null);
+          });
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xfff5f5f5),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: const Text(
-          'Riwayat Transaksi',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppColor.darkGray,
-          ),
-        ),
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: GestureDetector(
-                onTap: () => _showFilterDialog(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: isFiltered ? AppColor.primary : Colors.grey,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+    return SafeArea(
+      child: Column(
+        children: [
+          // ── Sub-header: Tanggal & Waktu | Filter ──
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Tanggal & Waktu',
+                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                ),
+                GestureDetector(
+                  onTap: _showFilterDialog,
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.filter_list,
-                        color: isFiltered ? AppColor.primary : AppColor.lowGray,
-                        size: 18,
+                        Icons.menu,
+                        size: 16,
+                        color: isFiltered ? AppColor.primary : Colors.black54,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 4),
                       Text(
-                        'Filter',
+                        isFiltered ? 'Filter (On)' : 'Filter',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: isFiltered
-                              ? AppColor.primary
-                              : AppColor.lowGray,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: isFiltered ? AppColor.primary : Colors.black54,
                         ),
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
+
+          const Divider(height: 1, color: Color(0xFFE0E0E0)),
+
+          // ── List ──
+          Expanded(
+            child: Container(
+              color: const Color(0xFFF5F5F5),
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                itemCount: _transactions.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _transactions.length) {
+                    return const SizedBox(height: 24);
+                  }
+                  return _buildCard(_transactions[index]);
+                },
               ),
             ),
           ),
         ],
       ),
-      body: Column(
+    );
+  }
+
+  Widget _buildCard(Map<String, dynamic> tx) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Info filter jika aktif
-          if (isFiltered)
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    filterStartDate != null && filterEndDate != null
-                        ? '${_formatDate(filterStartDate!)} - ${_formatDate(filterEndDate!)}'
-                        : 'Filter diterapkan',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColor.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isFiltered = false;
-                        filterStartDate = null;
-                        filterEndDate = null;
-                      });
-                    },
-                    child: const Text(
-                      'Hapus filter',
+          // ── Row atas: tanggal | TOTAL + nominal ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  tx['tanggal'] as String,
+                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'TOTAL',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
+                        fontSize: 10,
+                        color: Colors.black45,
+                        letterSpacing: 0.5,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          // List transaksi
-          Expanded(
-            child: transactions.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.receipt, size: 64, color: AppColor.lowGray),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Tidak ada transaksi',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColor.darkGray,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Mulai lakukan transaksi untuk melihat riwayat',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColor.lowGray,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 2),
+                    Text(
+                      tx['total'] as String,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.primary,
+                      ),
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      final transaction = transactions[index];
-                      return TransactionCard(
-                        tanggal: transaction['tanggal'],
-                        waktu: transaction['waktu'],
-                        items: transaction['items'],
-                        totalHarga: transaction['total'],
-                      );
-                    },
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(height: 1, color: Color(0xFFEEEEEE)),
+
+          // ── Row bawah: nama item + harga ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tx['namaItem'] as String,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      'Jumlah: ${tx['jumlah']}',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  tx['hargaItem'] as String,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.primary,
                   ),
+                ),
+              ],
+            ),
+          ),
+
+          // ── "+ 1 item lainnya.." ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+            child: const Text(
+              '+ 1 item lainnya..',
+              style: TextStyle(fontSize: 11, color: Colors.black45),
+            ),
           ),
         ],
       ),
     );
-  }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return DateFilterDialog(
-          onApply: (DateFilter filter) {
-            setState(() {
-              isFiltered = true;
-              filterStartDate = filter.startDate;
-              filterEndDate = filter.endDate;
-            });
-          },
-        );
-      },
-    );
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }
