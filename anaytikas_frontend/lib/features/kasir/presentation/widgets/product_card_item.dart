@@ -113,6 +113,7 @@ class ProductCardItem extends StatelessWidget {
                               content: Text(
                                 '${product.product.namaProduct} sudah di keranjang!',
                               ),
+                              duration: Duration(seconds: 1),
                             ),
                           );
                         } else {
@@ -122,6 +123,8 @@ class ProductCardItem extends StatelessWidget {
                               content: Text(
                                 '${product.product.namaProduct} berhasil ditambahkan!',
                               ),
+
+                              duration: Duration(seconds: 1),
                             ),
                           );
                         }

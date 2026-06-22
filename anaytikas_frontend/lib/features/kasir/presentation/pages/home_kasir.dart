@@ -22,6 +22,7 @@ class Homekasir extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Produk dengan barcode "$code" tidak ditemukan'),
+          duration: Duration(seconds: 1),
         ),
       );
     }
