@@ -21,6 +21,17 @@ class PenjualanModel extends PenjualanEntity {
     );
   }
 
+  factory PenjualanModel.fromEntity(PenjualanEntity entity) {
+    return PenjualanModel(
+      idPenjualan: entity.idPenjualan,
+      tanggal: entity.tanggal,
+      waktu: entity.waktu,
+      totalItem: entity.totalItem,
+      totalHarga: entity.totalHarga,
+      uangMasuk: entity.uangMasuk,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id_penjualan': idPenjualan,

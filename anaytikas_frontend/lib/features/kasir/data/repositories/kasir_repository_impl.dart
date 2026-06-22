@@ -1,10 +1,15 @@
-import '../datasources/kasir_local_data_source.dart';
-import '../../../../core/shared/models/penjualan_model.dart';
-import '../../../../core/shared/models/product_per_penjualan_model.dart';
-import '../../../../core/shared/models/product_with_details.dart';
+import '../../../../core/shared/entities/kategori_entity.dart';
 import '../../../../core/shared/entities/penjualan_entity.dart';
 import '../../../../core/shared/entities/product_per_penjualan_entity.dart';
+import '../../../../core/shared/entities/product_with_details_entity.dart';
+import '../../../../core/shared/models/kategori_model.dart';
+import '../../../../core/shared/models/penjualan_model.dart';
+import '../../../../core/shared/models/product_per_penjualan_model.dart';
+import '../../../../core/shared/models/product_with_details_model.dart';
+import '../../domain/entities/penjualan_detail_entity.dart';
 import '../../domain/repositories/kasir_repository.dart';
+import '../datasources/kasir_local_data_source.dart';
+import '../models/penjualan_detail_model.dart';
 
 class KasirRepositoryImpl implements KasirRepository {
   final KasirLocalDataSource localDataSource;
@@ -12,22 +17,46 @@ class KasirRepositoryImpl implements KasirRepository {
   KasirRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<List<ProductWithDetails>> getAllProduct() async {
-    final rawDraw = await localDataSource.getAllProduct();
-    return rawDraw.map((map) => ProductWithDetails.fromMap(map)).toList();
+  Future<List<ProductWithDetailsEntity>> getAllProduct() async {
+    final rawData = await localDataSource.getAllProduct();
+    return rawData.map((map) => ProductWithDetailsModel.fromMap(map)).toList();
   }
 
   @override
-  Future<void> saveTransaction(
-    PenjualanEntity header,
+  Future<int> saveTransaction(
+    PenjualanEntity penjualan,
     List<ProductPerPenjualanEntity> items,
   ) async {
-    // Konversi Entity ke Map
-    final headerMap = (header as PenjualanModel).toMap();
-    final itemsMap = items
-        .map((item) => (item as ProductPerPenjualanModel).toMap())
-        .toList();
+    final penjualanModel = PenjualanModel.fromEntity(penjualan);
+    final penjualanMap = penjualanModel.toMap();
+    penjualanMap.remove('id_penjualan'); // to create increment in db.
+    // print(penjualanMap);
 
-    await localDataSource.saveTransaction(headerMap, itemsMap);
+    final itemsModel = items
+        .map((item) => ProductPerPenjualanModel.fromEntity(item))
+        .toList();
+    final itemsMap = itemsModel.map((item) {
+      final map = item.toMap();
+      map.remove('id_penjualan');
+      return map;
+    }).toList();
+
+    final int idPejualan = await localDataSource.saveTransaction(
+      penjualanMap,
+      itemsMap,
+    );
+    return idPejualan;
+  }
+
+  @override
+  Future<List<KategoriEntity>> getAllCategory() async {
+    final rawData = await localDataSource.getAllCategory();
+    return rawData.map((map) => KategoriModel.fromMap(map)).toList();
+  }
+
+  @override
+  Future<PenjualanDetailEntity> getNotaPenjualan(int idPenjualan) async {
+    final rawData = await localDataSource.getNota(idPenjualan);
+    return PenjualanDetailModel.fromMap(rawData);
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/config/theme/app_color.dart';
+import '../../../../core/shared/extensions/currency_extension.dart';
 
 class TotalBayarItem extends StatelessWidget {
-  const TotalBayarItem({super.key});
+  final double totalSeluruhHarga;
+  const TotalBayarItem({super.key, required this.totalSeluruhHarga});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class TotalBayarItem extends StatelessWidget {
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
           Text(
-            'Rp. 316.000',
+            totalSeluruhHarga.toRupiah(),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ],

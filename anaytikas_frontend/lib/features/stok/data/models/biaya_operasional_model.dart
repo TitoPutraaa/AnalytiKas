@@ -21,7 +21,7 @@ class BiayaOperasionalModel extends BiayaOperasional {
     return {
       "id_biaya": idBiaya,
       "nama": nama,
-      "tanggal": tanggal,
+      "tanggal": tanggal.toString(),
       "total_biaya": totalBiaya,
     };
   }

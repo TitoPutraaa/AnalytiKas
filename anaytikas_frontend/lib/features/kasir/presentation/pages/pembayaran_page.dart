@@ -1,15 +1,38 @@
+import '../../../../core/shared/extensions/currency_extension.dart';
+import '../../../../core/shared/extensions/datetime_extension.dart';
+import '../../../../core/shared/formatter/currency_input_formatter.dart';
+import '../../domain/entities/cart_item_entity.dart';
+import '../manager/cart_provider.dart';
+import '../manager/kasir_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/config/theme/app_color.dart';
 import '../widgets/detail_transaksi_item.dart';
 import '../widgets/total_bayar_item.dart';
 import 'nota_page.dart';
 
-class PembayaranPage extends StatelessWidget {
+class PembayaranPage extends StatefulWidget {
   const PembayaranPage({super.key});
 
   @override
+  State<PembayaranPage> createState() => _PembayaranPageState();
+}
+
+class _PembayaranPageState extends State<PembayaranPage> {
+  final TextEditingController _uangPembeliC = TextEditingController();
+
+  @override
+  void dispose() {
+    _uangPembeliC.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final totalSeluruhHarga = context.read<CartProvider>().totalSeluruhHarga;
+    final kasirProvider = context.read<KasirProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -37,8 +60,9 @@ class PembayaranPage extends StatelessWidget {
                       color: AppColor.darkGray.withValues(alpha: 0.7),
                     ),
                   ),
+                  // Date Today
                   Text(
-                    '02 Mei 2026',
+                    DateTime.now().toFullDate(),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -49,6 +73,37 @@ class PembayaranPage extends StatelessWidget {
                 ],
               ),
               Divider(height: 20),
+
+              Text(
+                'Detail Transaksi',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 15),
+              // List Product Cart
+              Consumer<CartProvider>(
+                builder: (context, cart, child) {
+                  final products = cart.items.values.toList();
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: products.length,
+                    addRepaintBoundaries: true,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return DetailTransaksiItem(
+                        namaProduct: product.namaProduct,
+                        quantity: product.quantity,
+                        satuan: product.satuan,
+                        totalHarga: product.totalHarga,
+                      );
+                    },
+                  );
+                },
+              ),
+
+              Divider(height: 40),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -57,7 +112,7 @@ class PembayaranPage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    TotalBayarItem(),
+                    TotalBayarItem(totalSeluruhHarga: totalSeluruhHarga),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
@@ -83,24 +138,7 @@ class PembayaranPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(height: 20),
-              Text(
-                'Detail Transaksi',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(height: 15),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 8,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  return DetailTransaksiItem();
-                },
-              ),
-
-              SizedBox(height: 210),
+              SizedBox(height: 230),
             ],
           ),
         ),
@@ -132,16 +170,23 @@ class PembayaranPage extends StatelessWidget {
               ),
               SizedBox(height: 8),
               TextFormField(
+                controller: _uangPembeliC,
+                onChanged: (value) {
+                  context.read<KasirProvider>().validateUangPembeli(value);
+                },
+
                 keyboardType: TextInputType.number,
-                autofocus: true,
-                decoration: const InputDecoration(
+                inputFormatters: [CurrencyInputFormatter()],
+                decoration: InputDecoration(
                   labelText: 'Uang Pembeli',
                   labelStyle: TextStyle(fontSize: 14, color: AppColor.darkGray),
-                  prefixText: 'Rp ',
+                  prefixText: 'Rp  ',
                   prefixStyle: TextStyle(),
-
                   hintText: '0',
                   hintStyle: TextStyle(fontSize: 14, color: AppColor.lowGray),
+                  errorText: context.select<KasirProvider, String?>(
+                    (p) => p.errorUangPembeli,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: AppColor.lowGray),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -165,7 +210,7 @@ class PembayaranPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Rp. 316.000',
+                    totalSeluruhHarga.toRupiah(),
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColor.primary,
@@ -175,13 +220,53 @@ class PembayaranPage extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 20),
+
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NotaPage()),
-                  );
-                },
+                onPressed: kasirProvider.isLoading
+                    ? null
+                    : () async {
+                        String cleanValue = _uangPembeliC.text.replaceAll(
+                          RegExp(r'[^0-9]'),
+                          '',
+                        );
+                        double uangMasuk = double.tryParse(cleanValue) ?? 0.0;
+                        // Validate
+                        kasirProvider.validateUangPembeli(
+                          cleanValue,
+                          totalSeluruhHarga: totalSeluruhHarga,
+                        );
+                        if (kasirProvider.errorUangPembeli == null) {
+                          List<CartItemEntity> cart = context
+                              .read<CartProvider>()
+                              .items
+                              .values
+                              .toList();
+
+                          if (!context.mounted) return;
+                          await kasirProvider.prosesTransaction(
+                            cart,
+                            uangMasuk,
+                          );
+                          final idPenjualan = kasirProvider.idPenjualan;
+                          if (!context.mounted) return;
+                          if (idPenjualan != null) {
+                            context.read<CartProvider>().clearCart();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    NotaPage(idPenjualan: idPenjualan),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Gagal memproses transaksi"),
+                              ),
+                            );
+                          }
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(

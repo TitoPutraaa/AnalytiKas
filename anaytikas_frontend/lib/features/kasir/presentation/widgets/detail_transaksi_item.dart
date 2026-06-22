@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/config/theme/app_color.dart';
+import '../../../../core/shared/extensions/currency_extension.dart';
 
 class DetailTransaksiItem extends StatelessWidget {
-  const DetailTransaksiItem({super.key});
+  final String namaProduct;
+  final int quantity;
+  final String satuan;
+  final double totalHarga;
+
+  const DetailTransaksiItem({
+    super.key,
+    required this.namaProduct,
+    required this.quantity,
+    required this.satuan,
+    required this.totalHarga,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +28,14 @@ class DetailTransaksiItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Kopi Arabica 250g',
+              namaProduct,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: AppColor.darkGray.withValues(alpha: 0.7),
               ),
             ),
             Text(
-              '10 pcs',
+              '$quantity $satuan',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -33,7 +45,7 @@ class DetailTransaksiItem extends StatelessWidget {
           ],
         ),
         Text(
-          'Rp. 70.000',
+          totalHarga.toRupiah(),
           style: TextStyle(
             fontWeight: FontWeight.w500,
             color: AppColor.darkGray.withValues(alpha: 0.7),

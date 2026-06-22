@@ -1,12 +1,12 @@
 class ProdukEntity {
-  final String idProduct;
+  final int idProduct;
   final String namaProduct;
   final int jmlhStok;
   final bool isGrosir;
   final bool isActivate;
   final int idKategori;
   final int idHarga;
-  final int warningStok;
+  final int stokWarning;
 
   ProdukEntity({
     required this.idProduct,
@@ -16,6 +16,6 @@ class ProdukEntity {
     required this.isActivate,
     required this.idKategori,
     required this.idHarga,
-    required this.warningStok,
+    required this.stokWarning,
   });
 }

@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import '../../../../core/config/theme/app_color.dart';
 
 class DetailTransaksiTokoItem extends StatelessWidget {
-  const DetailTransaksiTokoItem({super.key});
+  final String namaToko;
+  final String alamat;
+  const DetailTransaksiTokoItem({
+    super.key,
+    required this.namaToko,
+    required this.alamat,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +27,7 @@ class DetailTransaksiTokoItem extends StatelessWidget {
                 ),
               ),
               Text(
-                'Toko Suka Suka',
+                namaToko,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColor.darkGray.withValues(alpha: 0.7),
@@ -45,7 +51,7 @@ class DetailTransaksiTokoItem extends StatelessWidget {
                 width: 150,
                 child: Text(
                   textAlign: TextAlign.right,
-                  'Jl. Kampung Durian Runtuh',
+                  alamat,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: AppColor.darkGray.withValues(alpha: 0.7),

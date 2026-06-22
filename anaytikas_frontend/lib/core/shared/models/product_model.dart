@@ -9,20 +9,20 @@ class ProductModel extends ProdukEntity {
     required super.isActivate,
     required super.idKategori,
     required super.idHarga,
-    required super.warningStok,
+    required super.stokWarning,
   });
 
   // to read data from sql
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      idProduct: map['id_product'] as String,
+      idProduct: map['id_product'] as int,
       namaProduct: map['nama_product'] as String,
       jmlhStok: map['jmlh_stok'] as int,
       isGrosir: (map['is_grosir'] as int) == 1,
       isActivate: (map['is_active'] as int) == 1,
       idKategori: map['id_kategori'] as int,
       idHarga: map['id_harga'] as int,
-      warningStok: map['warning_stok'] as int,
+      stokWarning: map['stok_warning'] as int,
     );
   }
   // to send data to sql
@@ -35,7 +35,7 @@ class ProductModel extends ProdukEntity {
       'is_active': isActivate ? 1 : 0,
       'id_kategori': idKategori,
       'id_harga': idHarga,
-      'warning_stok': warningStok,
+      'stok_warning': stokWarning,
     };
   }
 }

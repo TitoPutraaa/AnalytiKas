@@ -77,15 +77,14 @@ class DatabaseHelper {
     // 5. Tabel product
     await db.execute('''
       CREATE TABLE product (
-        id_product $textType,
+        id_product $idType,
         nama_product $textType,
         jmlh_stok $intType, 
         is_grosir $intType,
         is_active $intType,
         id_kategori $intType,
         id_harga $intType,
-        warning_stok $intType,
-        PRIMARY KEY (id_product, id_harga),
+        stok_warning $intType,
         FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategori) ON DELETE RESTRICT,
         FOREIGN KEY (id_harga) REFERENCES harga_product (id_harga) ON DELETE RESTRICT
       )
@@ -116,7 +115,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE product_per_penjualan (
         id_penjualan $intType,
-        id_product $textType,
+        id_product $intType,
         jumlah $intType,
         PRIMARY KEY (id_penjualan, id_product),
         FOREIGN KEY (id_penjualan) REFERENCES penjualan (id_penjualan) ON DELETE CASCADE,
