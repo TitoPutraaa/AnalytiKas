@@ -45,4 +45,15 @@ class EditProductProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> deleted(int idProduct) async {
+    status = Status.loading;
+    notifyListeners();
+
+    try {} catch (e) {
+      message = "gagal menghapus product provider. err:${e.toString()}";
+      status = Status.error;
+      notifyListeners();
+    }
+  }
 }

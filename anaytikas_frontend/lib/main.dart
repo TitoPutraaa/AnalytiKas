@@ -60,7 +60,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => GetKategoriProvider(
             getAllCategory: GetAllCategory(stokRepository: stokRepo),
-          ),
+          )..loadCategory(),
         ),
         ChangeNotifierProvider(
           create: (_) => BiayaOperasionalProvider(
@@ -73,9 +73,8 @@ void main() async {
           ),
         ),
         ChangeNotifierProvider(
-          create: (_) => TambahStokProvider(
-            addStok: AddStok(stokRepository: stokRepo),
-          ),
+          create: (_) =>
+              TambahStokProvider(addStok: AddStok(stokRepository: stokRepo)),
         ),
       ],
       child: MyApp(),

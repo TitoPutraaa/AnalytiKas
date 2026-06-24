@@ -355,7 +355,7 @@ class _EditProdukState extends State<EditProduk> {
                             Icons.production_quantity_limits_rounded,
                             size: 20,
                           ),
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.number,
                         ),
                       ],
                     ),
