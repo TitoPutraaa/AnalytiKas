@@ -95,7 +95,6 @@ class DatabaseHelper {
         id_penjualan $idTypeInc,
         tanggal $textType,
         waktu $textType,
-        total_item $intType,
         total_harga $doubleType
       )
     ''');
