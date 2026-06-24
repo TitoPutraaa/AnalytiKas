@@ -33,7 +33,7 @@ class DatabaseHelper {
     const idTypeInc = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const intType = 'INTEGER NOT NULL';
-    const doubleType = 'DOUBLE NOT NULL';
+    const doubleType = 'REAL NOT NULL';
 
     // 1. Tabel Session User
     await db.execute('''
@@ -69,8 +69,7 @@ class DatabaseHelper {
         id_harga $idTypeInc,
         harga_jual $doubleType,
         harga_beli $doubleType,
-        satuan $textType,
-        jmlh_satuan $intType
+        satuan $textType
       )
     ''');
 
@@ -126,7 +125,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE product_per_pembelian (
         id_pembelian $intType,
-        id_product $textType,
+        id_product $intType,
         jumlah $intType,
         PRIMARY KEY (id_pembelian, id_product),
         FOREIGN KEY (id_pembelian) REFERENCES pembelian (id_pembelian) ON DELETE CASCADE,
@@ -138,8 +137,9 @@ class DatabaseHelper {
       CREATE TABLE biaya_operasional (
         id_biaya $idTypeInc,
         nama $textType,
-        total_biaya $intType,
-        tanggal $textType
+        total_biaya $doubleType,
+        tanggal $textType,
+        waktu $textType
       )
     ''');
 
