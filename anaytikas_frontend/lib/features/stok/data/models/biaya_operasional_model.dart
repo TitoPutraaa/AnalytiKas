@@ -24,6 +24,7 @@ class BiayaOperasionalModel extends BiayaOperasional {
       "id_biaya": idBiaya,
       "nama": nama,
       "tanggal": tanggal.toString(),
+      "waktu": waktu.toString(),
       "total_biaya": totalBiaya,
     };
     if (!includeId) map.remove("id_biaya");
