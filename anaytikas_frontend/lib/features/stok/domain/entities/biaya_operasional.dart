@@ -2,6 +2,7 @@ class BiayaOperasional {
   final int idBiaya;
   final String nama;
   final DateTime tanggal;
+  final DateTime waktu;
   final double totalBiaya;
 
   BiayaOperasional({
@@ -9,5 +10,6 @@ class BiayaOperasional {
     required this.nama,
     required this.tanggal,
     required this.totalBiaya,
+    required this.waktu,
   });
 }

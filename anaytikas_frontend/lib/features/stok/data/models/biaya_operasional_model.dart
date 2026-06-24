@@ -6,6 +6,7 @@ class BiayaOperasionalModel extends BiayaOperasional {
     required super.nama,
     required super.tanggal,
     required super.totalBiaya,
+    required super.waktu,
   });
 
   factory BiayaOperasionalModel.fromMap(Map<String, dynamic> data) {
@@ -13,6 +14,7 @@ class BiayaOperasionalModel extends BiayaOperasional {
       idBiaya: data["id_biaya"] as int,
       nama: data["nama"] as String,
       tanggal: DateTime.parse(data["tanggal"] as String),
+      waktu: DateTime.parse(data["waktu"] as String),
       totalBiaya: (data["total_biaya"] as num).toDouble(),
     );
   }

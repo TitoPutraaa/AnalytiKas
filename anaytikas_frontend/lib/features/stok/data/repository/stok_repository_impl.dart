@@ -46,6 +46,7 @@ class StokRepositoryImpl implements StokRepository {
     int idBiaya,
     String nama,
     DateTime tanggal,
+    DateTime waktu,
     double totalBiaya,
   ) async {
     try {
@@ -54,6 +55,7 @@ class StokRepositoryImpl implements StokRepository {
         nama: nama,
         tanggal: tanggal,
         totalBiaya: totalBiaya,
+        waktu: waktu,
       );
       return await datasource.addBiayaOperasionalData(model);
     } catch (e) {

@@ -36,7 +36,6 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
         "harga_jual": addBarang.harga.hargaJual,
         "harga_beli": addBarang.harga.hargaBeli,
         "satuan": addBarang.harga.satuan,
-        "jmlh_satuan": 1,
       }, conflictAlgorithm: ConflictAlgorithm.fail);
 
       final productMap = addBarang.toMap();

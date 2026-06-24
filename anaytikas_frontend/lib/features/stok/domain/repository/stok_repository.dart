@@ -19,6 +19,7 @@ abstract class StokRepository {
     int idBiaya,
     String nama,
     DateTime tanggal,
+    DateTime waktu,
     double totalBiaya,
   );
   Future<void> addStok(Pembelian pembelian, ProductEntity product, int jumlah);

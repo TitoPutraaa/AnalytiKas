@@ -36,9 +36,9 @@ class _OpsStokState extends State<OpsStok> {
     final tanggal = _tanggalController.text.trim();
 
     if (selectedBiaya == null || selectedBiaya!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan pilih nama biaya')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Silakan pilih nama biaya')));
       return;
     }
 
@@ -50,9 +50,9 @@ class _OpsStokState extends State<OpsStok> {
     }
 
     if (tanggal.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan pilih tanggal')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Silakan pilih tanggal')));
       return;
     }
 
@@ -62,9 +62,9 @@ class _OpsStokState extends State<OpsStok> {
     final tanggalParse = DateTime.tryParse(tanggal);
 
     if (nominalParse == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nominal tidak valid')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Nominal tidak valid')));
       return;
     }
 
@@ -80,6 +80,7 @@ class _OpsStokState extends State<OpsStok> {
       nama: selectedBiaya!,
       tanggal: tanggalParse,
       totalBiaya: nominalParse,
+      waktu: tanggalParse,
     );
 
     if (mounted) {
@@ -97,7 +98,6 @@ class _OpsStokState extends State<OpsStok> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

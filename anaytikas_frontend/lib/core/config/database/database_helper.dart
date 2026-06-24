@@ -161,13 +161,11 @@ class DatabaseHelper {
       'harga_jual': 3000.0,
       'harga_beli': 2500.0,
       'satuan': 'Pcs',
-      'jmlh_satuan': 1,
     });
     await db.insert('harga_product', {
       'harga_jual': 33000.0,
       'harga_beli': 30000.0,
       'satuan': 'Dus',
-      'jmlh_satuan': 12,
     });
 
     // Indomie Eceran (id_product: 101)

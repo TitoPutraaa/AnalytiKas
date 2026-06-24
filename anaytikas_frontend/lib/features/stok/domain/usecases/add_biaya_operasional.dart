@@ -9,12 +9,14 @@ class AddBiayaOperasional {
     int idBiaya,
     String nama,
     DateTime tanggal,
+    DateTime waktu,
     double totalBiaya,
   ) {
     return stokRepository.addBiayaOperasional(
       idBiaya,
       nama,
       tanggal,
+      waktu,
       totalBiaya,
     );
   }
