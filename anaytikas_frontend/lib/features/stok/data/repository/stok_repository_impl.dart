@@ -10,8 +10,7 @@ import 'package:anaytikas_frontend/features/stok/domain/repository/stok_reposito
 import 'package:sqflite/sqflite.dart';
 
 class StokRepositoryImpl implements StokRepository {
-  final StokLocalDatasourceImpl datasource;
-
+  final StokLocalDatasource datasource;
   StokRepositoryImpl({required this.datasource});
 
   @override

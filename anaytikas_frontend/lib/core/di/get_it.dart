@@ -1,0 +1,129 @@
+import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
+import 'package:anaytikas_frontend/features/kasir/data/datasources/kasir_local_data_source.dart';
+import 'package:anaytikas_frontend/features/kasir/data/repositories/kasir_repository_impl.dart';
+import 'package:anaytikas_frontend/features/kasir/domain/repositories/kasir_repository.dart';
+import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_all_category_usecase.dart';
+import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_all_product_usecase.dart';
+import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_nota_penjualan_usecase.dart';
+import 'package:anaytikas_frontend/features/kasir/domain/usecases/save_transaction_usecase.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/cart_provider.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/nota_penjualan_provider.dart';
+import 'package:anaytikas_frontend/features/riwayat/data/datasources/riwayat_local_data_source.dart';
+import 'package:anaytikas_frontend/features/riwayat/data/repositories/riwayat_repository_impl.dart';
+import 'package:anaytikas_frontend/features/riwayat/domain/repositories/riwayat_repository.dart';
+import 'package:anaytikas_frontend/features/stok/data/repository/stok_repository_impl.dart';
+import 'package:anaytikas_frontend/features/stok/data/sources/stok_local_datasource.dart';
+import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/add_barang_baru.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/add_biaya_operasional.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/add_stok.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_category.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_products.dart';
+import 'package:anaytikas_frontend/features/stok/domain/usecases/update_product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
+import 'package:get_it/get_it.dart';
+
+final getIt = GetIt.instance;
+
+Future<void> setup() async {
+  registerDatabase();
+  registerDataSource();
+  registerRepository();
+  registerUseCase();
+  registerProvider();
+}
+
+void registerDatabase() {
+  getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper.instance);
+}
+
+void registerDataSource() {
+  getIt.registerLazySingleton<KasirLocalDataSource>(
+    () => KasirLocalDataSourceImpl(dbHelper: getIt()),
+  );
+  getIt.registerLazySingleton<StokLocalDatasource>(
+    () => StokLocalDatasourceImpl(dbHelper: getIt()),
+  );
+  getIt.registerLazySingleton<RiwayatLocalDataSource>(
+    () => RiwayatLocalDataSourceImpl(dbHelper: getIt()),
+  );
+}
+
+void registerRepository() {
+  getIt.registerLazySingleton<KasirRepository>(
+    () => KasirRepositoryImpl(localDataSource: getIt()),
+  );
+  getIt.registerLazySingleton<StokRepository>(
+    () => StokRepositoryImpl(datasource: getIt()),
+  );
+  getIt.registerLazySingleton<RiwayatRepository>(
+    () => RiwayatRepositoryImpl(riwayatLocalDataSource: getIt()),
+  );
+}
+
+void registerUseCase() {
+  // kasir
+  getIt.registerLazySingleton(() => GetAllCategoryUsecase(getIt()));
+  getIt.registerLazySingleton(() => GetAllProductUsecase(getIt()));
+  getIt.registerLazySingleton(() => GetNotaPenjualanUsecase(getIt()));
+  getIt.registerLazySingleton(() => SaveTransactionUsecase(getIt()));
+
+  // stok
+  getIt.registerLazySingleton(() => AddBarangBaru(stokRepository: getIt()));
+  getIt.registerLazySingleton(
+    () => AddBiayaOperasional(stokRepository: getIt()),
+  );
+  getIt.registerLazySingleton(() => AddStok(stokRepository: getIt()));
+  getIt.registerLazySingleton(() => UpdateProduct(stokRepository: getIt()));
+  getIt.registerLazySingleton(() => GetAllCategory(stokRepository: getIt()));
+  getIt.registerLazySingleton(() => GetAllProducts(stokRepository: getIt()));
+
+  // riwayat
+}
+
+void registerProvider() {
+  // kasir
+  getIt.registerFactory<CartProvider>(
+    () => CartProvider(),
+  ); // no required parameter?
+  getIt.registerFactory<KasirProvider>(
+    () => KasirProvider(
+      getAllProduct: getIt<GetAllProductUsecase>(),
+      saveTransaction: getIt<SaveTransactionUsecase>(),
+      getAllCategory: getIt<GetAllCategoryUsecase>(),
+    ),
+  );
+  getIt.registerFactory<NotaPenjualanProvider>(
+    () => NotaPenjualanProvider(
+      getNotaPenjualan: getIt<GetNotaPenjualanUsecase>(),
+    ),
+  );
+
+  // stok
+  getIt.registerFactory<BarangBaruProvider>(
+    () => BarangBaruProvider(addBarangBaru: getIt<AddBarangBaru>()),
+  );
+  getIt.registerFactory<BiayaOperasionalProvider>(
+    () => BiayaOperasionalProvider(
+      addBiayaOperasional: getIt<AddBiayaOperasional>(),
+    ),
+  );
+  getIt.registerFactory<EditProductProvider>(
+    () => EditProductProvider(updateProduct: getIt<UpdateProduct>()),
+  );
+  getIt.registerFactory<StokHomeProvider>(
+    () => StokHomeProvider(getAllProduct: getIt<GetAllProducts>()),
+  );
+  getIt.registerFactory<GetKategoriProvider>(
+    () => GetKategoriProvider(getAllCategory: getIt<GetAllCategory>()),
+  );
+  getIt.registerFactory<TambahStokProvider>(
+    () => TambahStokProvider(addStok: getIt<AddStok>()),
+  );
+}
