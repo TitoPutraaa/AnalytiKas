@@ -71,20 +71,15 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
       final idPembelian = await txn.insert("pembelian", {
         "tanggal": now.toIso8601String().split("T")[0],
         "waktu": now.toIso8601String().split("T")[1].substring(0, 8),
-        "total_item": addStok.jumlah,
         "total_harga": addStok.product.harga.hargaBeli * addStok.jumlah,
       });
 
       // 2. Insert product_per_pembelian
-      await txn.insert(
-        "product_per_pembelian",
-        {
-          "id_pembelian": idPembelian,
-          "id_product": addStok.product.idProduct,
-          "jumlah": addStok.jumlah,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await txn.insert("product_per_pembelian", {
+        "id_pembelian": idPembelian,
+        "id_product": addStok.product.idProduct,
+        "jumlah": addStok.jumlah,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
 
       // 3. Update jmlh_stok on the product
       await txn.rawUpdate(
@@ -107,7 +102,6 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
         whereArgs: [updProduct.idProduct],
       );
 
-      // Also update harga_product to persist price changes
       await txn.update(
         "harga_product",
         {

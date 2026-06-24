@@ -5,7 +5,6 @@ class PembelianModel extends Pembelian {
     required super.idPembelian,
     required super.tanggal,
     required super.waktu,
-    required super.totalItem,
     required super.totalHarga,
   });
 
@@ -14,7 +13,6 @@ class PembelianModel extends Pembelian {
       idPembelian: data["id_pembelian"] as int,
       tanggal: DateTime.parse(data["tanggal"] as String),
       waktu: data["waktu"] as String,
-      totalItem: data["total_item"] as int,
       totalHarga: (data["total_harga"] as num).toDouble(),
     );
   }
@@ -24,7 +22,6 @@ class PembelianModel extends Pembelian {
       "id_pembelian": idPembelian,
       "tanggal": tanggal,
       "waktu": waktu,
-      "total_item": totalItem,
       "total_harga": totalHarga,
     };
   }

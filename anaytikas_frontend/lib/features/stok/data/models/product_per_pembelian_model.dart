@@ -21,7 +21,6 @@ class ProductPerPembelianModel extends ProductPerPembelian {
       idPembelian: data["id_pembelian"] as int,
       tanggal: DateTime.parse(data["tanggal"] as String),
       waktu: data["waktu"] as String,
-      totalItem: data["total_item"] as int,
       totalHarga: (data["total_harga"] as num).toDouble(),
     );
 

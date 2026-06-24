@@ -58,7 +58,6 @@ class _TambahstokState extends State<Tambahstok> {
       tanggal: now,
       waktu:
           "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}",
-      totalItem: jumlah,
       totalHarga: hargaBeli * jumlah,
     );
 
@@ -229,8 +228,8 @@ class _TambahstokState extends State<Tambahstok> {
                               IconButton(
                                 onPressed: () => setState(() {
                                   if (stokValue > 0) stokValue--;
-                                  stokBaruController.text =
-                                      stokValue.toString();
+                                  stokBaruController.text = stokValue
+                                      .toString();
                                 }),
                                 icon: const Icon(Icons.remove),
                               ),
@@ -254,8 +253,8 @@ class _TambahstokState extends State<Tambahstok> {
                               IconButton(
                                 onPressed: () => setState(() {
                                   stokValue++;
-                                  stokBaruController.text =
-                                      stokValue.toString();
+                                  stokBaruController.text = stokValue
+                                      .toString();
                                 }),
                                 icon: const Icon(Icons.add),
                               ),
