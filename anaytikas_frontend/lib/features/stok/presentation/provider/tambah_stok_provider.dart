@@ -13,15 +13,21 @@ class TambahStokProvider with ChangeNotifier {
   String message = "";
   Status status = Status.initial;
 
-  Future<void> add(Pembelian pembelian, ProductEntity product) async {
+  Future<void> add(
+    Pembelian pembelian,
+    ProductEntity product,
+    int jumlah,
+  ) async {
     status = Status.loading;
     notifyListeners();
 
     try {
-      await addStok.call(pembelian, product);
+      await addStok.call(pembelian, product, jumlah);
+      status = Status.success;
       notifyListeners();
     } catch (e) {
       message = "gagal menyimpan stok baru. err:${e.toString()}";
+      status = Status.error;
       notifyListeners();
     }
   }

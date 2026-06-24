@@ -1,5 +1,4 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/barang_baru.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/ops_stok.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
@@ -8,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Homestok extends StatelessWidget {
-  Product? product;
-
-  Homestok({super.key, Product? product}) : product = product ?? Product.dummy;
+  const Homestok({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +116,9 @@ class Homestok extends StatelessWidget {
                         },
                       );
                     }
-                    return ProductStockCard(product: stok.allProducts[index - 1]);
+                    return ProductStockCard(
+                      product: stok.allProducts[index - 1],
+                    );
                   },
                 ),
               );

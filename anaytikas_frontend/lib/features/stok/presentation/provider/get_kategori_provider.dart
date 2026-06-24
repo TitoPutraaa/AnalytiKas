@@ -13,6 +13,7 @@ class GetKategoriProvider with ChangeNotifier {
   Future<void> loadCategory() async {
     try {
       _allCategory = await getAllCategory.call();
+      notifyListeners();
     } catch (e) {
       throw Error();
     }

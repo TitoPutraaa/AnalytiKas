@@ -14,7 +14,7 @@ class EditProductProvider with ChangeNotifier {
   Status status = Status.initial;
 
   Future<void> edit(
-    String idProduct,
+    int idProduct,
     Kategori kategori,
     HargaProduct harga,
     String namaProduct,
@@ -37,8 +37,11 @@ class EditProductProvider with ChangeNotifier {
         isGrosir,
         isActivate,
       );
+      status = Status.success;
+      notifyListeners();
     } catch (e) {
       message = "gagal menyimpan edit product provider. err:${e.toString()}";
+      status = Status.error;
       notifyListeners();
     }
   }

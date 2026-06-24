@@ -16,7 +16,7 @@ class StokRepositoryImpl implements StokRepository {
 
   @override
   Future<void> addBarangBaru(
-    String idProduct,
+    int idProduct,
     Kategori kategori,
     HargaProduct harga,
     String namaProduct,
@@ -65,11 +65,16 @@ class StokRepositoryImpl implements StokRepository {
   }
 
   @override
-  Future<void> addStok(Pembelian pembelian, ProductEntity product) async {
+  Future<void> addStok(
+    Pembelian pembelian,
+    ProductEntity product,
+    int jumlah,
+  ) async {
     try {
       final model = ProductPerPembelianModel(
         pembelian: pembelian,
         product: product,
+        jumlah: jumlah,
       );
       return await datasource.addStokData(model);
     } catch (e) {
@@ -79,7 +84,7 @@ class StokRepositoryImpl implements StokRepository {
 
   @override
   Future<void> updateProduct(
-    String idProduct,
+    int idProduct,
     Kategori kategori,
     HargaProduct harga,
     String namaProduct,

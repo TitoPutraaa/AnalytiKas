@@ -10,4 +10,18 @@ class HargaProduct {
     required this.hargaBeli,
     required this.satuan,
   });
+
+  HargaProduct copyWith({
+    int? idHarga,
+    double? hargaJual,
+    double? hargaBeli,
+    String? satuan,
+  }) {
+    return HargaProduct(
+      idHarga: idHarga ?? this.idHarga,
+      hargaJual: hargaJual ?? this.hargaJual,
+      hargaBeli: hargaBeli ?? this.hargaBeli,
+      satuan: satuan ?? this.satuan,
+    );
+  }
 }

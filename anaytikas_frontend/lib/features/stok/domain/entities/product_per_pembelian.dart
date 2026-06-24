@@ -4,6 +4,11 @@ import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.
 class ProductPerPembelian {
   final Pembelian pembelian;
   final ProductEntity product;
+  final int jumlah;
 
-  ProductPerPembelian({required this.pembelian, required this.product});
+  ProductPerPembelian({
+    required this.pembelian,
+    required this.product,
+    required this.jumlah,
+  });
 }

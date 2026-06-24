@@ -23,6 +23,7 @@ class HargaProductModel extends HargaProduct {
       "harga_jual": hargaJual,
       "harga_beli": hargaBeli,
       "satuan": satuan,
+      "jmlh_satuan": 1,
     };
   }
 }

@@ -39,26 +39,26 @@ class StokHomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void filterProducts({String query = "", int? categoryId}) {
-    final isFiltering =
-        query.isNotEmpty || (categoryId != null && categoryId != 0);
-    _isSearching = isFiltering;
+  // void filterProducts({String query = "", int? categoryId}) {
+  //   final isFiltering =
+  //       query.isNotEmpty || (categoryId != null && categoryId != 0);
+  //   _isSearching = isFiltering;
 
-    _filteredProduct = _allProduct.where((p) {
-      final idProduct = p.idProduct;
+  //   _filteredProduct = _allProduct.where((p) {
+  //     final idProduct = p.idProduct;
 
-      final matchesQuery = p.namaProduct.toLowerCase().contains(
-        query.toLowerCase(),
-      );
+  //     final matchesQuery = p.namaProduct.toLowerCase().contains(
+  //       query.toLowerCase(),
+  //     );
 
-      final matchesQueryId = idProduct.contains(query.trim());
+  //     final matchesQueryId = idProduct.contains(query.trim());
 
-      final matchesCategory =
-          (categoryId == null || categoryId == 0) ||
-          p.kategori.idKategori == categoryId;
-      return (matchesQuery || matchesQueryId) && matchesCategory;
-    }).toList();
+  //     final matchesCategory =
+  //         (categoryId == null || categoryId == 0) ||
+  //         p.kategori.idKategori == categoryId;
+  //     return (matchesQuery || matchesQueryId) && matchesCategory;
+  //   }).toList();
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 }

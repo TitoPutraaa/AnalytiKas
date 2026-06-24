@@ -119,6 +119,7 @@ class _BarangBaruState extends State<BarangBaru> {
     final hargaJual = double.tryParse(hargaJualText) ?? 0.0;
     final jmlhStok = int.tryParse(jumlahStokText) ?? 0;
     final stokWarning = int.tryParse(warningStokText) ?? 0;
+    final kodeBarangConv = int.tryParse(kodeBarang) ?? 0;
 
     final harga = HargaProduct(
       idHarga: 0,
@@ -128,7 +129,7 @@ class _BarangBaruState extends State<BarangBaru> {
     );
 
     await provider.barangBaru(
-      idProduct: kodeBarang,
+      idProduct: kodeBarangConv,
       kategori: _selectedCategory!,
       harga: harga,
       namaProduct: name,

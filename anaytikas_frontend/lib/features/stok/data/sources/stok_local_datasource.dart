@@ -4,7 +4,6 @@ import 'package:anaytikas_frontend/features/stok/data/models/kategori_model.dart
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
-import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_category.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class StokLocalDatasource {
@@ -33,16 +32,12 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   Future<void> addBarangBaruData(ProductModel addBarang) async {
     final db = await dbHelper.database;
     await db.transaction((txn) async {
-      final idHarga = await txn.insert(
-        "harga_product",
-        {
-          "harga_jual": addBarang.harga.hargaJual,
-          "harga_beli": addBarang.harga.hargaBeli,
-          "satuan": addBarang.harga.satuan,
-          "jmlh_satuan": 1,
-        },
-        conflictAlgorithm: ConflictAlgorithm.fail,
-      );
+      final idHarga = await txn.insert("harga_product", {
+        "harga_jual": addBarang.harga.hargaJual,
+        "harga_beli": addBarang.harga.hargaBeli,
+        "satuan": addBarang.harga.satuan,
+        "jmlh_satuan": 1,
+      }, conflictAlgorithm: ConflictAlgorithm.fail);
 
       final productMap = addBarang.toMap();
       productMap["id_harga"] = idHarga;
@@ -62,7 +57,7 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
     final db = await dbHelper.database;
     await db.insert(
       "biaya_operasional",
-      addBiayaOps.toMap(),
+      addBiayaOps.toMap(includeId: false),
       conflictAlgorithm: ConflictAlgorithm.fail,
     );
   }
@@ -70,22 +65,60 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<void> addStokData(ProductPerPembelianModel addStok) async {
     final db = await dbHelper.database;
-    await db.insert(
-      "biaya_operasional",
-      addStok.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.fail,
-    );
+    await db.transaction((txn) async {
+      // 1. Create pembelian record
+      final now = DateTime.now();
+      final idPembelian = await txn.insert("pembelian", {
+        "tanggal": now.toIso8601String().split("T")[0],
+        "waktu": now.toIso8601String().split("T")[1].substring(0, 8),
+        "total_item": addStok.jumlah,
+        "total_harga": addStok.product.harga.hargaBeli * addStok.jumlah,
+      });
+
+      // 2. Insert product_per_pembelian
+      await txn.insert(
+        "product_per_pembelian",
+        {
+          "id_pembelian": idPembelian,
+          "id_product": addStok.product.idProduct,
+          "jumlah": addStok.jumlah,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      // 3. Update jmlh_stok on the product
+      await txn.rawUpdate(
+        "UPDATE product SET jmlh_stok = jmlh_stok + ? WHERE id_product = ?",
+        [addStok.jumlah, addStok.product.idProduct],
+      );
+    });
   }
 
   @override
   Future<void> updateProductData(ProductModel updProduct) async {
     final db = await dbHelper.database;
-    await db.update(
-      "product",
-      updProduct.toMap(),
-      where: "id_product = ?",
-      whereArgs: [updProduct.idProduct],
-    );
+    await db.transaction((txn) async {
+      // Update the product record (without id_harga, id_kategori FK fields conflicting)
+      final productMap = updProduct.toMap();
+      await txn.update(
+        "product",
+        productMap,
+        where: "id_product = ?",
+        whereArgs: [updProduct.idProduct],
+      );
+
+      // Also update harga_product to persist price changes
+      await txn.update(
+        "harga_product",
+        {
+          "harga_jual": updProduct.harga.hargaJual,
+          "harga_beli": updProduct.harga.hargaBeli,
+          "satuan": updProduct.harga.satuan,
+        },
+        where: "id_harga = ?",
+        whereArgs: [updProduct.harga.idHarga],
+      );
+    });
   }
 
   @override
@@ -101,7 +134,7 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
     product.id_product,
     product.nama_product,
     product.jmlh_stok,
-    product.warning_stok AS stok_warning,
+    product.stok_warning,
     product.is_active,
     product.is_grosir,
     kategori.id_kategori,

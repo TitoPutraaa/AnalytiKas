@@ -9,7 +9,11 @@ import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.
 import 'package:anaytikas_frontend/features/stok/domain/entities/product_per_pembelian.dart';
 
 class ProductPerPembelianModel extends ProductPerPembelian {
-  ProductPerPembelianModel({required super.pembelian, required super.product});
+  ProductPerPembelianModel({
+    required super.pembelian,
+    required super.product,
+    required super.jumlah,
+  });
 
   factory ProductPerPembelianModel.fromJoinedMap(Map<String, dynamic> data) {
     Pembelian pembelian;
@@ -37,7 +41,7 @@ class ProductPerPembelianModel extends ProductPerPembelian {
 
     ProductEntity product;
     product = ProductModel(
-      idProduct: data["id_product"] as String,
+      idProduct: data["id_product"] as int,
       kategori: kategori,
       harga: hargaProduct,
       namaProduct: data["nama_product"] as String,
@@ -47,10 +51,18 @@ class ProductPerPembelianModel extends ProductPerPembelian {
       isGrosir: (data["is_grosir"] as int) == 1,
     );
 
-    return ProductPerPembelianModel(pembelian: pembelian, product: product);
+    return ProductPerPembelianModel(
+      pembelian: pembelian,
+      product: product,
+      jumlah: data["jumlah"] as int,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return {"id_harga": pembelian.idPembelian, "id_product": product.idProduct};
+    return {
+      "id_pembelian": pembelian.idPembelian,
+      "id_product": product.idProduct,
+      "jumlah": jumlah,
+    };
   }
 }

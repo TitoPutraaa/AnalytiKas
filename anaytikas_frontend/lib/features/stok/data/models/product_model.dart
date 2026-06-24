@@ -32,7 +32,7 @@ class ProductModel extends ProductEntity {
     );
 
     return ProductModel(
-      idProduct: data["id_product"] as String,
+      idProduct: data["id_product"] as int,
       kategori: kategori,
       harga: hargaProduct,
       namaProduct: data["nama_product"] as String,
@@ -50,7 +50,7 @@ class ProductModel extends ProductEntity {
       "id_harga": harga.idHarga,
       "nama_product": namaProduct,
       "jmlh_stok": jmlhStok,
-      "warning_stok": stokWarning,
+      "stok_warning": stokWarning,
       "is_active": isActivate ? 1 : 0,
       "is_grosir": isGrosir ? 1 : 0,
     };

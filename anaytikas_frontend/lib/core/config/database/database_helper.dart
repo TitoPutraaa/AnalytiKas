@@ -136,11 +136,10 @@ class DatabaseHelper {
     // 10. Tabel biaya operasional
     await db.execute('''
       CREATE TABLE biaya_operasional (
-        id_biaya $intType,
+        id_biaya $idTypeInc,
         nama $textType,
         total_biaya $intType,
-        tanggal $textType,
-        PRIMARY KEY (id_biaya)
+        tanggal $textType
       )
     ''');
 
@@ -174,38 +173,38 @@ class DatabaseHelper {
 
     // Indomie Eceran (id_product: 101)
     await db.insert('product', {
-      'id_product': "IDN325MI",
+      'id_product': "7989243",
       'nama_product': 'Indomie Goreng (Ecer)',
       'jmlh_stok': 100,
       'is_grosir': 0,
       'is_active': 1,
       'id_kategori': 1,
       'id_harga': 1,
-      'warning_stok': 10,
+      'stok_warning': 10,
     });
 
     // Indomie Grosir (id_product: 102)
     await db.insert('product', {
-      'id_product': "LOT31MI",
+      'id_product': "979876",
       'nama_product': 'Indomie Goreng (Dus)',
       'jmlh_stok': 50,
       'is_grosir': 1,
       'is_active': 1,
       'id_kategori': 1,
       'id_harga': 2,
-      'warning_stok': 5,
+      'stok_warning': 5,
     });
 
     // Coca Cola Eceran (id_product: 201)
     await db.insert('product', {
-      'id_product': "CO5234Co",
+      'id_product': "877060",
       'nama_product': 'Coca Cola (Ecer)',
       'jmlh_stok': 50,
       'is_grosir': 0,
       'is_active': 1,
       'id_kategori': 2,
       'id_harga': 1,
-      'warning_stok': 5,
+      'stok_warning': 5,
     });
 
     // Future close() async {

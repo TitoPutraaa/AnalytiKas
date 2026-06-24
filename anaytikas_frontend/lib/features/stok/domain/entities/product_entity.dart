@@ -2,7 +2,7 @@ import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.d
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 
 class ProductEntity {
-  final String idProduct;
+  final int idProduct;
   final Kategori kategori;
   final HargaProduct harga;
   final String namaProduct;

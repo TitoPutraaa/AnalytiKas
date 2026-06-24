@@ -1,8 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
-import 'package:anaytikas_frontend/features/stok/domain/usecases/add_biaya_operasional.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart'
-    hide Status;
+import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
@@ -38,22 +35,59 @@ class _OpsStokState extends State<OpsStok> {
     final nominal = _nominalController.text.trim();
     final tanggal = _tanggalController.text.trim();
 
+    if (selectedBiaya == null || selectedBiaya!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Silakan pilih nama biaya')),
+      );
+      return;
+    }
+
+    if (nominal.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nominal tidak boleh kosong')),
+      );
+      return;
+    }
+
+    if (tanggal.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Silakan pilih tanggal')),
+      );
+      return;
+    }
+
     final provider = context.read<BiayaOperasionalProvider>();
 
     final nominalParse = double.tryParse(nominal);
     final tanggalParse = DateTime.tryParse(tanggal);
 
+    if (nominalParse == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nominal tidak valid')),
+      );
+      return;
+    }
+
+    if (tanggalParse == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Format tanggal tidak valid')),
+      );
+      return;
+    }
+
     await provider.addBiayaOps(
       idBiaya: 0,
       nama: selectedBiaya!,
-      tanggal: tanggalParse!,
-      totalBiaya: nominalParse!,
+      tanggal: tanggalParse,
+      totalBiaya: nominalParse,
     );
 
     if (mounted) {
       if (provider.succes) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Barang baru berhasil ditambahkan')),
+          const SnackBar(
+            content: Text('Biaya operasional berhasil ditambahkan'),
+          ),
         );
         Navigator.of(context).pop(true);
       } else {
@@ -63,6 +97,7 @@ class _OpsStokState extends State<OpsStok> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -214,16 +249,16 @@ class _OpsStokState extends State<OpsStok> {
   );
 
   Future<void> _selectDate(BuildContext context) async {
-    DateTime? _picked = await showDatePicker(
+    final picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(200),
       lastDate: DateTime(2100),
     );
 
-    if (_picked != null) {
+    if (picked != null) {
       setState(() {
-        _tanggalController.text = _picked.toString().split(" ")[0];
+        _tanggalController.text = picked.toString().split(" ")[0];
       });
     }
   }

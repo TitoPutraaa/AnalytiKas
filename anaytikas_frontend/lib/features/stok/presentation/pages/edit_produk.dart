@@ -1,6 +1,7 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
@@ -22,6 +23,7 @@ class _EditProdukState extends State<EditProduk> {
   var editNamaProduct = TextEditingController();
   var editWarningStok = TextEditingController();
   var hargaJualController = TextEditingController();
+  var hargaBeliController = TextEditingController();
   GetKategoriProvider get provider => context.read<GetKategoriProvider>();
 
   List<String> get _categories =>
@@ -31,6 +33,7 @@ class _EditProdukState extends State<EditProduk> {
 
   @override
   void initState() {
+    super.initState();
     stokValue = widget.product.jmlhStok;
     editNamaProduct = TextEditingController(text: widget.product.namaProduct);
     editStokController = TextEditingController(
@@ -42,7 +45,14 @@ class _EditProdukState extends State<EditProduk> {
     hargaJualController = TextEditingController(
       text: widget.product.harga.hargaJual.toInt().toString(),
     );
-    super.initState();
+    hargaBeliController = TextEditingController(
+      text: widget.product.harga.hargaBeli.toInt().toString(),
+    );
+    // Initialize selected category from the current product
+    _selectedCategory = widget.product.kategori;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<GetKategoriProvider>().loadCategory();
+    });
   }
 
   @override
@@ -51,7 +61,60 @@ class _EditProdukState extends State<EditProduk> {
     editStokController.dispose();
     editWarningStok.dispose();
     hargaJualController.dispose();
+    hargaBeliController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onSubmit() async {
+    final editProvider = context.read<EditProductProvider>();
+
+    final namaBaru = editNamaProduct.text.trim();
+    final stokBaru = int.tryParse(editStokController.text);
+    final warningBaru = int.tryParse(editWarningStok.text);
+    final hargaJualBaru = double.tryParse(hargaJualController.text);
+    final hargaBeliBaru = double.tryParse(hargaBeliController.text);
+
+    if (namaBaru.isEmpty ||
+        stokBaru == null ||
+        warningBaru == null ||
+        hargaJualBaru == null ||
+        hargaBeliBaru == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi dengan benar')),
+      );
+      return;
+    }
+
+    final currentKategori = _selectedCategory ?? widget.product.kategori;
+
+    final updatedHarga = widget.product.harga.copyWith(
+      hargaJual: hargaJualBaru,
+      hargaBeli: hargaBeliBaru,
+    );
+
+    await editProvider.edit(
+      widget.product.idProduct,
+      currentKategori,
+      updatedHarga,
+      namaBaru,
+      stokBaru,
+      warningBaru,
+      widget.product.isGrosir,
+      widget.product.isActivate,
+    );
+
+    if (mounted) {
+      if (editProvider.status == Status.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produk berhasil diperbarui')),
+        );
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(editProvider.message)));
+      }
+    }
   }
 
   @override
@@ -132,7 +195,7 @@ class _EditProdukState extends State<EditProduk> {
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
-                                    "Rp. ${widget.product.harga.hargaJual.toInt()}",
+                                    "Rp. ${widget.product.harga.hargaJual.toThoushandsSeparator()}",
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -300,16 +363,43 @@ class _EditProdukState extends State<EditProduk> {
                 ],
               ),
 
-              // Harga Jual Barang
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Harga Jual & Harga Beli
+              Row(
                 children: [
-                  _label('Harga Jual Baru'),
-                  const SizedBox(height: 6),
-                  OutlinedField(
-                    controller: hargaJualController,
-                    keyboardType: TextInputType.number,
-                    preFixText: "Rp. ",
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Harga Beli Baru'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: hargaBeliController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          preFixText: "Rp. ",
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label('Harga Jual Baru'),
+                        const SizedBox(height: 6),
+                        OutlinedField(
+                          controller: hargaJualController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          preFixText: "Rp. ",
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -349,7 +439,7 @@ class _EditProdukState extends State<EditProduk> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: _onSubmit,
                       icon: const Icon(Icons.check_circle_outline),
                       label: const Text(
                         "Konfirmasi Edit Stok",

@@ -17,12 +17,14 @@ class BiayaOperasionalModel extends BiayaOperasional {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
+  Map<String, dynamic> toMap({bool includeId = true}) {
+    final map = {
       "id_biaya": idBiaya,
       "nama": nama,
       "tanggal": tanggal.toString(),
       "total_biaya": totalBiaya,
     };
+    if (!includeId) map.remove("id_biaya");
+    return map;
   }
 }

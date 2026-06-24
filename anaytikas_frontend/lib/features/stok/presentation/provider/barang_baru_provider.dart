@@ -19,7 +19,7 @@ class BarangBaruProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> barangBaru({
-    required String idProduct,
+    required int idProduct,
     required Kategori kategori,
     required HargaProduct harga,
     required String namaProduct,
