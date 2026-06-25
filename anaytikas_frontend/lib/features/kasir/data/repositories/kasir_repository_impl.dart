@@ -45,6 +45,7 @@ class KasirRepositoryImpl implements KasirRepository {
       penjualanMap,
       itemsMap,
     );
+    // print(idPejualan);
     return idPejualan;
   }
 

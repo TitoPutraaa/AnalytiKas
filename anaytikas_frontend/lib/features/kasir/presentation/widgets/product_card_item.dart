@@ -5,11 +5,17 @@ import '../../../../core/config/theme/app_color.dart';
 import '../../../../core/shared/entities/product_with_details_entity.dart';
 import '../../../../core/shared/extensions/currency_extension.dart';
 import '../manager/cart_provider.dart';
+import '../manager/kasir_provider.dart';
 
 class ProductCardItem extends StatelessWidget {
   final ProductWithDetailsEntity product;
+  final int index;
 
-  const ProductCardItem({super.key, required this.product});
+  const ProductCardItem({
+    super.key,
+    required this.product,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,23 +76,39 @@ class ProductCardItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'Stok ada',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 10,
-                        ),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final warningStok = context.select<KasirProvider, int>(
+                          (w) => w.allProducts[index].product.stokWarning,
+                        );
+                        final stokValue = context.select<KasirProvider, int>(
+                          (w) => w.allProducts[index].product.jmlhStok,
+                        );
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: warningStok <= stokValue
+                                ? Colors.green.withValues(alpha: 0.2)
+                                : Colors.red.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            warningStok <= stokValue
+                                ? 'Stok ada'
+                                : 'Stok menipis ($stokValue)',
+                            style: TextStyle(
+                              color: warningStok <= stokValue
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 10,
+                            ),
+                          ),
+                        );
+                      },
                     ),
 
                     ElevatedButton(

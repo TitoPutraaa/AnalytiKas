@@ -6,7 +6,6 @@ class PenjualanDetailModel extends PenjualanDetailEntity {
   PenjualanDetailModel({
     required super.penjualan,
     required super.products,
-    required super.uangKembali,
     required super.namaToko,
     required super.alamat,
   });
@@ -15,7 +14,6 @@ class PenjualanDetailModel extends PenjualanDetailEntity {
     return PenjualanDetailModel(
       penjualan: PenjualanModel.fromMap(rawData.first),
       products: rawData.map((e) => PenjualanItemModel.fromMap(e)).toList(),
-      uangKembali: rawData.first['uang_kembali'],
       namaToko: rawData.first['nama_toko'],
       alamat: rawData.first['alamat'],
     );

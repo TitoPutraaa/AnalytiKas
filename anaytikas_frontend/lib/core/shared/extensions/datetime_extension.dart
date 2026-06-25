@@ -18,6 +18,6 @@ extension DatetimeExtension on DateTime {
 
   // 01:11
   String toTime() {
-    return DateFormat('HH:mm').format(this);
+    return DateFormat('HH:mm:ss').format(this);
   }
 }

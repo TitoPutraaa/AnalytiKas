@@ -22,8 +22,9 @@ class NotaPenjualanProvider extends ChangeNotifier {
       _notaPenjualan = await getNotaPenjualan.call(idPenjualan);
     } catch (e) {
       debugPrint('data penjualan tidak masuk. $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-    _isLoading = false;
-    notifyListeners();
   }
 }

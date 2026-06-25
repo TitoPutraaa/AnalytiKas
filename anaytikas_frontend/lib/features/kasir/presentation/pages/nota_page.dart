@@ -1,3 +1,4 @@
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +52,7 @@ class _NotaPageState extends State<NotaPage> {
               return Center(child: CircularProgressIndicator());
             }
             if (notaDetail == null) {
-              return Center(child: Text('Nota Bermasalah'));
+              return Center(child: Text('Nota Bermasalah '));
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -161,7 +162,7 @@ class _NotaPageState extends State<NotaPage> {
                             ),
                           ),
                           Text(
-                            notaDetail.penjualan.uangMasuk.toRupiah(),
+                            context.read<KasirProvider>().uangMasuk.toRupiah(),
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: AppColor.darkGray.withValues(alpha: 0.9),
@@ -181,7 +182,10 @@ class _NotaPageState extends State<NotaPage> {
                             ),
                           ),
                           Text(
-                            notaDetail.uangKembali.toRupiah(),
+                            context
+                                .read<KasirProvider>()
+                                .uangKembali
+                                .toRupiah(),
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: AppColor.darkGray.withValues(alpha: 0.9),

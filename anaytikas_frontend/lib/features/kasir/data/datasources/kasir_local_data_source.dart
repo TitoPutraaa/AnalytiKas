@@ -85,11 +85,9 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
           p.waktu,
           p.total_item,
           p.total_harga,
-          p.uang_masuk,
           pr.nama_product,
           pp.jumlah,
           h.satuan,
-          (p.uang_masuk - p.total_harga) AS uang_kembali,
           (pp.jumlah * h.harga_jual) AS total_harga_product,
           (SELECT nama_toko FROM toko LIMIT 1) AS nama_toko,
           (SELECT alamat FROM toko LIMIT 1) AS alamat
