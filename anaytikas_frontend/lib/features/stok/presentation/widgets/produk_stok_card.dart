@@ -101,6 +101,14 @@ class ProductStockCard extends StatelessWidget {
                               : Colors.green.shade700,
                         ),
                       ),
+
+                      Text(
+                        "${product.harga.satuan}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/widgets/custom_alert_dialog.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
@@ -461,7 +462,17 @@ class _EditProdukState extends State<EditProduk> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: _onDelete,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CustomAlertDialog(
+                            title: 'Peringatan',
+                            content:
+                                'Apakah anda yakin ingin menghapus ${widget.product.namaProduct} ?',
+                            onConfirm: _onDelete,
+                          ),
+                        );
+                      },
                       icon: const Icon(
                         Icons.cancel_outlined,
                         color: AppColor.white,
