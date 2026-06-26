@@ -28,6 +28,8 @@ class KasirProvider extends ChangeNotifier {
   bool _isSearching = false;
   String? _errorUangPembeli;
   int? _idPenjualan;
+  double _uangMasuk = 0.0;
+  double _uangKembali = 0.0;
 
   List<ProductWithDetailsEntity> get allProducts => _filteredProduct;
   List<KategoriEntity> get allCategory => _allCategory;
@@ -35,6 +37,8 @@ class KasirProvider extends ChangeNotifier {
   bool get isSearching => _isSearching;
   String? get errorUangPembeli => _errorUangPembeli;
   int? get idPenjualan => _idPenjualan;
+  double get uangMasuk => _uangMasuk;
+  double get uangKembali => _uangKembali;
 
   Future<void> loadProduct() async {
     _isLoading = true;
@@ -113,6 +117,7 @@ class KasirProvider extends ChangeNotifier {
   ) async {
     _isLoading = true;
     notifyListeners();
+
     final now = DateTime.now();
     final int totalItems = cart.length;
     final double totalPrices = cart.fold(
@@ -125,7 +130,6 @@ class KasirProvider extends ChangeNotifier {
       waktu: now.toTime(),
       totalItem: totalItems,
       totalHarga: totalPrices,
-      uangMasuk: uangMasuk,
     );
 
     final List<ProductPerPenjualanEntity> detailItems = cart
@@ -139,6 +143,8 @@ class KasirProvider extends ChangeNotifier {
         .toList();
     try {
       _idPenjualan = await saveTransaction.call(penjualan, detailItems);
+      _uangMasuk = uangMasuk;
+      _uangKembali = _uangMasuk - totalPrices;
     } catch (e) {
       debugPrint('Data idPenjualan tidak masuk! $e');
     } finally {

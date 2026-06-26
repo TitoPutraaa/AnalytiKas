@@ -114,6 +114,7 @@ class Homekasir extends StatelessWidget {
                       DropdownMenu(
                         width: 200,
                         hintText: 'Pilih Kategori',
+
                         onSelected: (value) {
                           if (value != null) {
                             final kasir = context.read<KasirProvider>();
@@ -137,6 +138,9 @@ class Homekasir extends StatelessWidget {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
+                        ),
+                        menuStyle: MenuStyle(
+                          backgroundColor: WidgetStatePropertyAll(Colors.white),
                         ),
                       ),
 
@@ -171,7 +175,7 @@ class Homekasir extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final product = allProducts[index];
                         // CardList
-                        return ProductCardItem(product: product);
+                        return ProductCardItem(product: product, index: index);
                       },
                     ),
                   );
