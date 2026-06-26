@@ -126,4 +126,13 @@ class StokRepositoryImpl implements StokRepository {
       );
     }
   }
+
+  @override
+  Future<void> deleteProduk(ProductEntity updProd) async {
+    try {
+      await datasource.deleteProduct(updProd);
+    } catch (e) {
+      throw ArgumentError("gagal menghapus produk. err: ${e.toString()}");
+    }
+  }
 }

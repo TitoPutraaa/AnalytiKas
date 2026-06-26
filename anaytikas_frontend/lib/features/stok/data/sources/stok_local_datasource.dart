@@ -4,6 +4,7 @@ import 'package:anaytikas_frontend/features/stok/data/models/kategori_model.dart
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class StokLocalDatasource {
@@ -13,6 +14,7 @@ abstract class StokLocalDatasource {
   Future<void> addBiayaOperasionalData(BiayaOperasionalModel addBiayaOps);
   Future<void> addStokData(ProductPerPembelianModel addStok);
   Future<void> updateProductData(ProductModel updProduct);
+  Future<void> deleteProduct(ProductEntity delProduct);
 }
 
 class StokLocalDatasourceImpl implements StokLocalDatasource {
@@ -23,7 +25,7 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<List<ProductModel>> getAllProductsData() async {
     final db = await dbHelper.database;
-    List<Map<String, dynamic>> maps = await db.rawQuery(queryGetAll);
+    List<Map<String, dynamic>> maps = await db.rawQuery(queryGetAll, [true]);
 
     return maps.map((row) => ProductModel.fromJoinedMap(row)).toList();
   }
@@ -122,6 +124,12 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
     return data.map((map) => KategoriModel.fromMap(map)).toList();
   }
 
+  @override
+  Future<void> deleteProduct(ProductEntity delProduct) async {
+    final db = await dbHelper.database;
+    await db.update("product", {"is_active": delProduct.isActivate});
+  }
+
   final String queryGetAll = '''
   SELECT
     product.id_product,
@@ -139,5 +147,6 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   FROM product
   LEFT JOIN kategori      ON product.id_kategori = kategori.id_kategori
   LEFT JOIN harga_product ON product.id_harga    = harga_product.id_harga
+  WHERE product.is_active = ?
   ''';
 }

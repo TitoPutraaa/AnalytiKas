@@ -117,6 +117,58 @@ class _EditProdukState extends State<EditProduk> {
     }
   }
 
+  Future<void> _onDelete() async {
+    final editProvider = context.read<EditProductProvider>();
+
+    final namaBaru = editNamaProduct.text.trim();
+    final stokBaru = int.tryParse(editStokController.text);
+    final warningBaru = int.tryParse(editWarningStok.text);
+    final hargaJualBaru = double.tryParse(hargaJualController.text);
+    final hargaBeliBaru = double.tryParse(hargaBeliController.text);
+
+    if (namaBaru.isEmpty ||
+        stokBaru == null ||
+        warningBaru == null ||
+        hargaJualBaru == null ||
+        hargaBeliBaru == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi dengan benar')),
+      );
+      return;
+    }
+
+    final currentKategori = _selectedCategory ?? widget.product.kategori;
+
+    final updatedHarga = widget.product.harga.copyWith(
+      hargaJual: hargaJualBaru,
+      hargaBeli: hargaBeliBaru,
+    );
+
+    await editProvider.edit(
+      widget.product.idProduct,
+      currentKategori,
+      updatedHarga,
+      namaBaru,
+      stokBaru,
+      warningBaru,
+      widget.product.isGrosir,
+      false,
+    );
+
+    if (mounted) {
+      if (editProvider.status == Status.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produk berhasil diperbarui')),
+        );
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(editProvider.message)));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isLowStok = widget.product.jmlhStok <= widget.product.stokWarning;
@@ -409,9 +461,7 @@ class _EditProdukState extends State<EditProduk> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: _onDelete,
                       icon: const Icon(
                         Icons.cancel_outlined,
                         color: AppColor.white,
