@@ -493,7 +493,7 @@ class _EditProdukState extends State<EditProduk> {
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                         minimumSize: const Size(0, 55),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.redAccent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(10),
                           side: BorderSide(color: AppColor.black, width: 1),
