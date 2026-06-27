@@ -58,7 +58,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: AppTheme.mainTheme,
-        home: const HomeAuth(),
+        // home: const HomeAuth(),
+        home: const MainSheel(),
       ),
     );
   }

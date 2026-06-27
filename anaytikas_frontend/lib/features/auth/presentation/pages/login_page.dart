@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text(
           'Masuk',
           style: TextStyle(
-            color: Color(0xFF1A2B4C),
+            color: AppColor.primary,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A2B4C),
+                    color: AppColor.primary,
                   ),
                 ),
                 const SizedBox(height: 28),
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
     style: const TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w600,
-      color: Color(0xFF1A2B4C),
+      color: AppColor.primary,
     ),
   );
 

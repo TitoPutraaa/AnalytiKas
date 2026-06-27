@@ -43,8 +43,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _validatePhone(String? value) {
     if (value == null || value.trim().isEmpty) return 'No. telepon wajib diisi';
     final phoneRegex = RegExp(r'^[0-9]{9,13}$');
-    if (!phoneRegex.hasMatch(value.trim()))
+    if (!phoneRegex.hasMatch(value.trim())) {
       return 'Format no. telepon tidak valid';
+    }
     return null;
   }
 
