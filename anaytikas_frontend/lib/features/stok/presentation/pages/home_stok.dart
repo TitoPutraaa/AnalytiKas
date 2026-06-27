@@ -2,20 +2,50 @@ import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/barang_baru.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/ops_stok.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/widgets/camera_scan.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/produk_stok_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeStok extends StatefulWidget {
-  const HomeStok({super.key});
+class Homestok extends StatefulWidget {
+  const Homestok({super.key});
 
   @override
-  State<HomeStok> createState() => _HomeStokState();
+  State<Homestok> createState() => _HomestokState();
 }
 
-class _HomeStokState extends State<HomeStok> {
-  final _kodeBarangController = TextEditingController();
+class _HomestokState extends State<Homestok> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showSearchBar = true;
+  double _lastOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final currentOffset = _scrollController.offset;
+    final scrollingDown = currentOffset > _lastOffset;
+
+    // ignore tiny jitters (e.g. iOS bounce) — only react past a small threshold
+    if ((currentOffset - _lastOffset).abs() < 4) return;
+
+    if (scrollingDown && _showSearchBar) {
+      setState(() => _showSearchBar = false);
+    } else if (!scrollingDown && !_showSearchBar) {
+      setState(() => _showSearchBar = true);
+    }
+
+    _lastOffset = currentOffset;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +79,10 @@ class _HomeStokState extends State<HomeStok> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   ),
                 ),
               ),
-
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton.icon(
@@ -72,71 +101,49 @@ class _HomeStokState extends State<HomeStok> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   ),
                 ),
               ),
             ],
           ),
 
-          Row(
-            children: [
-              TextField(
-                controller: _kodeBarangController,
-                onChanged: (value) {
-                  context.read<StokHomeProvider>().searchProduct(value);
-                },
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.lowGray),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.primary),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: const Icon(Icons.search, size: 20),
-                  hintText: 'Cari nama produk...',
-                  hintStyle: const TextStyle(
-                    fontSize: 14,
-                    color: AppColor.lowGray,
-                  ),
-                ),
-                onTapOutside: (PointerDownEvent click) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColor.black),
-                  padding: EdgeInsets.zero,
-                  fixedSize: const Size(10, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Icon(Icons.document_scanner_rounded, size: 25),
-                onPressed: () async {
-                  final scannedValue = await Navigator.of(context).push<String>(
-                    MaterialPageRoute(builder: (_) => const CameraScan()),
-                  );
-
-                  if (scannedValue != null && mounted) {
-                    setState(() {
-                      _kodeBarangController.text = scannedValue;
-                    });
-                  }
-                },
-              ),
-            ],
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            child: _showSearchBar
+                ? TextField(
+                    onChanged: (value) {
+                      context.read<StokHomeProvider>().searchProduct(value);
+                    },
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: AppColor.lowGray),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: AppColor.primary),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      hintText: 'Cari nama produk...',
+                      hintStyle: const TextStyle(
+                        fontSize: 14,
+                        color: AppColor.lowGray,
+                      ),
+                    ),
+                    onTapOutside: (PointerDownEvent click) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                  )
+                : const SizedBox(width: double.infinity, height: 0),
           ),
 
           Consumer<StokHomeProvider>(
             builder: (context, stok, child) {
               if (stok.isLoading) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
-
               if (stok.allProducts.isEmpty) {
                 return Center(
                   child: Text(
@@ -146,11 +153,12 @@ class _HomeStokState extends State<HomeStok> {
                   ),
                 );
               }
-
               return Expanded(
                 child: ListView.builder(
+                  controller:
+                      _scrollController, // ← must attach here, this is the list actually scrolling
                   itemCount: stok.allProducts.length,
-                  itemBuilder: (BuildContext context, int index) {
+                  itemBuilder: (context, index) {
                     return ProductStockCard(product: stok.allProducts[index]);
                   },
                 ),
