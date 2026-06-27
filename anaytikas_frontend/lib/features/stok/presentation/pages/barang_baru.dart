@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/pages/camera_scanner_page.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
@@ -32,7 +33,7 @@ class _BarangBaruState extends State<BarangBaru> {
   Kategori? _selectedCategory;
   final List<String> _satuan = ['Gram', 'Krat', 'Dus', "Pcs"];
   String? _selectedSatuan;
-  bool _isGrosir = false;
+  final bool _isGrosir = false;
 
   @override
   void initState() {
@@ -143,6 +144,7 @@ class _BarangBaruState extends State<BarangBaru> {
 
     if (mounted) {
       if (provider.status == Status.success) {
+        context.read<KasirProvider>().loadProduct();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Barang baru berhasil ditambahkan')),
         );

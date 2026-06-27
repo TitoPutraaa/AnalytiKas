@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/widgets/custom_alert_dialog.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
@@ -106,6 +107,8 @@ class _EditProdukState extends State<EditProduk> {
 
     if (mounted) {
       if (editProvider.status == Status.success) {
+        context.read<KasirProvider>().loadProduct();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Produk berhasil diperbarui')),
         );
@@ -158,6 +161,8 @@ class _EditProdukState extends State<EditProduk> {
 
     if (mounted) {
       if (editProvider.status == Status.success) {
+        context.read<KasirProvider>().loadProduct();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Produk berhasil diperbarui')),
         );
