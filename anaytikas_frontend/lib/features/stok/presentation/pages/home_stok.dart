@@ -91,6 +91,9 @@ class Homestok extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) {
                       return TextField(
+                        onChanged: (value) {
+                          context.read<StokHomeProvider>().filterProducts();
+                        },
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -105,7 +108,7 @@ class Homestok extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           prefixIcon: const Icon(Icons.search, size: 20),
-                          hintText: 'Cari nama produk atau SKU...',
+                          hintText: 'Cari nama produk...',
                           hintStyle: const TextStyle(
                             fontSize: 14,
                             color: AppColor.lowGray,
