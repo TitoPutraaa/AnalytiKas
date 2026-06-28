@@ -174,8 +174,9 @@ class Homekasir extends StatelessWidget {
                       itemCount: allProducts.length,
                       itemBuilder: (context, index) {
                         final product = allProducts[index];
+
                         // CardList
-                        return ProductCardItem(product: product, index: index);
+                        return ProductCardItem(product: product);
                       },
                     ),
                   );

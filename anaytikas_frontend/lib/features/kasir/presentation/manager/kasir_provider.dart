@@ -104,7 +104,7 @@ class KasirProvider extends ChangeNotifier {
     }
 
     for (final p in _allProducts) {
-      if (p.product.idProduct == 101) {
+      if (p.product.idProduct == id) {
         return p;
       }
     }

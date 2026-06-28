@@ -16,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+// TEST
+import 'core/shared/domain/presentation/manager/register_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
@@ -57,6 +60,8 @@ class MyApp extends StatelessWidget {
 
         // Auth
         ChangeNotifierProvider(create: (_) => getIt<ProfileProvider>()),
+        // TEST
+        ChangeNotifierProvider(create: (_) => getIt<RegisterProvider>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

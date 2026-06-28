@@ -34,17 +34,51 @@ import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_prod
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+
+// TEST
+import 'package:http/http.dart' as http;
+import 'package:anaytikas_frontend/core/config/api/api_helper.dart';
+import '../config/network/connectivity_helper.dart';
+import '../shared/data/datasources/remote_data_source.dart';
+import '../shared/data/datasources/token_local_data_source.dart';
+import '../shared/data/repositories/account_repository_impl.dart';
+import '../shared/domain/presentation/manager/register_provider.dart';
+import '../shared/domain/repositories/account_repository.dart';
+import '../shared/domain/usecases/register_usecase.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setup() async {
+  registerNetwork(); // TEST
   registerDatabase();
   registerDataSource();
   registerRepository();
   registerUseCase();
   registerProvider();
 }
+
+// TEST
+void registerNetwork() {
+  getIt.registerLazySingleton<http.Client>(() => http.Client());
+  getIt.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(),
+  );
+
+  getIt.registerLazySingleton<TokenLocalDataSource>(
+    () => TokenLocalDataSourceImpl(secureStorage: getIt()),
+  );
+  getIt.registerLazySingleton<ApiHelper>(
+    () => ApiHelper(
+      client: getIt(),
+      baseUrl: 'https://analitikas-system.vercel.app/api',
+    ),
+  );
+
+  getIt.registerLazySingleton<ConnectivityHelper>(() => ConnectivityHelper());
+}
+// =================
 
 void registerDatabase() {
   getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper.instance);
@@ -60,9 +94,6 @@ void registerDataSource() {
   getIt.registerLazySingleton<RiwayatLocalDataSource>(
     () => RiwayatLocalDataSourceImpl(dbHelper: getIt()),
   );
-  getIt.registerLazySingleton<ProfileLocalDatasource>(
-    () => ProfileLocalDatasourceImpl(databaseHelper: getIt()),
-  );
 }
 
 void registerRepository() {
@@ -75,6 +106,16 @@ void registerRepository() {
   getIt.registerLazySingleton<RiwayatRepository>(
     () => RiwayatRepositoryImpl(riwayatLocalDataSource: getIt()),
   );
+
+  // TEST
+  getIt.registerLazySingleton<AccountRepository>(
+    () => AccountRepositoryImpl(
+      remoteDataSource: getIt(),
+      connectivityHelper: getIt(),
+      tokenLocalDataSource: getIt(),
+    ),
+  );
+  // Auth
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
   );
@@ -107,6 +148,9 @@ void registerUseCase() {
   getIt.registerLazySingleton(() => LogoutUsecase(profilRepository: getIt()));
 
   // riwayat
+
+  // TEST
+  getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
 }
 
 void registerProvider() {
@@ -147,14 +191,5 @@ void registerProvider() {
   );
   getIt.registerFactory<TambahStokProvider>(
     () => TambahStokProvider(addStok: getIt<AddStok>()),
-  );
-
-  // Auth
-  getIt.registerFactory<ProfileProvider>(
-    () => ProfileProvider(
-      getProfileUsecase: getIt<GetProfileUsecase>(),
-      logoutUsecase: getIt<LogoutUsecase>(),
-      editProfileUsecase: getIt<EditProfileUsecase>(),
-    ),
   );
 }
