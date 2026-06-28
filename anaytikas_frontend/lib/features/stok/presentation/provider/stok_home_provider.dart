@@ -12,10 +12,11 @@ class StokHomeProvider with ChangeNotifier {
   Status status = Status.initial;
   List<ProductEntity> _allProduct = [];
   List<ProductEntity> _filteredProduct = [];
-  List<Kategori> _allCategory = [];
+  final List<Kategori> _allCategory = [];
   bool _isLoading = true;
   bool _isSearching = false;
   String message = "";
+  String _searchQuery = "";
 
   List<ProductEntity> get allProducts => _filteredProduct;
   List<Kategori> get allCategory => _allCategory;
@@ -39,26 +40,23 @@ class StokHomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // void filterProducts({String query = "", int? categoryId}) {
-  //   final isFiltering =
-  //       query.isNotEmpty || (categoryId != null && categoryId != 0);
-  //   _isSearching = isFiltering;
+  void searchProduct(String query) {
+    _searchQuery = query.trim();
+    _isSearching = _searchQuery.isNotEmpty;
+    _applyFilter();
+    notifyListeners();
+  }
 
-  //   _filteredProduct = _allProduct.where((p) {
-  //     final idProduct = p.idProduct;
-
-  //     final matchesQuery = p.namaProduct.toLowerCase().contains(
-  //       query.toLowerCase(),
-  //     );
-
-  //     final matchesQueryId = idProduct.contains(query.trim());
-
-  //     final matchesCategory =
-  //         (categoryId == null || categoryId == 0) ||
-  //         p.kategori.idKategori == categoryId;
-  //     return (matchesQuery || matchesQueryId) && matchesCategory;
-  //   }).toList();
-
-  //   notifyListeners();
-  // }
+  void _applyFilter() {
+    if (_searchQuery.isEmpty) {
+      _filteredProduct = _allProduct;
+      return;
+    }
+    final lowerQuery = _searchQuery.toLowerCase();
+    _filteredProduct = _allProduct.where((product) {
+      final nameMatch = product.namaProduct.toLowerCase().contains(lowerQuery);
+      final idMatch = product.idProduct.toString().contains(lowerQuery);
+      return nameMatch || idMatch;
+    }).toList();
+  }
 }

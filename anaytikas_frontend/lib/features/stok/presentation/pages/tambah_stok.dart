@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
@@ -66,6 +67,8 @@ class _TambahstokState extends State<Tambahstok> {
 
     if (mounted) {
       if (provider.status == Status.success) {
+        context.read<KasirProvider>().loadProduct();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Stok berhasil ditambahkan')),
         );

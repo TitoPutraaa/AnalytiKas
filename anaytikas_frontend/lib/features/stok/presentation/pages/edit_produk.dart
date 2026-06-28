@@ -1,5 +1,7 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
+import 'package:anaytikas_frontend/features/kasir/presentation/widgets/custom_alert_dialog.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
@@ -105,6 +107,62 @@ class _EditProdukState extends State<EditProduk> {
 
     if (mounted) {
       if (editProvider.status == Status.success) {
+        context.read<KasirProvider>().loadProduct();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produk berhasil diperbarui')),
+        );
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(editProvider.message)));
+      }
+    }
+  }
+
+  Future<void> _onDelete() async {
+    final editProvider = context.read<EditProductProvider>();
+
+    final namaBaru = editNamaProduct.text.trim();
+    final stokBaru = int.tryParse(editStokController.text);
+    final warningBaru = int.tryParse(editWarningStok.text);
+    final hargaJualBaru = double.tryParse(hargaJualController.text);
+    final hargaBeliBaru = double.tryParse(hargaBeliController.text);
+
+    if (namaBaru.isEmpty ||
+        stokBaru == null ||
+        warningBaru == null ||
+        hargaJualBaru == null ||
+        hargaBeliBaru == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi dengan benar')),
+      );
+      return;
+    }
+
+    final currentKategori = _selectedCategory ?? widget.product.kategori;
+
+    final updatedHarga = widget.product.harga.copyWith(
+      hargaJual: hargaJualBaru,
+      hargaBeli: hargaBeliBaru,
+    );
+
+    await editProvider.edit(
+      widget.product.idProduct,
+      currentKategori,
+      updatedHarga,
+      namaBaru,
+      stokBaru,
+      warningBaru,
+      widget.product.isGrosir,
+      false,
+    );
+
+    if (mounted) {
+      if (editProvider.status == Status.success) {
+        context.read<KasirProvider>().loadProduct();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Produk berhasil diperbarui')),
         );
@@ -410,7 +468,15 @@ class _EditProdukState extends State<EditProduk> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (context) => CustomAlertDialog(
+                            title: 'Peringatan',
+                            content:
+                                'Apakah anda yakin ingin menghapus ${widget.product.namaProduct} ?',
+                            onConfirm: _onDelete,
+                          ),
+                        );
                       },
                       icon: const Icon(
                         Icons.cancel_outlined,
@@ -427,7 +493,7 @@ class _EditProdukState extends State<EditProduk> {
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                         minimumSize: const Size(0, 55),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.redAccent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(10),
                           side: BorderSide(color: AppColor.black, width: 1),
