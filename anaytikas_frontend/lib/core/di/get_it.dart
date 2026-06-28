@@ -1,4 +1,11 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
+import 'package:anaytikas_frontend/features/auth/data/repository/profile_repository_impl.dart';
+import 'package:anaytikas_frontend/features/auth/data/sources/profile_local_datasource.dart';
+import 'package:anaytikas_frontend/features/auth/domain/repository/profile_repository.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/edit_profile_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/get_profile_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/data/datasources/kasir_local_data_source.dart';
 import 'package:anaytikas_frontend/features/kasir/data/repositories/kasir_repository_impl.dart';
 import 'package:anaytikas_frontend/features/kasir/domain/repositories/kasir_repository.dart';
@@ -53,6 +60,9 @@ void registerDataSource() {
   getIt.registerLazySingleton<RiwayatLocalDataSource>(
     () => RiwayatLocalDataSourceImpl(dbHelper: getIt()),
   );
+  getIt.registerLazySingleton<ProfileLocalDatasource>(
+    () => ProfileLocalDatasourceImpl(databaseHelper: getIt()),
+  );
 }
 
 void registerRepository() {
@@ -64,6 +74,9 @@ void registerRepository() {
   );
   getIt.registerLazySingleton<RiwayatRepository>(
     () => RiwayatRepositoryImpl(riwayatLocalDataSource: getIt()),
+  );
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
   );
 }
 
@@ -83,6 +96,15 @@ void registerUseCase() {
   getIt.registerLazySingleton(() => UpdateProduct(stokRepository: getIt()));
   getIt.registerLazySingleton(() => GetAllCategory(stokRepository: getIt()));
   getIt.registerLazySingleton(() => GetAllProducts(stokRepository: getIt()));
+
+  // Auth
+  getIt.registerLazySingleton(
+    () => GetProfileUsecase(profilRepository: getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => EditProfileUsecase(profilRepository: getIt()),
+  );
+  getIt.registerLazySingleton(() => LogoutUsecase(profilRepository: getIt()));
 
   // riwayat
 }
@@ -125,5 +147,13 @@ void registerProvider() {
   );
   getIt.registerFactory<TambahStokProvider>(
     () => TambahStokProvider(addStok: getIt<AddStok>()),
+  );
+
+  // Auth
+  getIt.registerFactory<ProfileProvider>(
+    () => ProfileProvider(
+      getProfileUsecase: getIt<GetProfileUsecase>(),
+      logoutUsecase: getIt<LogoutUsecase>(),
+    ),
   );
 }
