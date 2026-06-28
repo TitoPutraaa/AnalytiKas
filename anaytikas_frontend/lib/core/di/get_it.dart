@@ -29,15 +29,41 @@ import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
 import 'package:get_it/get_it.dart';
 
+// TEST
+import 'package:http/http.dart' as http;
+import 'package:anaytikas_frontend/core/config/api/api_helper.dart';
+import '../config/network/connectivity_helper.dart';
+import '../shared/data/datasources/remote_data_source.dart';
+import '../shared/data/repositories/account_repository_impl.dart';
+import '../shared/domain/presentation/manager/register_provider.dart';
+import '../shared/domain/repositories/account_repository.dart';
+import '../shared/domain/usecases/register_usecase.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> setup() async {
+  registerNetwork(); // TEST
   registerDatabase();
   registerDataSource();
   registerRepository();
   registerUseCase();
   registerProvider();
 }
+
+// TEST
+void registerNetwork() {
+  getIt.registerLazySingleton<http.Client>(() => http.Client());
+
+  getIt.registerLazySingleton<ApiHelper>(
+    () => ApiHelper(
+      client: getIt(),
+      baseUrl: 'https://analitikas-system.vercel.app/api',
+    ),
+  );
+
+  getIt.registerLazySingleton<ConnectivityHelper>(() => ConnectivityHelper());
+}
+// =================
 
 void registerDatabase() {
   getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper.instance);
@@ -53,6 +79,11 @@ void registerDataSource() {
   getIt.registerLazySingleton<RiwayatLocalDataSource>(
     () => RiwayatLocalDataSourceImpl(dbHelper: getIt()),
   );
+
+  // TEST
+  getIt.registerLazySingleton<RemoteDataSource>(
+    () => RemoteDataSourceImpl(apiHelper: getIt()),
+  );
 }
 
 void registerRepository() {
@@ -64,6 +95,14 @@ void registerRepository() {
   );
   getIt.registerLazySingleton<RiwayatRepository>(
     () => RiwayatRepositoryImpl(riwayatLocalDataSource: getIt()),
+  );
+
+  // TEST
+  getIt.registerLazySingleton<AccountRepository>(
+    () => AccountRepositoryImpl(
+      remoteDataSource: getIt(),
+      connectivityHelper: getIt(),
+    ),
   );
 }
 
@@ -85,6 +124,9 @@ void registerUseCase() {
   getIt.registerLazySingleton(() => GetAllProducts(stokRepository: getIt()));
 
   // riwayat
+
+  // TEST
+  getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
 }
 
 void registerProvider() {
@@ -125,5 +167,10 @@ void registerProvider() {
   );
   getIt.registerFactory<TambahStokProvider>(
     () => TambahStokProvider(addStok: getIt<AddStok>()),
+  );
+
+  // TEST
+  getIt.registerFactory<RegisterProvider>(
+    () => RegisterProvider(registerUsecase: getIt<RegisterUsecase>()),
   );
 }
