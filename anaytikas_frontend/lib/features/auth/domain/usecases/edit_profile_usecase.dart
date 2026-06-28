@@ -5,7 +5,12 @@ class EditProfileUsecase {
 
   EditProfileUsecase({required this.profilRepository});
 
-  Future<void> call(String namaToko, String noTelp, String alamat) async {
-    await profilRepository.editProfile(namaToko, noTelp, alamat);
+  Future<void> call(
+    String namaToko,
+    String noTelp,
+    String alamat,
+    int idToko,
+  ) async {
+    await profilRepository.editProfile(namaToko, noTelp, alamat, idToko);
   }
 }
