@@ -27,6 +27,7 @@ import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_prod
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
 // TEST
@@ -34,6 +35,7 @@ import 'package:http/http.dart' as http;
 import 'package:anaytikas_frontend/core/config/api/api_helper.dart';
 import '../config/network/connectivity_helper.dart';
 import '../shared/data/datasources/remote_data_source.dart';
+import '../shared/data/datasources/token_local_data_source.dart';
 import '../shared/data/repositories/account_repository_impl.dart';
 import '../shared/domain/presentation/manager/register_provider.dart';
 import '../shared/domain/repositories/account_repository.dart';
@@ -53,7 +55,13 @@ Future<void> setup() async {
 // TEST
 void registerNetwork() {
   getIt.registerLazySingleton<http.Client>(() => http.Client());
+  getIt.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(),
+  );
 
+  getIt.registerLazySingleton<TokenLocalDataSource>(
+    () => TokenLocalDataSourceImpl(secureStorage: getIt()),
+  );
   getIt.registerLazySingleton<ApiHelper>(
     () => ApiHelper(
       client: getIt(),
@@ -102,6 +110,7 @@ void registerRepository() {
     () => AccountRepositoryImpl(
       remoteDataSource: getIt(),
       connectivityHelper: getIt(),
+      tokenLocalDataSource: getIt(),
     ),
   );
 }

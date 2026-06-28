@@ -5,17 +5,11 @@ import '../../../../core/config/theme/app_color.dart';
 import '../../../../core/shared/entities/product_with_details_entity.dart';
 import '../../../../core/shared/extensions/currency_extension.dart';
 import '../manager/cart_provider.dart';
-import '../manager/kasir_provider.dart';
 
 class ProductCardItem extends StatelessWidget {
   final ProductWithDetailsEntity product;
-  final int index;
 
-  const ProductCardItem({
-    super.key,
-    required this.product,
-    required this.index,
-  });
+  const ProductCardItem({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +72,9 @@ class ProductCardItem extends StatelessWidget {
                   children: [
                     Builder(
                       builder: (context) {
-                        final warningStok = context.select<KasirProvider, int>(
-                          (w) => w.allProducts[index].product.stokWarning,
-                        );
-                        final stokValue = context.select<KasirProvider, int>(
-                          (w) => w.allProducts[index].product.jmlhStok,
-                        );
+                        final warningStok = product.product.stokWarning;
+
+                        final stokValue = product.product.jmlhStok;
                         return Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
