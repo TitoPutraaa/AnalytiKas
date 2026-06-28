@@ -35,7 +35,6 @@ class _HomestokState extends State<Homestok> {
     final currentOffset = _scrollController.offset;
     final scrollingDown = currentOffset > _lastOffset;
 
-    // ignore tiny jitters (e.g. iOS bounce) — only react past a small threshold
     if ((currentOffset - _lastOffset).abs() < 4) return;
 
     if (scrollingDown && _showSearchBar) {

@@ -1,11 +1,11 @@
-import 'package:anaytikas_frontend/features/auth/domain/repository/auth_repository.dart';
+import 'package:anaytikas_frontend/features/auth/domain/repository/profil_repository.dart';
 
 class LogoutUsecase {
-  final AuthRepository authRepository;
+  final ProfilRepository profilRepository;
 
-  LogoutUsecase({required this.authRepository});
+  LogoutUsecase({required this.profilRepository});
 
   Future<void> call() async {
-    await authRepository.logout();
+    await profilRepository.logout();
   }
 }

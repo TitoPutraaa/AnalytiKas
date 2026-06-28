@@ -1,12 +1,12 @@
 import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
-import 'package:anaytikas_frontend/features/auth/domain/repository/auth_repository.dart';
+import 'package:anaytikas_frontend/features/auth/domain/repository/profil_repository.dart';
 
 class GetProfileUsecase {
-  final AuthRepository authRepository;
+  final ProfilRepository profilRepository;
 
-  GetProfileUsecase({required this.authRepository});
+  GetProfileUsecase({required this.profilRepository});
 
   Future<ProfileEntity> call() async {
-    return await authRepository.getProfile();
+    return await profilRepository.getProfile();
   }
 }
