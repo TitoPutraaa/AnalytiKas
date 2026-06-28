@@ -154,6 +154,7 @@ void registerProvider() {
     () => ProfileProvider(
       getProfileUsecase: getIt<GetProfileUsecase>(),
       logoutUsecase: getIt<LogoutUsecase>(),
+      editProfileUsecase: getIt<EditProfileUsecase>(),
     ),
   );
 }
