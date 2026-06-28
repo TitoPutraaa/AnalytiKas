@@ -1,7 +1,7 @@
-import 'package:anaytikas_frontend/features/auth/domain/repository/profil_repository.dart';
+import 'package:anaytikas_frontend/features/auth/domain/repository/profile_repository.dart';
 
 class EditProfileUsecase {
-  final ProfilRepository profilRepository;
+  final ProfileRepository profilRepository;
 
   EditProfileUsecase({required this.profilRepository});
 

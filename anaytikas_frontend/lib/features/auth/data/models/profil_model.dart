@@ -10,17 +10,6 @@ class ProfilModel extends ProfileEntity {
     required super.alamat,
   });
 
-  factory ProfilModel.fromJson(Map<String, dynamic> json) {
-    return ProfilModel(
-      idToko: json['id_toko'] as int,
-      namaToko: json['nama_toko'] as String,
-      email: json['email'] as String,
-      noTelp: json['no_telp'] as String,
-      password: json['passsword'] as String,
-      alamat: json['alamat'] as String,
-    );
-  }
-
   factory ProfilModel.fromMap(Map<String, dynamic> map) {
     return ProfilModel(
       idToko: map['id_toko'] as int,

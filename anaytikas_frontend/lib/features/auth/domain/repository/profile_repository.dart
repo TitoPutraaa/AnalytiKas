@@ -1,6 +1,6 @@
 import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
 
-abstract class ProfilRepository {
+abstract class ProfileRepository {
   Future<ProfileEntity> getProfile();
   Future<void> editProfile(String namaToko, String noTelp, String alamat);
   Future<void> logout();
