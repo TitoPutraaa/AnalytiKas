@@ -66,6 +66,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     await editProvider.editProfile(namatoko, noTlp, alamat, idToko);
 
     if (namatoko.isEmpty || noTlp.isEmpty || alamat.isEmpty) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Semua field harus di isi dengan benar')),
       );
@@ -83,6 +84,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } else {
       ScaffoldMessenger.of(
+        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(SnackBar(content: Text(editProvider.message)));
     }

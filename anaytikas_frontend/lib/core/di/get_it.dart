@@ -94,6 +94,9 @@ void registerDataSource() {
   getIt.registerLazySingleton<RiwayatLocalDataSource>(
     () => RiwayatLocalDataSourceImpl(dbHelper: getIt()),
   );
+  getIt.registerLazySingleton<ProfileLocalDatasource>(
+    () => ProfileLocalDatasourceImpl(databaseHelper: getIt()),
+  );
 }
 
 void registerRepository() {
@@ -191,5 +194,14 @@ void registerProvider() {
   );
   getIt.registerFactory<TambahStokProvider>(
     () => TambahStokProvider(addStok: getIt<AddStok>()),
+  );
+
+  // Auth
+  getIt.registerFactory<ProfileProvider>(
+    () => ProfileProvider(
+      getProfileUsecase: getIt<GetProfileUsecase>(),
+      logoutUsecase: getIt<LogoutUsecase>(),
+      editProfileUsecase: getIt<EditProfileUsecase>(),
+    ),
   );
 }
