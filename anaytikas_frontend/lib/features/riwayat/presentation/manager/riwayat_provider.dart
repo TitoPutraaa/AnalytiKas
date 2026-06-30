@@ -20,9 +20,14 @@ class RiwayatProvider extends ChangeNotifier {
 
   Future<void> loadRiwayat() async {
     isLoading = true;
-    notifyListeners();
-    _riwayat = await getRiwayat();
-    isLoading = false;
-    notifyListeners();
+
+    try {
+      _riwayat = await getRiwayat();
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 }

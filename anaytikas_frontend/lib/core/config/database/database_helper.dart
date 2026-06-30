@@ -96,8 +96,7 @@ class DatabaseHelper {
         tanggal $textType,
         waktu $textType,
         total_item $intType,
-        total_harga $doubleType,
-        uang_masuk $doubleType
+        total_harga $doubleType
       )
     ''');
     // 7. Tabel pembelian
