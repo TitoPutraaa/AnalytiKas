@@ -210,6 +210,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       'email': email,
       'token': token,
     });
-    return AnalisisModel.fromJson(data);
+
+    final datalist = data["data"] as List<dynamic>;
+
+    if (datalist.isEmpty) {
+      throw Exception("Data Analisis Kosong");
+    }
+
+    final getFirst = datalist.first as Map<String, dynamic>;
+    return AnalisisModel.fromJson(getFirst);
   }
 }
