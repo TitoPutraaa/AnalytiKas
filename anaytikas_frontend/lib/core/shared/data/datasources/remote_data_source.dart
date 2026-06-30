@@ -204,9 +204,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<Map<String, dynamic>> analitcLaba(String email, String token) {
-    return apiHelper.post('/getdata/productpenjualan', {
-      'email': email,
-      'token': token,
-    });
+    return apiHelper.post('/wh/laba/latest', {'email': email, 'token': token});
   }
 }
