@@ -37,6 +37,8 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
     List<Map<String, dynamic>> items,
   ) async {
     final db = await dbHelper.database;
+    print(items);
+    print(penjualan);
     int newId = await db.transaction((txn) async {
       // 1. Save penjualan
       int id = await txn.insert('penjualan', penjualan);
@@ -55,6 +57,7 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
       }
       return id;
     });
+    print(newId);
     return newId;
   }
 

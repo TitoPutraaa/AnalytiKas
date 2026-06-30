@@ -19,6 +19,8 @@ import 'package:anaytikas_frontend/features/kasir/presentation/manager/nota_penj
 import 'package:anaytikas_frontend/features/riwayat/data/datasources/riwayat_local_data_source.dart';
 import 'package:anaytikas_frontend/features/riwayat/data/repositories/riwayat_repository_impl.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/repositories/riwayat_repository.dart';
+import 'package:anaytikas_frontend/features/riwayat/domain/usecases/get_riwayat_usecase.dart';
+import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/data/repository/stok_repository_impl.dart';
 import 'package:anaytikas_frontend/features/stok/data/sources/stok_local_datasource.dart';
 import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
@@ -107,7 +109,7 @@ void registerRepository() {
     () => StokRepositoryImpl(datasource: getIt()),
   );
   getIt.registerLazySingleton<RiwayatRepository>(
-    () => RiwayatRepositoryImpl(riwayatLocalDataSource: getIt()),
+    () => RiwayatRepositoryImpl(localDataSource: getIt()),
   );
 
   // TEST
@@ -151,6 +153,7 @@ void registerUseCase() {
   getIt.registerLazySingleton(() => LogoutUsecase(profilRepository: getIt()));
 
   // riwayat
+  getIt.registerLazySingleton(() => GetRiwayatUsecase(getIt()));
 
   // TEST
   getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
@@ -194,6 +197,11 @@ void registerProvider() {
   );
   getIt.registerFactory<TambahStokProvider>(
     () => TambahStokProvider(addStok: getIt<AddStok>()),
+  );
+
+  // riwayat
+  getIt.registerFactory<RiwayatProvider>(
+    () => RiwayatProvider(getRiwayat: getIt<GetRiwayatUsecase>()),
   );
 
   // Auth
