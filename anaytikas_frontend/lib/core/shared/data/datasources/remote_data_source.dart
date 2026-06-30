@@ -1,3 +1,5 @@
+import 'package:anaytikas_frontend/features/analisis/data/models/analisis_model.dart';
+
 import '../../../config/api/api_helper.dart';
 
 abstract class RemoteDataSource {
@@ -50,7 +52,7 @@ abstract class RemoteDataSource {
 
   // ETL
   Future<Map<String, dynamic>> etlBegin(String email, String token);
-  Future<Map<String, dynamic>> analitcLaba(String email, String token);
+  Future<AnalisisModel> analitcLaba(String email, String token);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -203,7 +205,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>> analitcLaba(String email, String token) {
-    return apiHelper.post('/wh/laba/latest', {'email': email, 'token': token});
+  Future<AnalisisModel> analitcLaba(String email, String token) async {
+    var data = await apiHelper.post('/wh/laba/latest', {
+      'email': email,
+      'token': token,
+    });
+    return AnalisisModel.fromJson(data);
   }
 }

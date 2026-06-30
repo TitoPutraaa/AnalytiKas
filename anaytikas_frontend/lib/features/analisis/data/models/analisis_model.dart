@@ -18,7 +18,7 @@ class AnalisisModel extends AnalisisEntitiy {
       brutto: (json['brutto'] as num).toDouble(),
       netto: (json['netto'] as num).toDouble(),
       margin: (json['margin'] as num).toDouble(),
-      presentase: (json['presentasi'] as num).toDouble(),
+      presentase: (json['presentase'] as num).toDouble(),
       tahun: json['tahun'] as int,
       totalBiayaOperasional: (json['total_biaya_operasional'] as num)
           .toDouble(),
