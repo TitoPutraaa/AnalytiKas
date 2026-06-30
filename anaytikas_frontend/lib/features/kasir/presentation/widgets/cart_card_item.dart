@@ -1,15 +1,16 @@
+import '../../../../core/shared/extensions/currency_extension.dart';
+import '../../domain/entities/cart_item_entity.dart';
+import '../manager/cart_provider.dart';
+import 'custom_alert_dialog.dart';
+import 'package:provider/provider.dart';
+
 import '../../../../core/config/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
-class CartCardItem extends StatefulWidget {
-  const CartCardItem({super.key});
+class CartCardItem extends StatelessWidget {
+  final CartItemEntity product;
+  const CartCardItem({super.key, required this.product});
 
-  @override
-  State<CartCardItem> createState() => _CartCardItemState();
-}
-
-class _CartCardItemState extends State<CartCardItem> {
-  bool _isChecked = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +20,7 @@ class _CartCardItemState extends State<CartCardItem> {
         border: BoxBorder.all(color: AppColor.lowGray, width: 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -29,25 +30,24 @@ class _CartCardItemState extends State<CartCardItem> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Kopi Arabika Premium Flores Gayo',
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  Text(
+                    product.namaProduct,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     // maxLines: 1,
                     // overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'KODE: KOP-0011212',
-                    style: TextStyle(color: Colors.grey, fontSize: 10),
+                  Text(
+                    'KODE: ${product.idProduct}',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   const SizedBox(height: 8),
-                  const Text.rich(
+                  Text.rich(
                     TextSpan(
                       text: 'Harga:  ',
-                      style: TextStyle(fontSize: 12),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Rp. 10.000',
+                          text: product.hargaJual.toRupiah(),
                           style: TextStyle(
                             color: AppColor.primary,
                             fontWeight: FontWeight.w500,
@@ -56,31 +56,27 @@ class _CartCardItemState extends State<CartCardItem> {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      Transform.scale(
-                        scale: 0.8,
-                        child: Checkbox(
-                          visualDensity: VisualDensity.compact,
-                          value: _isChecked,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              _isChecked = newValue!;
-                            });
-                          },
-                          activeColor: AppColor.primary,
-                        ),
-                      ),
-                      Text(
-                        "Harga Grosir",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColor.primary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
+                  product.isGrosir
+                      ? Column(
+                          children: [
+                            SizedBox(height: 5),
+                            Row(
+                              children: [
+                                Icon(Icons.check_box, color: AppColor.primary),
+                                SizedBox(width: 4),
+                                const Text(
+                                  "Harga Grosir",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColor.primary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : SizedBox(),
                 ],
               ),
             ),
@@ -106,8 +102,27 @@ class _CartCardItemState extends State<CartCardItem> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-
-                      onPressed: () {},
+                      onPressed: () {
+                        if (product.quantity == 1) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => CustomAlertDialog(
+                              title: 'Peringatan',
+                              content:
+                                  'Apakah anda yakin ingin menghapus ${product.namaProduct} dari keranjang?',
+                              onConfirm: () {
+                                context.read<CartProvider>().reduceItem(
+                                  product.idProduct,
+                                );
+                              },
+                            ),
+                          );
+                        } else {
+                          context.read<CartProvider>().reduceItem(
+                            product.idProduct,
+                          );
+                        }
+                      },
                       child: Icon(Icons.remove, color: AppColor.darkGray),
                     ),
                     SizedBox(width: 5),
@@ -120,11 +135,11 @@ class _CartCardItemState extends State<CartCardItem> {
                         color: AppColor.lowGray.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text(
-                        '10',
+                      child: Text(
+                        '${product.quantity}',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontSize: 14,
                         ),
                       ),
                     ),
@@ -143,8 +158,9 @@ class _CartCardItemState extends State<CartCardItem> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<CartProvider>().addItem(product.idProduct);
+                      },
                       child: Icon(Icons.add, color: AppColor.darkGray),
                     ),
                   ],

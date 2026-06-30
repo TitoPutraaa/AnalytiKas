@@ -5,11 +5,15 @@ class CategoriDropdown extends StatelessWidget {
   final String? selectedItem;
   final List<String> categories;
   final ValueChanged onChanged;
+  final String hintTxt;
+  final IconData? icon;
   const CategoriDropdown({
     super.key,
     required this.selectedItem,
     required this.categories,
     required this.onChanged,
+    required this.hintTxt,
+    this.icon,
   });
 
   @override
@@ -26,11 +30,11 @@ class CategoriDropdown extends StatelessWidget {
           value: selectedItem,
           isExpanded: true,
           hint: Row(
-            children: const [
-              Icon(Icons.category_outlined, color: AppColor.lowGray, size: 18),
+            children: [
+              Icon(icon, color: AppColor.lowGray, size: 18),
               SizedBox(width: 8),
               Text(
-                'Pilih Kategori...',
+                hintTxt,
                 style: TextStyle(color: AppColor.lowGray, fontSize: 14),
               ),
             ],

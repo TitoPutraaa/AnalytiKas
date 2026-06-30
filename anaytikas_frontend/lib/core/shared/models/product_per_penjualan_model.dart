@@ -15,6 +15,16 @@ class ProductPerPenjualanModel extends ProductPerPenjualanEntity {
     );
   }
 
+  factory ProductPerPenjualanModel.fromEntity(
+    ProductPerPenjualanEntity entity,
+  ) {
+    return ProductPerPenjualanModel(
+      idPenjualan: entity.idPenjualan,
+      idProduct: entity.idProduct,
+      jumlah: entity.jumlah,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id_penjualan': idProduct,

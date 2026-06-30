@@ -1,8 +1,12 @@
-import '../../../../core/config/theme/app_color.dart';
-import 'pembayaran_page.dart';
-import '../widgets/cart_card_item.dart';
-// import 'package:anaytikas_frontend/features/kasir/presentation/widgets/product_card_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../core/config/theme/app_color.dart';
+import '../../../../core/shared/extensions/currency_extension.dart';
+import '../manager/cart_provider.dart';
+import '../widgets/cart_card_item.dart';
+import '../widgets/custom_alert.dart';
+import 'pembayaran_page.dart';
 
 class KeranjangPage extends StatelessWidget {
   const KeranjangPage({super.key});
@@ -36,18 +40,51 @@ class KeranjangPage extends StatelessWidget {
                     color: AppColor.lowGray.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text('3 unit', style: TextStyle(fontSize: 12)),
+                  child: Builder(
+                    builder: (context) {
+                      final length = context.select<CartProvider, int>(
+                        (c) => c.items.length,
+                      );
+                      return Text('$length unit');
+                    },
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return CartCardItem();
-                },
-              ),
+
+            Consumer<CartProvider>(
+              builder: (context, cart, child) {
+                final listProduct = cart.items.values.toList();
+                if (cart.items.isEmpty) {
+                  return Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Center(
+                          child: Text(
+                            'Keranjang anda kosong. ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 100),
+                      ],
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: listProduct.length,
+                    itemBuilder: (context, index) {
+                      final product = listProduct[index];
+                      return CartCardItem(product: product);
+                    },
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -74,28 +111,49 @@ class KeranjangPage extends StatelessWidget {
                   Text(
                     'TOTAL BELANJA ',
                     style: TextStyle(
-                      fontSize: 13,
-                      color: AppColor.darkGray.withValues(alpha: 0.5),
+                      fontSize: 16,
+                      color: AppColor.darkGray,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    'Rp. 316.000',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColor.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final totalSeluruhHarga = context
+                          .select<CartProvider, double>(
+                            (c) => c.totalSeluruhHarga,
+                          );
+                      return Text(
+                        totalSeluruhHarga.toRupiah(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColor.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PembayaranPage()),
-                  );
+                  final product = context.read<CartProvider>().items;
+
+                  if (product.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PembayaranPage()),
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomAlert(
+                        title: 'Keranjang Kosong',
+                        content:
+                            'Maaf keranjang anda kosong. Harap pilih produk terlebih dahulu',
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -110,7 +168,10 @@ class KeranjangPage extends StatelessWidget {
                     SizedBox(width: 15),
                     Text(
                       'Buat Pesanan',
-                      style: TextStyle(fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ),

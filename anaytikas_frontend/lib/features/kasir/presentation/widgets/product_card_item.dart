@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/config/theme/app_color.dart';
+import '../../../../core/shared/entities/product_with_details_entity.dart';
+import '../../../../core/shared/extensions/currency_extension.dart';
+import '../manager/cart_provider.dart';
 
 class ProductCardItem extends StatelessWidget {
-  const ProductCardItem({super.key});
+  final ProductWithDetailsEntity product;
+
+  const ProductCardItem({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +20,7 @@ class ProductCardItem extends StatelessWidget {
         border: BoxBorder.all(color: AppColor.lowGray, width: 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -23,26 +29,25 @@ class ProductCardItem extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'Kopi Arabika Premium Flores Gayo',
+                    product.product.namaProduct,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     // maxLines: 1,
                     // overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'KODE: KOP-0011212',
+                    'KODE: ${product.product.idProduct}',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   SizedBox(height: 8),
                   Text.rich(
                     TextSpan(
                       text: 'Harga:  ',
-                      style: TextStyle(),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Rp. 10.000',
+                          text: product.harga.hargaJual.toRupiah(),
                           style: TextStyle(
                             color: AppColor.primary,
                             fontWeight: FontWeight.w500,
@@ -65,23 +70,36 @@ class ProductCardItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'Stok ada',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 10,
-                        ),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final warningStok = product.product.stokWarning;
+
+                        final stokValue = product.product.jmlhStok;
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: warningStok <= stokValue
+                                ? Colors.green.withValues(alpha: 0.2)
+                                : Colors.red.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            warningStok <= stokValue
+                                ? 'Stok ada'
+                                : 'Stok menipis ($stokValue)',
+                            style: TextStyle(
+                              color: warningStok <= stokValue
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 10,
+                            ),
+                          ),
+                        );
+                      },
                     ),
 
                     ElevatedButton(
@@ -91,7 +109,7 @@ class ProductCardItem extends StatelessWidget {
                         ),
                         padding: EdgeInsets.symmetric(
                           horizontal: 14,
-                          vertical: 18,
+                          vertical: 14,
                         ),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -100,7 +118,30 @@ class ProductCardItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        final cart = context.read<CartProvider>();
+                        if (cart.isProductInCart(product.product.idProduct)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${product.product.namaProduct} sudah di keranjang!',
+                              ),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        } else {
+                          cart.addItemToCart(product);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${product.product.namaProduct} berhasil ditambahkan!',
+                              ),
+
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        }
+                      },
                       child: const Icon(Icons.shopping_cart, size: 18),
                     ),
                   ],

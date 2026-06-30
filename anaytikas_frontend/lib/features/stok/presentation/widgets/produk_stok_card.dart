@@ -1,17 +1,20 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/product.dart';
+import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/edit_produk.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/tambah_stok.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:provider/provider.dart';
 
 class ProductStockCard extends StatelessWidget {
-  final Product product;
+  final ProductEntity product;
 
   const ProductStockCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStock = product.jmlhStok <= product.minStok;
+    bool isLowStock = product.jmlhStok <= product.stokWarning;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
@@ -55,7 +58,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Kategori: ${product.idKategori}",
+                        "Kategori: ${product.kategori.namaKategori}",
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade600,
@@ -63,7 +66,7 @@ class ProductStockCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "Rp ${product.harga.toStringAsFixed(0)}",
+                        "Rp ${product.harga.hargaJual.toThoushandsSeparator()}",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -98,6 +101,14 @@ class ProductStockCard extends StatelessWidget {
                               : Colors.green.shade700,
                         ),
                       ),
+
+                      Text(
+                        "${product.harga.satuan}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -118,12 +129,15 @@ class ProductStockCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
+                    onPressed: () async {
+                      final result = await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => EditProduk(product: product),
                         ),
                       );
+                      if (result == true && context.mounted) {
+                        context.read<StokHomeProvider>().getAllProducts();
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.white,
@@ -147,12 +161,15 @@ class ProductStockCard extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
+                    onPressed: () async {
+                      final result = await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => Tambahstok(product: product),
                         ),
                       );
+                      if (result == true && context.mounted) {
+                        context.read<StokHomeProvider>().getAllProducts();
+                      }
                     },
                     label: Text(
                       "Stok",

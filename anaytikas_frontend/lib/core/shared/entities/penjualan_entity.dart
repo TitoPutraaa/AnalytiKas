@@ -4,7 +4,6 @@ class PenjualanEntity {
   final String waktu;
   final int totalItem;
   final double totalHarga;
-  final double uangMasuk;
 
   PenjualanEntity({
     required this.idPenjualan,
@@ -12,6 +11,5 @@ class PenjualanEntity {
     required this.waktu,
     required this.totalItem,
     required this.totalHarga,
-    required this.uangMasuk,
   });
 }

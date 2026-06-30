@@ -96,7 +96,8 @@ class DatabaseHelper {
         tanggal $textType,
         waktu $textType,
         total_item $intType,
-        total_harga $doubleType
+        total_harga $doubleType,
+        uang_masuk $doubleType
       )
     ''');
     // 7. Tabel pembelian
@@ -105,7 +106,6 @@ class DatabaseHelper {
         id_pembelian $idTypeInc,
         tanggal $textType,
         waktu $textType,
-        total_item $intType,
         total_harga $doubleType
       )
     ''');
@@ -355,143 +355,143 @@ class DatabaseHelper {
       'stok_warning': 5,
     });
 
-    // ── PENJUALAN ─────────────────────────────
-    await db.insert('penjualan', {
-      'tanggal': '2026-06-20',
-      'waktu': '08:30',
-      'total_item': 3,
-      'total_harga': 9000.0,
-    }); // id: 1
+    // // ── PENJUALAN ─────────────────────────────
+    // await db.insert('penjualan', {
+    //   'tanggal': '2026-06-20',
+    //   'waktu': '08:30',
+    //   'total_item': 3,
+    //   'total_harga': 9000.0,
+    // }); // id: 1
 
-    await db.insert('penjualan', {
-      'tanggal': '2026-06-20',
-      'waktu': '11:15',
-      'total_item': 2,
-      'total_harga': 23000.0,
-    }); // id: 2
+    // await db.insert('penjualan', {
+    //   'tanggal': '2026-06-20',
+    //   'waktu': '11:15',
+    //   'total_item': 2,
+    //   'total_harga': 23000.0,
+    // }); // id: 2
 
-    await db.insert('penjualan', {
-      'tanggal': '2026-06-21',
-      'waktu': '09:00',
-      'total_item': 4,
-      'total_harga': 29000.0,
-    }); // id: 3
+    // await db.insert('penjualan', {
+    //   'tanggal': '2026-06-21',
+    //   'waktu': '09:00',
+    //   'total_item': 4,
+    //   'total_harga': 29000.0,
+    // }); // id: 3
 
-    await db.insert('penjualan', {
-      'tanggal': '2026-06-22',
-      'waktu': '14:45',
-      'total_item': 1,
-      'total_harga': 15000.0,
-    }); // id: 4
+    // await db.insert('penjualan', {
+    //   'tanggal': '2026-06-22',
+    //   'waktu': '14:45',
+    //   'total_item': 1,
+    //   'total_harga': 15000.0,
+    // }); // id: 4
 
-    // ── PRODUCT PER PENJUALAN ─────────────────
-    // Penjualan 1: 3x Indomie Ecer
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 1,
-      'id_product': '7989243',
-      'jumlah': 3,
-    });
+    // // ── PRODUCT PER PENJUALAN ─────────────────
+    // // Penjualan 1: 3x Indomie Ecer
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 1,
+    //   'id_product': '7989243',
+    //   'jumlah': 3,
+    // });
 
-    // Penjualan 2: 1x Coca Cola Ecer + 1x Teh Botol
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 2,
-      'id_product': '877060',
-      'jumlah': 1,
-    });
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 2,
-      'id_product': '334512',
-      'jumlah': 3,
-    });
+    // // Penjualan 2: 1x Coca Cola Ecer + 1x Teh Botol
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 2,
+    //   'id_product': '877060',
+    //   'jumlah': 1,
+    // });
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 2,
+    //   'id_product': '334512',
+    //   'jumlah': 3,
+    // });
 
-    // Penjualan 3: 2x Indomie Ecer + 1x Chitato + 1x Teh Botol
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 3,
-      'id_product': '7989243',
-      'jumlah': 2,
-    });
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 3,
-      'id_product': '556677',
-      'jumlah': 1,
-    });
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 3,
-      'id_product': '334512',
-      'jumlah': 1,
-    });
+    // // Penjualan 3: 2x Indomie Ecer + 1x Chitato + 1x Teh Botol
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 3,
+    //   'id_product': '7989243',
+    //   'jumlah': 2,
+    // });
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 3,
+    //   'id_product': '556677',
+    //   'jumlah': 1,
+    // });
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 3,
+    //   'id_product': '334512',
+    //   'jumlah': 1,
+    // });
 
-    // Penjualan 4: 1x Beras Premium
-    await db.insert('product_per_penjualan', {
-      'id_penjualan': 4,
-      'id_product': '8761234',
-      'jumlah': 1,
-    });
+    // // Penjualan 4: 1x Beras Premium
+    // await db.insert('product_per_penjualan', {
+    //   'id_penjualan': 4,
+    //   'id_product': '8761234',
+    //   'jumlah': 1,
+    // });
 
-    // ── PEMBELIAN ─────────────────────────────
-    await db.insert('pembelian', {
-      'tanggal': '2026-06-18',
-      'waktu': '10:00',
-      'total_item': 2,
-      'total_harga': 56000.0,
-    }); // id: 1
+    // // ── PEMBELIAN ─────────────────────────────
+    // await db.insert('pembelian', {
+    //   'tanggal': '2026-06-18',
+    //   'waktu': '10:00',
+    //   'total_item': 2,
+    //   'total_harga': 56000.0,
+    // }); // id: 1
 
-    await db.insert('pembelian', {
-      'tanggal': '2026-06-19',
-      'waktu': '13:30',
-      'total_item': 3,
-      'total_harga': 76000.0,
-    }); // id: 2
+    // await db.insert('pembelian', {
+    //   'tanggal': '2026-06-19',
+    //   'waktu': '13:30',
+    //   'total_item': 3,
+    //   'total_harga': 76000.0,
+    // }); // id: 2
 
-    // ── PRODUCT PER PEMBELIAN ─────────────────
-    // Pembelian 1: 2x Indomie Dus
-    await db.insert('product_per_pembelian', {
-      'id_pembelian': 1,
-      'id_product': '979876',
-      'jumlah': 2,
-    });
+    // // ── PRODUCT PER PEMBELIAN ─────────────────
+    // // Pembelian 1: 2x Indomie Dus
+    // await db.insert('product_per_pembelian', {
+    //   'id_pembelian': 1,
+    //   'id_product': '979876',
+    //   'jumlah': 2,
+    // });
 
-    // Pembelian 2: 1x Coca Cola Karton + 1x Beras + 1x Sabun
-    await db.insert('product_per_pembelian', {
-      'id_pembelian': 2,
-      'id_product': '877061',
-      'jumlah': 1,
-    });
-    await db.insert('product_per_pembelian', {
-      'id_pembelian': 2,
-      'id_product': '8761234',
-      'jumlah': 1,
-    });
-    await db.insert('product_per_pembelian', {
-      'id_pembelian': 2,
-      'id_product': '112233',
-      'jumlah': 1,
-    });
+    // // Pembelian 2: 1x Coca Cola Karton + 1x Beras + 1x Sabun
+    // await db.insert('product_per_pembelian', {
+    //   'id_pembelian': 2,
+    //   'id_product': '877061',
+    //   'jumlah': 1,
+    // });
+    // await db.insert('product_per_pembelian', {
+    //   'id_pembelian': 2,
+    //   'id_product': '8761234',
+    //   'jumlah': 1,
+    // });
+    // await db.insert('product_per_pembelian', {
+    //   'id_pembelian': 2,
+    //   'id_product': '112233',
+    //   'jumlah': 1,
+    // });
 
-    // ── BIAYA OPERASIONAL ─────────────────────
-    await db.insert('biaya_operasional', {
-      'nama': 'Bayar Listrik',
-      'total_biaya': 150000.0,
-      'tanggal': '2026-06-18',
-      'waktu': '09:00',
-    });
-    await db.insert('biaya_operasional', {
-      'nama': 'Beli Plastik Kresek',
-      'total_biaya': 25000.0,
-      'tanggal': '2026-06-19',
-      'waktu': '08:30',
-    });
-    await db.insert('biaya_operasional', {
-      'nama': 'Servis Etalase',
-      'total_biaya': 75000.0,
-      'tanggal': '2026-06-21',
-      'waktu': '15:00',
-    });
-    await db.insert('biaya_operasional', {
-      'nama': 'Bayar Internet',
-      'total_biaya': 200000.0,
-      'tanggal': '2026-06-22',
-      'waktu': '10:00',
-    });
+    // // ── BIAYA OPERASIONAL ─────────────────────
+    // await db.insert('biaya_operasional', {
+    //   'nama': 'Bayar Listrik',
+    //   'total_biaya': 150000.0,
+    //   'tanggal': '2026-06-18',
+    //   'waktu': '09:00',
+    // });
+    // await db.insert('biaya_operasional', {
+    //   'nama': 'Beli Plastik Kresek',
+    //   'total_biaya': 25000.0,
+    //   'tanggal': '2026-06-19',
+    //   'waktu': '08:30',
+    // });
+    // await db.insert('biaya_operasional', {
+    //   'nama': 'Servis Etalase',
+    //   'total_biaya': 75000.0,
+    //   'tanggal': '2026-06-21',
+    //   'waktu': '15:00',
+    // });
+    // await db.insert('biaya_operasional', {
+    //   'nama': 'Bayar Internet',
+    //   'total_biaya': 200000.0,
+    //   'tanggal': '2026-06-22',
+    //   'waktu': '10:00',
+    // });
   }
 }

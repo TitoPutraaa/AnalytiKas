@@ -6,11 +6,12 @@ class SaveTransactionUsecase {
   final KasirRepository repository;
   SaveTransactionUsecase(this.repository);
 
-  Future<void> call(
-    PenjualanEntity header,
+  Future<int> call(
+    PenjualanEntity penjualan,
     List<ProductPerPenjualanEntity> items,
   ) async {
-    if (header.totalHarga <= 0) throw Exception('Total Harga tidak boleh 0');
-    return await repository.saveTransaction(header, items);
+    if (penjualan.totalHarga <= 0) throw Exception('Total Harga tidak boleh 0');
+    final idPenjualan = await repository.saveTransaction(penjualan, items);
+    return idPenjualan;
   }
 }

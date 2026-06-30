@@ -1,6 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_entry_entity.dart';
-
 import 'package:flutter/material.dart';
 
 class PembelianCard extends StatelessWidget {
@@ -48,11 +48,11 @@ class PembelianCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '-${data.totalHarga}',
+                      '- ${data.totalHarga.toRupiah()}',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: AppColor.primary,
+                        color: Colors.red,
                       ),
                     ),
                   ],

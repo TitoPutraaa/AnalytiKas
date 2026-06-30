@@ -4,22 +4,24 @@ import 'package:flutter/services.dart';
 
 class OutlinedField extends StatelessWidget {
   final TextEditingController controller;
-  final String hintText;
+  final String? hintText;
   final TextInputType keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final Widget? prefixIcon;
   final Widget? prefix;
+  final String? preFixText;
   final TextAlign textAlign;
 
   const OutlinedField({
     super.key,
     required this.controller,
-    required this.hintText,
+    this.hintText,
     this.keyboardType = TextInputType.text,
     this.textAlign = TextAlign.left,
     this.inputFormatters,
     this.prefixIcon,
     this.prefix,
+    this.preFixText,
   });
 
   @override
@@ -50,6 +52,7 @@ class OutlinedField extends StatelessWidget {
           border: InputBorder.none,
           prefixIcon: prefixIcon,
           prefix: prefix,
+          prefixText: preFixText,
           contentPadding: prefixIcon != null || prefix != null
               ? const EdgeInsets.symmetric(vertical: 14)
               : const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
