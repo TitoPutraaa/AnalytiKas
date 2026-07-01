@@ -2,7 +2,7 @@ import 'package:anaytikas_frontend/features/auth/presentation/pages/profile_page
 import 'package:anaytikas_frontend/features/stok/presentation/pages/home_stok.dart';
 
 import '../../core/config/theme/app_color.dart';
-import '../../features/analisis/presentation/pages/homeAnalisis.dart';
+import '../../features/analisis/presentation/pages/home_analisis.dart';
 import '../../features/kasir/presentation/pages/home_kasir.dart';
 import '../../features/riwayat/presentation/pages/homeRiwayat.dart';
 import 'package:flutter/material.dart';
