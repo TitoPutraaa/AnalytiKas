@@ -1,3 +1,4 @@
+import 'package:anaytikas_frontend/features/analisis/presentation/pages/homeAnalisis.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/profile_page.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/home_stok.dart';
 
