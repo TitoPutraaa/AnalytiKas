@@ -1,4 +1,9 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
+import 'package:anaytikas_frontend/core/shared/data/datasources/remote_data_source.dart';
+import 'package:anaytikas_frontend/features/analisis/data/repository/analisis_repository_impl.dart';
+import 'package:anaytikas_frontend/features/analisis/domain/repository/analisis_repository.dart';
+import 'package:anaytikas_frontend/features/analisis/domain/usecases/get_analisis.dart';
+import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:anaytikas_frontend/features/auth/data/repository/profile_repository_impl.dart';
 import 'package:anaytikas_frontend/features/auth/data/sources/profile_local_datasource.dart';
 import 'package:anaytikas_frontend/features/auth/domain/repository/profile_repository.dart';
@@ -43,10 +48,8 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:anaytikas_frontend/core/config/api/api_helper.dart';
 import '../config/network/connectivity_helper.dart';
-import '../shared/data/datasources/remote_data_source.dart';
 import '../shared/data/datasources/token_local_data_source.dart';
 import '../shared/data/repositories/account_repository_impl.dart';
-import '../shared/domain/presentation/manager/register_provider.dart';
 import '../shared/domain/repositories/account_repository.dart';
 import '../shared/domain/usecases/register_usecase.dart';
 
@@ -99,6 +102,9 @@ void registerDataSource() {
   getIt.registerLazySingleton<ProfileLocalDatasource>(
     () => ProfileLocalDatasourceImpl(databaseHelper: getIt()),
   );
+  getIt.registerLazySingleton<RemoteDataSource>(
+    () => RemoteDataSourceImpl(apiHelper: getIt()),
+  );
 }
 
 void registerRepository() {
@@ -123,6 +129,13 @@ void registerRepository() {
   // Auth
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
+  );
+  // Analisis
+  getIt.registerLazySingleton<AnalisisRepository>(
+    () => AnalisisRepositoryImpl(
+      remoteDataSource: getIt(),
+      connectivityHelper: ConnectivityHelper(),
+    ),
   );
 }
 
@@ -157,6 +170,8 @@ void registerUseCase() {
 
   // TEST
   getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
+  // Analisis
+  getIt.registerLazySingleton(() => GetAnalisis(analisisRepository: getIt()));
 }
 
 void registerProvider() {
@@ -211,5 +226,10 @@ void registerProvider() {
       logoutUsecase: getIt<LogoutUsecase>(),
       editProfileUsecase: getIt<EditProfileUsecase>(),
     ),
+  );
+
+  // Analisis
+  getIt.registerFactory<AnalisisProvider>(
+    () => AnalisisProvider(getAnalisis: getIt<GetAnalisis>()),
   );
 }

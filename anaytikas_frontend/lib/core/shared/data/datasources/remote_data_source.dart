@@ -212,9 +212,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     });
 
     final datalist = data["data"] as List<dynamic>;
+    final check = data['success'] as bool;
 
     if (datalist.isEmpty) {
       throw Exception("Data Analisis Kosong");
+    }
+
+    if (check) {
+      throw Exception("Gagal Memuat Analisis Data");
     }
 
     final getFirst = datalist.first as Map<String, dynamic>;
