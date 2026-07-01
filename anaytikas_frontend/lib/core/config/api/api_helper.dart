@@ -20,7 +20,12 @@ class ApiHelper {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(body),
           )
-          .timeout(const Duration(seconds: 15));
+          .timeout(const Duration(seconds: 30));
+
+      if (respone.statusCode != 200) {
+        print("DEBUG: Status Code: ${respone.statusCode}");
+        print("DEBUG: Response Body: ${respone.body}");
+      }
       final json = jsonDecode(respone.body) as Map<String, dynamic>;
 
       if (respone.statusCode == 200) {

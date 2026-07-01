@@ -34,6 +34,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:anaytikas_frontend/core/config/api/api_helper.dart';
 import '../config/network/connectivity_helper.dart';
+import '../shared/data/datasources/local_data_source.dart';
 import '../shared/data/datasources/remote_data_source.dart';
 import '../shared/data/datasources/token_local_data_source.dart';
 import '../shared/data/repositories/account_repository_impl.dart';
@@ -92,6 +93,9 @@ void registerDataSource() {
   getIt.registerLazySingleton<RemoteDataSource>(
     () => RemoteDataSourceImpl(apiHelper: getIt()),
   );
+  getIt.registerLazySingleton<LocalDataSource>(
+    () => LocalDataSourceImpl(dbHelper: getIt()),
+  );
 }
 
 void registerRepository() {
@@ -111,6 +115,7 @@ void registerRepository() {
       remoteDataSource: getIt(),
       connectivityHelper: getIt(),
       tokenLocalDataSource: getIt(),
+      localDataSource: getIt(),
     ),
   );
 }

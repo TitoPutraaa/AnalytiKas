@@ -3,12 +3,13 @@ import '../../../config/api/api_helper.dart';
 abstract class RemoteDataSource {
   // ACCOUNT
   Future<Map<String, dynamic>> register(String email);
-  Future<Map<String, dynamic>> registerOtp(String email, String otp);
+  Future<Map<String, dynamic>> registerOtp(String email, int otp);
   Future<Map<String, dynamic>> registerNewAccount(
     String email,
     String pass,
     String noTlp,
     String alamat,
+    String namaToko,
   );
   Future<Map<String, dynamic>> login(String email, String pass);
   Future<Map<String, dynamic>> logout(String email, String token);
@@ -17,6 +18,7 @@ abstract class RemoteDataSource {
     String token,
     String alamat,
     String noTlp,
+    String namaToko,
   );
   Future<Map<String, dynamic>> getProfile(String email, String token);
 
@@ -64,7 +66,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>> registerOtp(String email, String otp) {
+  Future<Map<String, dynamic>> registerOtp(String email, int otp) {
     return apiHelper.post('/register/otp', {'email': email, 'otp': otp});
   }
 
@@ -74,12 +76,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     String pass,
     String noTlp,
     String alamat,
+    String namaToko,
   ) {
     return apiHelper.post('/register/newaccount', {
       'email': email,
       'password': pass,
-      'no_telp': noTlp,
+      'no-telp': noTlp,
       'alamat': alamat,
+      'nama_toko': namaToko,
     });
   }
 
@@ -99,12 +103,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     String token,
     String alamat,
     String noTlp,
+    String namaToko,
   ) {
     return apiHelper.post('/update/profile', {
       'email': email,
       'token': token,
       'alamat': alamat,
       'no_telp': noTlp,
+      'nama_toko': namaToko,
     });
   }
 
@@ -180,7 +186,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     List<Map<String, dynamic>> productPerPembelian,
     List<Map<String, dynamic>> productPerPenjualan,
   ) {
-    return apiHelper.post('/getdata/productpenjualan', {
+    return apiHelper.post('/sync/upload', {
       'email': email,
       'token': token,
       'biaya_operasi': biayaOperasi,

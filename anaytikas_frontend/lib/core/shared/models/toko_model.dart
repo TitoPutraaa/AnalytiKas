@@ -16,7 +16,7 @@ class TokoModel extends TokoEntity {
       namaToko: map['nama_toko'],
       email: map['email'],
       noTelp: map['no_telp'],
-      password: map['password'],
+      password: map['password'] ?? '',
       alamat: map['alamat'],
     );
   }
