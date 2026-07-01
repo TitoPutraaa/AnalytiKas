@@ -117,35 +117,35 @@ class _DateFilterDialogState extends State<DateFilterDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Checkbox untuk 13 bulan terakhir
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: isLast13Months,
-                        onChanged: (value) {
-                          setState(() {
-                            isLast13Months = value ?? false;
-                            if (isLast13Months) {
-                              endDate = DateTime.now();
-                              startDate = endDate!.subtract(
-                                const Duration(days: 365),
-                              );
-                            }
-                          });
-                        },
-                        activeColor: AppColor.primary,
-                      ),
-                      const Expanded(
-                        child: Text(
-                          '13 Bulan Terakhir',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppColor.darkGray,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     // Checkbox(
+                  //     //   value: isLast13Months,
+                  //     //   onChanged: (value) {
+                  //     //     setState(() {
+                  //     //       isLast13Months = value ?? false;
+                  //     //       if (isLast13Months) {
+                  //     //         endDate = DateTime.now();
+                  //     //         startDate = endDate!.subtract(
+                  //     //           const Duration(days: 365),
+                  //     //         );
+                  //     //       }
+                  //     //     });
+                  //     //   },
+                  //     //   activeColor: AppColor.primary,
+                  //     // ),
+                  //     const Expanded(
+                  //       child: Text(
+                  //         '13 Bulan Terakhir',
+                  //         style: TextStyle(
+                  //           fontSize: 14,
+                  //           color: AppColor.darkGray,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 16),
                   // Pilih Tanggal
                   const Text(

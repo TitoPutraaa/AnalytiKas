@@ -1,5 +1,8 @@
 // lib/features/auth/presentation/pages/ubah_profil_toko_page.dart
+import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -10,15 +13,23 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
+  var _namaTokoController = TextEditingController(text: 'Toko Suka Suka');
+  var _noTelpController = TextEditingController();
+  var _alamatController = TextEditingController();
+  ProfileProvider get provider => context.read<ProfileProvider>();
 
-  // TODO: pre-fill from TokoProvider once domain layer exists
-  late final _namaTokoController = TextEditingController(
-    text: 'Toko Suka Suka',
-  );
-  late final _noTelpController = TextEditingController(text: '081452384425');
-  late final _alamatController = TextEditingController(
-    text: 'Jl. Kampung Durian Runtuh',
-  );
+  ProfileEntity get dataToko => provider.profile;
+
+  @override
+  void initState() {
+    super.initState();
+    _namaTokoController = TextEditingController(text: dataToko.namaToko);
+    _noTelpController = TextEditingController(text: dataToko.noTelp);
+    _alamatController = TextEditingController(text: dataToko.alamat);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().getProfile();
+    });
+  }
 
   @override
   void dispose() {
@@ -36,24 +47,47 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String? _validatePhone(String? value) {
     if (value == null || value.trim().isEmpty) return 'No. telepon wajib diisi';
     final phoneRegex = RegExp(r'^[0-9]{9,13}$');
-    if (!phoneRegex.hasMatch(value.trim()))
+    if (!phoneRegex.hasMatch(value.trim())) {
       return 'Format no. telepon tidak valid';
+    }
     return null;
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
+    final editProvider = context.read<ProfileProvider>();
+
     if (!_formKey.currentState!.validate()) return;
 
-    // TODO: wire to TokoProvider.updateProfile(
-    //   namaToko: _namaTokoController.text.trim(),
-    //   noTelp: _noTelpController.text.trim(),
-    //   alamat: _alamatController.text.trim(),
-    // );
+    final namatoko = _namaTokoController.text.trim();
+    final noTlp = _noTelpController.text.trim();
+    final alamat = _alamatController.text.trim();
+    final idToko = provider.profile.idToko;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profil toko berhasil diperbarui')),
-    );
-    Navigator.of(context).pop(true);
+    await editProvider.editProfile(namatoko, noTlp, alamat, idToko);
+
+    if (namatoko.isEmpty || noTlp.isEmpty || alamat.isEmpty) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus di isi dengan benar')),
+      );
+      return;
+    }
+
+    if (mounted) {
+      if (editProvider.status == Status.success) {
+        context.read<ProfileProvider>().getProfile();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profil toko berhasil diperbarui')),
+        );
+        Navigator.of(context).pop(true);
+      }
+    } else {
+      ScaffoldMessenger.of(
+        // ignore: use_build_context_synchronously
+        context,
+      ).showSnackBar(SnackBar(content: Text(editProvider.message)));
+    }
   }
 
   @override

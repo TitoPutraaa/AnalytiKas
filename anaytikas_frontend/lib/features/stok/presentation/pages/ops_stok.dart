@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
@@ -85,6 +86,8 @@ class _OpsStokState extends State<OpsStok> {
 
     if (mounted) {
       if (provider.succes) {
+        context.read<RiwayatProvider>().loadRiwayat();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Biaya operasional berhasil ditambahkan'),

@@ -1,4 +1,15 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
+import 'package:anaytikas_frontend/features/analisis/data/repository/analisis_repository_impl.dart';
+import 'package:anaytikas_frontend/features/analisis/domain/repository/analisis_repository.dart';
+import 'package:anaytikas_frontend/features/analisis/domain/usecases/get_analisis.dart';
+import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
+import 'package:anaytikas_frontend/features/auth/data/repository/profile_repository_impl.dart';
+import 'package:anaytikas_frontend/features/auth/data/sources/profile_local_datasource.dart';
+import 'package:anaytikas_frontend/features/auth/domain/repository/profile_repository.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/edit_profile_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/get_profile_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/data/datasources/kasir_local_data_source.dart';
 import 'package:anaytikas_frontend/features/kasir/data/repositories/kasir_repository_impl.dart';
 import 'package:anaytikas_frontend/features/kasir/domain/repositories/kasir_repository.dart';
@@ -12,6 +23,8 @@ import 'package:anaytikas_frontend/features/kasir/presentation/manager/nota_penj
 import 'package:anaytikas_frontend/features/riwayat/data/datasources/riwayat_local_data_source.dart';
 import 'package:anaytikas_frontend/features/riwayat/data/repositories/riwayat_repository_impl.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/repositories/riwayat_repository.dart';
+import 'package:anaytikas_frontend/features/riwayat/domain/usecases/get_riwayat_usecase.dart';
+import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/data/repository/stok_repository_impl.dart';
 import 'package:anaytikas_frontend/features/stok/data/sources/stok_local_datasource.dart';
 import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
@@ -38,7 +51,6 @@ import '../shared/data/datasources/local_data_source.dart';
 import '../shared/data/datasources/remote_data_source.dart';
 import '../shared/data/datasources/token_local_data_source.dart';
 import '../shared/data/repositories/account_repository_impl.dart';
-import '../shared/domain/presentation/manager/register_provider.dart';
 import '../shared/domain/repositories/account_repository.dart';
 import '../shared/domain/usecases/register_usecase.dart';
 
@@ -88,8 +100,9 @@ void registerDataSource() {
   getIt.registerLazySingleton<RiwayatLocalDataSource>(
     () => RiwayatLocalDataSourceImpl(dbHelper: getIt()),
   );
-
-  // TEST
+  getIt.registerLazySingleton<ProfileLocalDatasource>(
+    () => ProfileLocalDatasourceImpl(databaseHelper: getIt()),
+  );
   getIt.registerLazySingleton<RemoteDataSource>(
     () => RemoteDataSourceImpl(apiHelper: getIt()),
   );
@@ -106,7 +119,7 @@ void registerRepository() {
     () => StokRepositoryImpl(datasource: getIt()),
   );
   getIt.registerLazySingleton<RiwayatRepository>(
-    () => RiwayatRepositoryImpl(riwayatLocalDataSource: getIt()),
+    () => RiwayatRepositoryImpl(localDataSource: getIt()),
   );
 
   // TEST
@@ -116,6 +129,28 @@ void registerRepository() {
       connectivityHelper: getIt(),
       tokenLocalDataSource: getIt(),
       localDataSource: getIt(),
+    ),
+  );
+  // Auth
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
+  );
+  // Analisis
+  getIt.registerLazySingleton<AnalisisRepository>(
+    () => AnalisisRepositoryImpl(
+      remoteDataSource: getIt(),
+      connectivityHelper: ConnectivityHelper(),
+    ),
+  );
+  // Auth
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
+  );
+  // Analisis
+  getIt.registerLazySingleton<AnalisisRepository>(
+    () => AnalisisRepositoryImpl(
+      remoteDataSource: getIt(),
+      connectivityHelper: ConnectivityHelper(),
     ),
   );
 }
@@ -137,10 +172,22 @@ void registerUseCase() {
   getIt.registerLazySingleton(() => GetAllCategory(stokRepository: getIt()));
   getIt.registerLazySingleton(() => GetAllProducts(stokRepository: getIt()));
 
+  // Auth
+  getIt.registerLazySingleton(
+    () => GetProfileUsecase(profilRepository: getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => EditProfileUsecase(profilRepository: getIt()),
+  );
+  getIt.registerLazySingleton(() => LogoutUsecase(profilRepository: getIt()));
+
   // riwayat
+  getIt.registerLazySingleton(() => GetRiwayatUsecase(getIt()));
 
   // TEST
   getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
+  // Analisis
+  getIt.registerLazySingleton(() => GetAnalisis(analisisRepository: getIt()));
 }
 
 void registerProvider() {
@@ -183,8 +230,22 @@ void registerProvider() {
     () => TambahStokProvider(addStok: getIt<AddStok>()),
   );
 
-  // TEST
-  getIt.registerFactory<RegisterProvider>(
-    () => RegisterProvider(registerUsecase: getIt<RegisterUsecase>()),
+  // riwayat
+  getIt.registerFactory<RiwayatProvider>(
+    () => RiwayatProvider(getRiwayat: getIt<GetRiwayatUsecase>()),
+  );
+
+  // Auth
+  getIt.registerFactory<ProfileProvider>(
+    () => ProfileProvider(
+      getProfileUsecase: getIt<GetProfileUsecase>(),
+      logoutUsecase: getIt<LogoutUsecase>(),
+      editProfileUsecase: getIt<EditProfileUsecase>(),
+    ),
+  );
+
+  // Analisis
+  getIt.registerFactory<AnalisisProvider>(
+    () => AnalisisProvider(getAnalisis: getIt<GetAnalisis>()),
   );
 }

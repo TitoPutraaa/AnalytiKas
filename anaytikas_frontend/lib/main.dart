@@ -1,9 +1,11 @@
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
 import 'package:anaytikas_frontend/core/di/get_it.dart';
-import 'package:anaytikas_frontend/features/auth/presentation/pages/home_auth.dart';
+import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/cart_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/nota_penjualan_provider.dart';
+import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
@@ -12,8 +14,8 @@ import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 
 // TEST
 import 'core/shared/domain/presentation/manager/register_provider.dart';
@@ -57,8 +59,17 @@ class MyApp extends StatelessWidget {
           create: (_) => getIt<GetKategoriProvider>()..loadCategory(),
         ),
 
+        // riwayat
+        ChangeNotifierProvider(
+          create: (_) => getIt<RiwayatProvider>()..loadRiwayat(),
+        ),
+
+        // Auth
+        ChangeNotifierProvider(create: (_) => getIt<ProfileProvider>()),
         // TEST
         ChangeNotifierProvider(create: (_) => getIt<RegisterProvider>()),
+        // Analisis
+        ChangeNotifierProvider(create: (_) => getIt<AnalisisProvider>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

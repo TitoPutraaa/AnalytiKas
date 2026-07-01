@@ -1,20 +1,28 @@
 // lib/features/auth/presentation/pages/akun_saya_page.dart
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/edit_profile_page.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: replace with real data from TokoProvider once auth domain layer exists
-    const namaToko = 'Toko Suka Suka';
-    const idToko = '001002FG';
-    const noTelp = '081452384425';
-    const email = 'ewner@email.com';
-    const alamat = 'Jl. Kampung Durian Runtuh';
+  State<ProfilePage> createState() => _ProfilePageState();
+}
 
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().getProfile();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -29,88 +37,105 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: const Color(0xFFE7E9F2),
-                child: Icon(Icons.storefront, size: 40, color: AppColor.black),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                namaToko,
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                'ID TOKO : $idToko',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-              ),
-              const SizedBox(height: 24),
-
-              _buildInfoRow('No. Telepon :', noTelp),
-              const SizedBox(height: 10),
-              _buildInfoRow('Email :', email),
-              const SizedBox(height: 10),
-              _buildInfoRow('Alamat :', alamat),
-
-              const SizedBox(height: 20),
-              const Divider(height: 1),
-
-              _buildMenuItem(
-                context,
-                label: 'Ubah Profil Toko',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const EditProfilePage()),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'AnalytiKas V.1.0.0',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: OutlinedButton.icon(
-                  onPressed: () => _confirmLogout(context),
-                  icon: const Icon(Icons.logout, color: Colors.red),
-                  label: const Text(
-                    'Keluar Akun',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
+      body: Consumer<ProfileProvider>(
+        builder: (context, profile, child) {
+          if (profile.status == Status.loading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final data = profile.profile;
+          return SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: const Color(0xFFE7E9F2),
+                    child: Icon(
+                      Icons.storefront,
+                      size: 40,
+                      color: AppColor.black,
                     ),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 12),
+                  Text(
+                    data.namaToko,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'ID TOKO : ${data.idToko}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(height: 24),
+
+                  _buildInfoRow('No. Telepon :', data.noTelp),
+                  const SizedBox(height: 10),
+                  _buildInfoRow('Email :', data.email),
+                  const SizedBox(height: 10),
+                  _buildInfoRow('Alamat :', data.alamat),
+
+                  const SizedBox(height: 20),
+                  const Divider(height: 1),
+
+                  _buildMenuItem(
+                    context,
+                    label: 'Ubah Profil Toko',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const EditProfilePage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'AnalytiKas V.1.0.0',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _confirmLogout(context),
+                      icon: const Icon(Icons.logout, color: Colors.red),
+                      label: const Text(
+                        'Keluar Akun',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.red),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -129,7 +154,7 @@ class ProfilePage extends StatelessWidget {
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
         ),
       ],
