@@ -21,7 +21,7 @@ class _MainSheelState extends State<MainSheel> {
     Homekasir(),
     Homeriwayat(),
     Homestok(),
-    Homeanalisis(),
+    // Homeanalisis()
   ];
 
   String headerTitle() {

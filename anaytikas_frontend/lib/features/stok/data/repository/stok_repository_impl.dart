@@ -1,3 +1,4 @@
+import 'package:anaytikas_frontend/core/shared/models/pembelian_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
@@ -15,25 +16,15 @@ class StokRepositoryImpl implements StokRepository {
 
   @override
   Future<void> addBarangBaru(
-    int idProduct,
-    Kategori kategori,
-    HargaProduct harga,
-    String namaProduct,
-    int jmlhStok,
-    int stokWarning,
-    bool isGrosir,
-    bool isActivate,
+    Pembelian pembelian,
+    ProductEntity product,
+    int jumlah,
   ) async {
     try {
-      final model = ProductModel(
-        idProduct: idProduct,
-        namaProduct: namaProduct,
-        jmlhStok: jmlhStok,
-        isGrosir: isGrosir,
-        isActivate: isActivate,
-        kategori: kategori,
-        harga: harga,
-        stokWarning: stokWarning,
+      final model = ProductPerPembelianModel(
+        pembelian: pembelian,
+        product: product,
+        jumlah: jumlah,
       );
       return await datasource.addBarangBaruData(model);
     } on DatabaseException catch (e) {
