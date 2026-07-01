@@ -18,31 +18,6 @@ class Homeriwayat extends StatefulWidget {
 class _HomeriwayatState extends State<Homeriwayat> {
   bool isFiltered = false;
 
-  // Data static langsung di UI
-  // final List<Map<String, dynamic>> _transactions = [
-  //   {
-  //     'tanggal': 'Sabtu, 02 Mei 2024, 10:30',
-  //     'total': 'Rp 231.000',
-  //     'namaItem': 'Kopi Arabica 250g',
-  //     'jumlah': 1,
-  //     'hargaItem': 'Rp 10.000',
-  //   },
-  //   {
-  //     'tanggal': 'Rabu, 03 Mei 2024, 14:15',
-  //     'total': 'Rp 35.000',
-  //     'namaItem': 'Telur Ayam',
-  //     'jumlah': 2,
-  //     'hargaItem': 'Rp 3.000',
-  //   },
-  //   {
-  //     'tanggal': 'Jumat, 04 Mei 2024, 09:45',
-  //     'total': 'Rp 27.000',
-  //     'namaItem': 'Mie Sedap Goreng',
-  //     'jumlah': 3,
-  //     'hargaItem': 'Rp 3.000',
-  //   },
-  // ];
-
   void _showFilterDialog() {
     showDialog(
       context: context,
