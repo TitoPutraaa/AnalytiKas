@@ -17,7 +17,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   var _noTelpController = TextEditingController();
   var _alamatController = TextEditingController();
   ProfileProvider get provider => context.read<ProfileProvider>();
-
+  bool _isLoading = false;
   ProfileEntity get dataToko => provider.profile;
 
   @override
@@ -54,6 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _onSubmit() async {
+    setState(() => _isLoading = true);
     final editProvider = context.read<ProfileProvider>();
 
     if (!_formKey.currentState!.validate()) return;
@@ -74,6 +75,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     if (mounted) {
+      setState(() => _isLoading = false);
       if (editProvider.status == Status.success) {
         context.read<ProfileProvider>().getProfile();
 
@@ -155,15 +157,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton.icon(
-                    onPressed: _onSubmit,
-                    icon: const Icon(
-                      Icons.save_outlined,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    label: const Text(
-                      'Simpan Perubahan',
-                      style: TextStyle(
+                    onPressed: _isLoading ? null : _onSubmit,
+                    icon: _isLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.save_outlined,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                    label: Text(
+                      _isLoading ? 'Menyimpan...' : 'Simpan Perubahan',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -171,6 +182,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A2B4C),
+                      disabledBackgroundColor: const Color(
+                        0xFF1A2B4C,
+                      ).withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

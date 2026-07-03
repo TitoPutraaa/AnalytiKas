@@ -1,8 +1,10 @@
 // lib/features/auth/presentation/pages/welcome_page.dart
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/login_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/register_page.dart';
+import 'package:provider/provider.dart';
 
 class HomeAuth extends StatelessWidget {
   const HomeAuth({super.key});
@@ -76,6 +78,7 @@ class HomeAuth extends StatelessWidget {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
+                    context.read<AuthProvider>().resetMessage();
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const RegisterPage()),
                     );
@@ -102,6 +105,7 @@ class HomeAuth extends StatelessWidget {
                 height: 52,
                 child: OutlinedButton(
                   onPressed: () {
+                    context.read<AuthProvider>().resetMessage();
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const LoginPage()),
                     );

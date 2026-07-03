@@ -3,6 +3,7 @@ import 'package:anaytikas_frontend/core/shared/data/datasources/token_local_data
 import 'package:anaytikas_frontend/core/shared/entities/toko_entity.dart';
 import 'package:anaytikas_frontend/core/shared/models/biaya_opr_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/harga_model.dart';
+import 'package:anaytikas_frontend/core/shared/models/kategori_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/penjualan_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/product_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/product_per_pembelian_model.dart';
@@ -29,7 +30,7 @@ class AccountRepositoryImpl implements AccountRepository {
   });
 
   @override
-  Future<String> register(String email) async {
+  Future<ApiResponse> register(String email) async {
     if (!await connectivityHelper.isOnline()) {
       throw Exception('Tidak ada koneksi internet');
     }
@@ -40,11 +41,11 @@ class AccountRepositoryImpl implements AccountRepository {
     if (!apiResponse.success) {
       throw Exception(apiResponse.message);
     }
-    return apiResponse.message;
+    return apiResponse;
   }
 
   @override
-  Future<String> registerOtp(String email, int otp) async {
+  Future<ApiResponse> registerOtp(String email, int otp) async {
     if (!await connectivityHelper.isOnline()) {
       throw Exception('Tidak ada koneksi internet');
     }
@@ -55,11 +56,11 @@ class AccountRepositoryImpl implements AccountRepository {
     if (!apiResponse.success) {
       throw Exception(apiResponse.message);
     }
-    return apiResponse.message;
+    return apiResponse;
   }
 
   @override
-  Future<String> registerNewAccount(
+  Future<ApiResponse> registerNewAccount(
     String email,
     String pass,
     String noTelp,
@@ -83,14 +84,15 @@ class AccountRepositoryImpl implements AccountRepository {
       throw Exception(apiResponse.message);
     }
 
-    return apiResponse.message;
+    return apiResponse;
   }
 
   @override
-  Future<String> login(String email, String pass) async {
+  Future<ApiResponse> login(String email, String pass) async {
     if (!await connectivityHelper.isOnline()) {
       throw Exception('Tidak ada koneksi internet');
     }
+
     bool syncFailed = false;
 
     final json = await remoteDataSource.login(email, pass);
@@ -115,6 +117,15 @@ class AccountRepositoryImpl implements AccountRepository {
           save: localDataSource.saveToko,
         ).catchError((e) {
           print('Gagal sync profile: $e');
+          return null;
+        }),
+        _syncSingle(
+          fetch: () => remoteDataSource.getKategori(email, token),
+          fromMap: KategoriModel.fromMap,
+          toMap: (model) => model.toMap(),
+          save: localDataSource.saveToko,
+        ).catchError((e) {
+          print('Gagal sync kategori: $e');
           return null;
         }),
         _syncList(
@@ -185,13 +196,21 @@ class AccountRepositoryImpl implements AccountRepository {
       syncFailed = true;
     }
     if (syncFailed) {
-      return '${apiResponse.message} (peringatan: sebagian data gagal disinkronkan)';
+      print(
+        '${apiResponse.message} (peringatan: sebagian data gagal disinkronkan)',
+      );
+      return ApiResponse(
+        data: null,
+        message:
+            '${apiResponse.message} (peringatan: sebagian data gagal disinkronkan)',
+        success: true,
+      );
     }
-    return apiResponse.message;
+    return apiResponse;
   }
 
   @override
-  Future<String> logout() async {
+  Future<ApiResponse> logout() async {
     if (!await connectivityHelper.isOnline()) {
       throw Exception('Tidak ada koneksi internet');
     }
@@ -221,9 +240,55 @@ class AccountRepositoryImpl implements AccountRepository {
       await localDataSource.clearAllTables();
       await tokenLocalDataSource.deleteToken();
     } catch (e) {
+      print('gagal hapus data');
       throw Exception(e);
     }
-    return apiResponse.message;
+    return apiResponse;
+  }
+
+  @override
+  Future<ApiResponse<dynamic>> forgotPass(String email) async {
+    if (!await connectivityHelper.isOnline()) {
+      throw Exception('Tidak ada koneksi internet');
+    }
+
+    final json = await remoteDataSource.forgotPass(email);
+    final apiResponse = ApiResponse.fromJson(json, (_) => null);
+
+    if (!apiResponse.success) {
+      throw Exception(apiResponse.message);
+    }
+    return apiResponse;
+  }
+
+  @override
+  Future<ApiResponse<dynamic>> forgotPassOtp(String email, int otp) async {
+    if (!await connectivityHelper.isOnline()) {
+      throw Exception('Tidak ada koneksi internet');
+    }
+
+    final json = await remoteDataSource.forgotPassOtp(email, otp);
+    final apiResponse = ApiResponse.fromJson(json, (_) => null);
+
+    if (!apiResponse.success) {
+      throw Exception(apiResponse.message);
+    }
+    return apiResponse;
+  }
+
+  @override
+  Future<ApiResponse<dynamic>> resetPass(String email, String pass) async {
+    if (!await connectivityHelper.isOnline()) {
+      throw Exception('Tidak ada koneksi internet');
+    }
+
+    final json = await remoteDataSource.resetPass(email, pass);
+    final apiResponse = ApiResponse.fromJson(json, (_) => null);
+
+    if (!apiResponse.success) {
+      throw Exception(apiResponse.message);
+    }
+    return apiResponse;
   }
 
   @override

@@ -1,10 +1,13 @@
 // lib/features/auth/presentation/pages/otp_page.dart
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class OtpPage extends StatefulWidget {
   final String email;
-  const OtpPage({super.key, required this.email});
+  final String jenisOtp;
+  const OtpPage({super.key, required this.email, required this.jenisOtp});
 
   @override
   State<OtpPage> createState() => _OtpPageState();
@@ -21,6 +24,8 @@ class _OtpPageState extends State<OtpPage> {
     _otpLength,
     (_) => FocusNode(),
   );
+
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -52,18 +57,56 @@ class _OtpPageState extends State<OtpPage> {
 
   String get _otpValue => _controllers.map((c) => c.text).join();
 
-  void _onSubmit() {
+  void _onSubmit() async {
     if (_otpValue.length < _otpLength) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Masukkan 6 digit kode OTP')),
       );
       return;
     }
+    setState(() => _isLoading = true);
     // TODO: wire to AuthProvider.verifyOtp(email, _otpValue)
+    if (widget.jenisOtp == 'register') {
+      try {
+        await context.read<AuthProvider>().validateAccount(
+          int.tryParse(_otpValue)!,
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
+    } else if (widget.jenisOtp == 'forgotPass') {
+      try {
+        await context.read<AuthProvider>().passOtp(int.tryParse(_otpValue)!);
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
+    }
   }
 
-  void _onResend() {
+  void _onResend() async {
+    setState(() => _isLoading = true);
     // TODO: wire to AuthProvider.resendOtp(email)
+    if (widget.jenisOtp == 'register') {
+      try {
+        await context.read<AuthProvider>().resedOtp();
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
+    } else if (widget.jenisOtp == 'forgotPass') {
+      try {
+        await context.read<AuthProvider>().resedOtpPass();
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
+    }
   }
 
   @override
@@ -97,6 +140,18 @@ class _OtpPageState extends State<OtpPage> {
                 style: const TextStyle(fontSize: 14, color: Colors.black87),
               ),
               const SizedBox(height: 28),
+              Selector<AuthProvider, String?>(
+                selector: (_, provider) =>
+                    provider.status == Status.error ? provider.message : null,
+                builder: (context, message, child) {
+                  if (message == null) return const SizedBox.shrink();
+
+                  return Text(
+                    message,
+                    style: const TextStyle(color: Colors.red, fontSize: 13),
+                  );
+                },
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(_otpLength, (index) {
@@ -141,21 +196,33 @@ class _OtpPageState extends State<OtpPage> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _onSubmit,
+                  onPressed: _isLoading ? null : _onSubmit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1A2B4C),
+                    disabledBackgroundColor: const Color(
+                      0xFF1A2B4C,
+                    ).withValues(alpha: 0.6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Kirim',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : const Text(
+                          'Kirim',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 14),
@@ -167,7 +234,7 @@ class _OtpPageState extends State<OtpPage> {
                     style: TextStyle(color: Colors.black54, fontSize: 13),
                   ),
                   GestureDetector(
-                    onTap: _onResend,
+                    onTap: _isLoading ? null : _onResend,
                     child: const Text(
                       'Kirim ulang',
                       style: TextStyle(

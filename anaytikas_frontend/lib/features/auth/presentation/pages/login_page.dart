@@ -1,7 +1,11 @@
 // lib/features/auth/presentation/pages/login_page.dart
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/forgate_password_page.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart'
+    hide Status;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -32,18 +37,31 @@ class _LoginPageState extends State<LoginPage> {
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) return 'Kata sandi wajib diisi';
-    if (value.length < 8) return 'Setidaknya 8 karakter';
+    // if (value.length < 8) return 'Setidaknya 8 karakter';
     return null;
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // TODO: wire to AuthProvider once domain layer exists
-    // context.read<AuthProvider>().login(
-    //   email: _emailController.text.trim(),
-    //   password: _passwordController.text,
-    // );
+    setState(() => _isLoading = true);
+
+    try {
+      // TODO: wire to AuthProvider once domain layer exists
+      await context.read<AuthProvider>().login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      final status = context.read<AuthProvider>().status;
+      if (status == Status.error) {
+        print('gagal login');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -83,6 +101,18 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 28),
+                Selector<AuthProvider, String?>(
+                  selector: (_, provider) =>
+                      provider.status == Status.error ? provider.message : null,
+                  builder: (context, message, child) {
+                    if (message == null) return const SizedBox.shrink();
+
+                    return Text(
+                      message,
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    );
+                  },
+                ),
                 _buildLabel('Email'),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -122,27 +152,40 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _onSubmit,
+                    onPressed: _isLoading ? null : _onSubmit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A2B4C),
+                      disabledBackgroundColor: const Color(
+                        0xFF1A2B4C,
+                      ).withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Masuk',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : const Text(
+                            'Masuk',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 14),
                 Center(
                   child: TextButton(
                     onPressed: () {
+                      context.read<AuthProvider>().resetMessage();
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(

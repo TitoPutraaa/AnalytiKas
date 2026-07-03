@@ -1,6 +1,8 @@
 // lib/features/auth/presentation/pages/register_page.dart
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/otp_page.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _alamatController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -55,15 +58,36 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
+    setState(() => _isLoading = true);
 
     // TODO: wire to AuthProvider.register(...) once domain layer exists
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => OtpPage(email: _emailController.text.trim()),
-      ),
-    );
+    try {
+      await context.read<AuthProvider>().createAccount(
+        _emailController.text.trim(),
+        _namaTokoController.text,
+        _phoneController.text,
+        _alamatController.text,
+        _passwordController.text,
+      );
+      final status = context.read<AuthProvider>().status;
+      if (status == Status.success) {
+        context.read<AuthProvider>().resetMessage();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => OtpPage(
+              email: _emailController.text.trim(),
+              jenisOtp: 'register',
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -104,6 +128,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 24),
 
+                Selector<AuthProvider, String?>(
+                  selector: (_, provider) =>
+                      provider.status == Status.error ? provider.message : null,
+                  builder: (context, message, child) {
+                    if (message == null) return const SizedBox.shrink();
+
+                    return Text(
+                      message,
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    );
+                  },
+                ),
                 _buildLabel('Email'),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -182,21 +218,33 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _onSubmit,
+                    onPressed: _isLoading ? null : _onSubmit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A2B4C),
+                      disabledBackgroundColor: const Color(
+                        0xFF1A2B4C,
+                      ).withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Buat Akun',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : const Text(
+                            'Buat Akun',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 24),

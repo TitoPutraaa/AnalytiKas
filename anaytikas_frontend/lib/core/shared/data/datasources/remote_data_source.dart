@@ -23,6 +23,9 @@ abstract class RemoteDataSource {
     String namaToko,
   );
   Future<Map<String, dynamic>> getProfile(String email, String token);
+  Future<Map<String, dynamic>> forgotPass(String email);
+  Future<Map<String, dynamic>> forgotPassOtp(String email, int otp);
+  Future<Map<String, dynamic>> resetPass(String email, String pass);
 
   // GET DATA PRODUCT
   Future<Map<String, dynamic>> getProduct(String email, String token);
@@ -38,6 +41,7 @@ abstract class RemoteDataSource {
     String email,
     String token,
   );
+  Future<Map<String, dynamic>> getKategori(String email, String token);
 
   // SYNC DATA
   Future<Map<String, dynamic>> syncAllData(
@@ -121,6 +125,22 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     return apiHelper.post('/getdata/profile', {'email': email, 'token': token});
   }
 
+  @override
+  Future<Map<String, dynamic>> forgotPass(String email) {
+    return apiHelper.post('/forgot', {'email': email});
+  }
+
+  @override
+  Future<Map<String, dynamic>> forgotPassOtp(String email, int otp) {
+    return apiHelper.post('/forgot/otp', {'email': email, 'otp': otp});
+  }
+
+  @override
+  Future<Map<String, dynamic>> resetPass(String email, String pass) {
+    return apiHelper.post('/forgot/reset', {'email': email, 'password': pass});
+  }
+
+  @override
   // GET DATA PRODUCT
   @override
   Future<Map<String, dynamic>> getProduct(String email, String token) {
@@ -170,6 +190,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     String token,
   ) {
     return apiHelper.post('/getdata/productpenjualan', {
+      'email': email,
+      'token': token,
+    });
+  }
+
+  @override
+  Future<Map<String, dynamic>> getKategori(String email, String token) {
+    return apiHelper.post('/getdata/kategori', {
       'email': email,
       'token': token,
     });

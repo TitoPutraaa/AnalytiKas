@@ -1,4 +1,4 @@
-import 'package:anaytikas_frontend/core/config/network/connectivity_helper.dart';
+// import 'package:anaytikas_frontend/core/config/network/connectivity_helper.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class HomeAnalisis extends StatelessWidget {
     const labaKotor = 'Rp.33.000.000';
     const totalPenjualan = '36 Penjualan';
     const totalPembelian = '44 Pembelian';
-    context.watch<AnalisisProvider>().loadAnalisis(email: '', token: '');
+    // context.watch<AnalisisProvider>().loadAnalisis(email: '', token: '');
 
     return SizedBox(
       child: Consumer<AnalisisProvider>(
