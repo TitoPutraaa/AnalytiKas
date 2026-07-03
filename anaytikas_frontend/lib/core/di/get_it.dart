@@ -7,8 +7,15 @@ import 'package:anaytikas_frontend/features/auth/data/repository/profile_reposit
 import 'package:anaytikas_frontend/features/auth/data/sources/profile_local_datasource.dart';
 import 'package:anaytikas_frontend/features/auth/domain/repository/profile_repository.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/edit_profile_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/forgot_pass_otp_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/forgot_pass_usecase.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/get_profile_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/login_usecase.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/register_account_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/reset_pass_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/domain/usecases/validate_account_usecase.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/data/datasources/kasir_local_data_source.dart';
 import 'package:anaytikas_frontend/features/kasir/data/repositories/kasir_repository_impl.dart';
@@ -131,17 +138,7 @@ void registerRepository() {
       localDataSource: getIt(),
     ),
   );
-  // Auth
-  getIt.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
-  );
-  // Analisis
-  getIt.registerLazySingleton<AnalisisRepository>(
-    () => AnalisisRepositoryImpl(
-      remoteDataSource: getIt(),
-      connectivityHelper: ConnectivityHelper(),
-    ),
-  );
+
   // Auth
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(profileLocalDatasource: getIt()),
@@ -179,7 +176,13 @@ void registerUseCase() {
   getIt.registerLazySingleton(
     () => EditProfileUsecase(profilRepository: getIt()),
   );
-  getIt.registerLazySingleton(() => LogoutUsecase(profilRepository: getIt()));
+  getIt.registerLazySingleton(() => LogoutUsecase(getIt()));
+  getIt.registerLazySingleton(() => LoginUsecase(getIt()));
+  getIt.registerLazySingleton(() => ValidateAccountUsecase(getIt()));
+  getIt.registerLazySingleton(() => RegisterAccountUsecase(getIt()));
+  getIt.registerLazySingleton(() => ForgotPassUsecase(getIt()));
+  getIt.registerLazySingleton(() => ForgotPassOtpUsecase(getIt()));
+  getIt.registerLazySingleton(() => ResetPassUsecase(getIt()));
 
   // riwayat
   getIt.registerLazySingleton(() => GetRiwayatUsecase(getIt()));
@@ -239,8 +242,19 @@ void registerProvider() {
   getIt.registerFactory<ProfileProvider>(
     () => ProfileProvider(
       getProfileUsecase: getIt<GetProfileUsecase>(),
-      logoutUsecase: getIt<LogoutUsecase>(),
+      // logoutUsecase: getIt<LogoutUsecase>(),
       editProfileUsecase: getIt<EditProfileUsecase>(),
+    ),
+  );
+  getIt.registerFactory<AuthProvider>(
+    () => AuthProvider(
+      loginUsecase: getIt<LoginUsecase>(),
+      logoutUsecase: getIt<LogoutUsecase>(),
+      validateAccountUsecase: getIt<ValidateAccountUsecase>(),
+      registerAccountUsecase: getIt<RegisterAccountUsecase>(),
+      forgotPassUsecase: getIt<ForgotPassUsecase>(),
+      forgotPassOtpUsecase: getIt<ForgotPassOtpUsecase>(),
+      resetPassUsecase: getIt<ResetPassUsecase>(),
     ),
   );
 

@@ -1,6 +1,8 @@
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
 import 'package:anaytikas_frontend/core/di/get_it.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/pages/home_auth.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/cart_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
@@ -66,6 +68,7 @@ class MyApp extends StatelessWidget {
 
         // Auth
         ChangeNotifierProvider(create: (_) => getIt<ProfileProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<AuthProvider>()),
         // TEST
         ChangeNotifierProvider(create: (_) => getIt<RegisterProvider>()),
         // Analisis
@@ -75,8 +78,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: AppTheme.mainTheme,
-        // home: const HomeAuth(),
-        home: const MainSheel(),
+        home: const HomeAuth(),
+        // home: const MainSheel(),
       ),
     );
   }

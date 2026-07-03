@@ -1,7 +1,9 @@
 // lib/features/auth/presentation/pages/akun_saya_page.dart
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/edit_profile_page.dart';
-import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart'
+    hide Status;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  bool _isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -182,29 +185,78 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _confirmLogout(BuildContext context) {
+    bool isLoggingOut = false;
+    String? errorMessage;
+
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Keluar Akun'),
-        content: const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Batal'),
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('Keluar Akun'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+              if (errorMessage != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  errorMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                ),
+              ],
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-              // TODO: wire to AuthProvider.logout() once domain layer exists
-              // then navigate back to WelcomePage, clearing the nav stack:
-              // Navigator.of(context).pushAndRemoveUntil(
-              //   MaterialPageRoute(builder: (_) => const WelcomePage()),
-              //   (route) => false,
-              // );
-            },
-            child: const Text('Keluar', style: TextStyle(color: Colors.red)),
-          ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: isLoggingOut
+                  ? null
+                  : () => Navigator.of(dialogContext).pop(),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: isLoggingOut
+                  ? null
+                  : () async {
+                      setDialogState(() {
+                        isLoggingOut = true;
+                        errorMessage = null;
+                      });
+
+                      // TODO: wire to AuthProvider.logout() once domain layer exists
+                      await context.read<AuthProvider>().logout();
+                      final status = context.read<AuthProvider>().status;
+
+                      if (!dialogContext.mounted) return;
+
+                      if (status == Status.success) {
+                        // then navigate back to WelcomePage, clearing the nav stack:
+                        Navigator.of(dialogContext).pop();
+                        // if (!context.mounted) return;
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //   MaterialPageRoute(
+                        //     builder: (_) => const WelcomePage(),
+                        //   ),
+                        //   (route) => false,
+                        // );
+                      } else {
+                        setDialogState(() {
+                          isLoggingOut = false;
+                          errorMessage = 'Gagal keluar, silakan coba lagi';
+                        });
+                      }
+                    },
+              child: isLoggingOut
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Keluar', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        ),
       ),
     );
   }

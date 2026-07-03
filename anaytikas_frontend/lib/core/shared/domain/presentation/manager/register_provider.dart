@@ -9,72 +9,72 @@ class RegisterProvider extends ChangeNotifier {
 
   String? message;
 
-  Future<String> register(String email) async {
-    try {
-      final message = await registerUsecase.call(email);
-      notifyListeners();
-      return message;
-    } catch (e) {
-      print(e);
-      rethrow; // lempar error supaya bisa ditangkap try-catch di UI
-    }
-  }
+  // Future<String> register(String email) async {
+  //   try {
+  //     // final message = await registerUsecase.call(email);
+  //     notifyListeners();
+  //     // return message;
+  //   } catch (e) {
+  //     print(e);
+  //     rethrow; // lempar error supaya bisa ditangkap try-catch di UI
+  //   }
+  // }
 
-  Future<String> registerOtp(String email, int otp) async {
-    try {
-      final message = await registerUsecase.call2(email, otp);
-      notifyListeners();
-      return message;
-    } catch (e) {
-      print(e);
-      rethrow; // lempar error supaya bisa ditangkap try-catch di UI
-    }
-  }
+  // Future<String> registerOtp(String email, int otp) async {
+  //   try {
+  //     final message = await registerUsecase.call2(email, otp);
+  //     notifyListeners();
+  //     return message;
+  //   } catch (e) {
+  //     print(e);
+  //     rethrow; // lempar error supaya bisa ditangkap try-catch di UI
+  //   }
+  // }
 
-  Future<String> registerNewAccount(
-    String email,
-    String pass,
-    String noTelp,
-    String alamat,
-    String namaToko,
-  ) async {
-    try {
-      final message = await registerUsecase.callNewAccount(
-        email,
-        pass,
-        noTelp,
-        alamat,
-        namaToko,
-      );
-      notifyListeners();
-      return message;
-    } catch (e) {
-      print(e);
-      rethrow; // lempar error supaya bisa ditangkap try-catch di UI
-    }
-  }
+  // Future<String> registerNewAccount(
+  //   String email,
+  //   String pass,
+  //   String noTelp,
+  //   String alamat,
+  //   String namaToko,
+  // ) async {
+  //   try {
+  //     final message = await registerUsecase.callNewAccount(
+  //       email,
+  //       pass,
+  //       noTelp,
+  //       alamat,
+  //       namaToko,
+  //     );
+  //     notifyListeners();
+  //     return message;
+  //   } catch (e) {
+  //     print(e);
+  //     rethrow; // lempar error supaya bisa ditangkap try-catch di UI
+  //   }
+  // }
 
-  Future<String> login(String email, String pass) async {
-    try {
-      final message = await registerUsecase.callLogin(email, pass);
-      notifyListeners();
-      return message;
-    } catch (e) {
-      print(e);
-      rethrow; // lempar error supaya bisa ditangkap try-catch di UI
-    }
-  }
+  // Future<String> login(String email, String pass) async {
+  //   try {
+  //     final message = await registerUsecase.callLogin(email, pass);
+  //     notifyListeners();
+  //     return message;
+  //   } catch (e) {
+  //     print(e);
+  //     rethrow; // lempar error supaya bisa ditangkap try-catch di UI
+  //   }
+  // }
 
-  Future<String> logout() async {
-    try {
-      final message = await registerUsecase.callLogout();
-      notifyListeners();
-      return message;
-    } catch (e) {
-      print(e);
-      rethrow; // lempar error supaya bisa ditangkap try-catch di UI
-    }
-  }
+  // Future<String> logout() async {
+  //   try {
+  //     final message = await registerUsecase.callLogout();
+  //     notifyListeners();
+  //     return message;
+  //   } catch (e) {
+  //     print(e);
+  //     rethrow; // lempar error supaya bisa ditangkap try-catch di UI
+  //   }
+  // }
 
   Future<TokoEntity> getToko() async {
     try {

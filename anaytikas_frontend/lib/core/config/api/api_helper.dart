@@ -28,7 +28,7 @@ class ApiHelper {
       }
       final json = jsonDecode(respone.body) as Map<String, dynamic>;
 
-      if (respone.statusCode == 200) {
+      if (respone.statusCode == 200 || respone.statusCode == 201) {
         return json;
       } else {
         throw Exception(
