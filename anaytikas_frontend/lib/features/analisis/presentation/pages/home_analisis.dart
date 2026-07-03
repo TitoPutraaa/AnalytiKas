@@ -1,27 +1,29 @@
-import 'package:anaytikas_frontend/core/config/network/connectivity_helper.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeAnalisis extends StatelessWidget {
+class HomeAnalisis extends StatefulWidget {
   const HomeAnalisis({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: replace with real data from AnalisisProvider once field mapping is settled
-    const bulanTahun = 'MEI 2026';
-    const pendapatanBersih = 'Rp.24.700.000';
-    const persentase = '+ 67%';
-    const biayaOperasional = 'Rp.5.200.000';
-    const labaKotor = 'Rp.33.000.000';
-    const totalPenjualan = '36 Penjualan';
-    const totalPembelian = '44 Pembelian';
-    context.watch<AnalisisProvider>().loadAnalisis(email: '', token: '');
+  State<HomeAnalisis> createState() => _HomeAnalisisState();
+}
 
+class _HomeAnalisisState extends State<HomeAnalisis> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AnalisisProvider>();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       child: Consumer<AnalisisProvider>(
         builder: (context, value, child) {
-          if (value.status == Status.offline) {
+          if (value.message != "") {
             return Center(child: Text(value.message));
           }
 
@@ -50,7 +52,7 @@ class HomeAnalisis extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          bulanTahun,
+                          value.analisisEntitiy.bulan,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -69,8 +71,8 @@ class HomeAnalisis extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          pendapatanBersih,
+                        Text(
+                          value.analisisEntitiy.netto.toString(),
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
@@ -87,7 +89,7 @@ class HomeAnalisis extends StatelessWidget {
                             color: const Color(0xFF7CF0A8),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
@@ -97,7 +99,7 @@ class HomeAnalisis extends StatelessWidget {
                               ),
                               SizedBox(width: 4),
                               Text(
-                                persentase,
+                                value.analisisEntitiy.presentase.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   color: Color(0xFF1A2B4C),
@@ -126,10 +128,14 @@ class HomeAnalisis extends StatelessWidget {
                   // ---- Biaya Operasional & Laba Kotor cards ----
                   _buildStatCard(
                     label: 'Biaya Operasional',
-                    value: biayaOperasional,
+                    value: value.analisisEntitiy.totalBiayaOperasional
+                        .toString(),
                   ),
                   const SizedBox(height: 12),
-                  _buildStatCard(label: 'Laba Kotor', value: labaKotor),
+                  _buildStatCard(
+                    label: 'Laba Kotor',
+                    value: value.analisisEntitiy.brutto.toString(),
+                  ),
 
                   const SizedBox(height: 24),
 
@@ -139,13 +145,15 @@ class HomeAnalisis extends StatelessWidget {
                       Expanded(
                         child: _buildCountColumn(
                           label: 'Total Penjualan',
-                          value: totalPenjualan,
+                          value: value.analisisEntitiy.totalPenjualan
+                              .toString(),
                         ),
                       ),
                       Expanded(
                         child: _buildCountColumn(
                           label: 'Total Pembelian',
-                          value: totalPembelian,
+                          value: value.analisisEntitiy.totalPembelian
+                              .toString(),
                         ),
                       ),
                     ],

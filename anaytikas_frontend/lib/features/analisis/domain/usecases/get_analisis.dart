@@ -6,7 +6,7 @@ class GetAnalisis {
 
   GetAnalisis({required this.analisisRepository});
 
-  Future<AnalisisEntitiy> call(String email, String token) async {
-    return analisisRepository.getAnalisis(email, token);
+  Future<AnalisisEntitiy> call() async {
+    return analisisRepository.getAnalisis();
   }
 }

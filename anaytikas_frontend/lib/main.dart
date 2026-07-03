@@ -69,7 +69,9 @@ class MyApp extends StatelessWidget {
         // TEST
         ChangeNotifierProvider(create: (_) => getIt<RegisterProvider>()),
         // Analisis
-        ChangeNotifierProvider(create: (_) => getIt<AnalisisProvider>()),
+        ChangeNotifierProvider(
+          create: (_) => getIt<AnalisisProvider>()..loadAnalisis(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
