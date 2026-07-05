@@ -4,12 +4,12 @@ import 'package:anaytikas_frontend/core/shared/entities/toko_entity.dart';
 import 'package:anaytikas_frontend/core/shared/models/biaya_opr_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/harga_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/kategori_model.dart';
+import 'package:anaytikas_frontend/core/shared/models/pembelian_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/penjualan_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/product_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/product_per_pembelian_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/product_per_penjualan_model.dart';
 import 'package:anaytikas_frontend/core/shared/models/toko_model.dart';
-import 'package:anaytikas_frontend/features/stok/data/models/pembelian_model.dart';
 
 import '../../../config/network/connectivity_helper.dart';
 import '../../domain/repositories/account_repository.dart';
@@ -93,6 +93,15 @@ class AccountRepositoryImpl implements AccountRepository {
       throw Exception('Tidak ada koneksi internet');
     }
 
+    // TESTING =====================
+    // final json = await remoteDataSource.getProduct(email, token);
+    // print(json);
+    // final db = await localDataSource.getPenjualan();
+    // print(db);
+
+    // return ApiResponse(data: null, message: 'message', success: false);
+    // TESTING =====================
+
     bool syncFailed = false;
 
     final json = await remoteDataSource.login(email, pass);
@@ -107,6 +116,9 @@ class AccountRepositoryImpl implements AccountRepository {
     final String token = apiResponse.data!;
     await tokenLocalDataSource.saveToken(token);
 
+    bool hargaOk = true;
+    bool kategoriOk = true;
+    bool productOk = true;
     // Ambil seluruh data dan simpan di db jika ada
     try {
       await Future.wait([
@@ -119,22 +131,16 @@ class AccountRepositoryImpl implements AccountRepository {
           print('Gagal sync profile: $e');
           return null;
         }),
-        _syncSingle(
+        _syncList(
           fetch: () => remoteDataSource.getKategori(email, token),
           fromMap: KategoriModel.fromMap,
           toMap: (model) => model.toMap(),
-          save: localDataSource.saveToko,
+          saveList: localDataSource.saveKategori,
+          tableName: 'kategori',
+          idKey: 'id_kategori',
         ).catchError((e) {
           print('Gagal sync kategori: $e');
-          return null;
-        }),
-        _syncList(
-          fetch: () => remoteDataSource.getProduct(email, token),
-          fromMap: ProductModel.fromMap,
-          toMap: (model) => model.toMap(),
-          saveList: localDataSource.saveProducts,
-        ).catchError((e) {
-          print('Gagal sync product: $e');
+          kategoriOk = false;
           return null;
         }),
         _syncList(
@@ -142,8 +148,11 @@ class AccountRepositoryImpl implements AccountRepository {
           fromMap: HargaModel.fromMap,
           toMap: (model) => model.toMap(),
           saveList: localDataSource.saveHargaProducts,
+          tableName: 'harga_product',
+          idKey: 'id_harga',
         ).catchError((e) {
           print('Gagal sync harga: $e');
+          hargaOk = false;
           return null;
         }),
         _syncList(
@@ -151,15 +160,35 @@ class AccountRepositoryImpl implements AccountRepository {
           fromMap: BiayaOprModel.fromMap,
           toMap: (model) => model.toMap(),
           saveList: localDataSource.saveBiayaOp,
+          tableName: 'biaya_operasional',
+          idKey: 'id_biaya',
         ).catchError((e) {
           print('Gagal sync biayaOp: $e');
           return null;
         }),
+      ], eagerError: false);
+
+      if (hargaOk && kategoriOk) {
+        await _syncList(
+          fetch: () => remoteDataSource.getProduct(email, token),
+          fromMap: ProductModel.fromMap,
+          toMap: (model) => model.toMap(),
+          saveList: localDataSource.saveProducts,
+        ).catchError((e) {
+          print('Gagal sync product: $e');
+          productOk = false;
+          return null;
+        });
+      }
+
+      await Future.wait([
         _syncList(
           fetch: () => remoteDataSource.getPembelian(email, token),
           fromMap: PembelianModel.fromMap,
           toMap: (model) => model.toMap(),
           saveList: localDataSource.savePembelian,
+          tableName: 'pembelian',
+          idKey: 'id_pembelian',
         ).catchError((e) {
           print('Gagal sync pembelian: $e');
           return null;
@@ -169,29 +198,36 @@ class AccountRepositoryImpl implements AccountRepository {
           fromMap: PenjualanModel.fromMap,
           toMap: (model) => model.toMap(),
           saveList: localDataSource.savePenjualan,
+          tableName: 'penjualan',
+          idKey: 'id_penjualan',
         ).catchError((e) {
           print('Gagal sync penjualan: $e');
           return null;
         }),
-        _syncList(
-          fetch: () => remoteDataSource.getProductPerPembelian(email, token),
-          fromMap: ProductPerPembelianModel.fromMap,
-          toMap: (model) => model.toMap(),
-          saveList: localDataSource.saveProductPerPemb,
-        ).catchError((e) {
-          print('Gagal sync proPerpemb: $e');
-          return null;
-        }),
-        _syncList(
-          fetch: () => remoteDataSource.getProductPerPenjualan(email, token),
-          fromMap: ProductPerPenjualanModel.fromMap,
-          toMap: (model) => model.toMap(),
-          saveList: localDataSource.saveProductPerPenj,
-        ).catchError((e) {
-          print('Gagal sync proPerpenj: $e');
-          return null;
-        }),
-      ], eagerError: false);
+      ]);
+
+      if (productOk) {
+        await Future.wait([
+          _syncList(
+            fetch: () => remoteDataSource.getProductPerPembelian(email, token),
+            fromMap: ProductPerPembelianModel.fromMap,
+            toMap: (model) => model.toMap(),
+            saveList: localDataSource.saveProductPerPemb,
+          ).catchError((e) {
+            print('Gagal sync proPerpemb: $e');
+            return null;
+          }),
+          _syncList(
+            fetch: () => remoteDataSource.getProductPerPenjualan(email, token),
+            fromMap: ProductPerPenjualanModel.fromMap,
+            toMap: (model) => model.toMap(),
+            saveList: localDataSource.saveProductPerPenj,
+          ).catchError((e) {
+            print('Gagal sync proPerpenj: $e');
+            return null;
+          }),
+        ]);
+      }
     } catch (e) {
       syncFailed = true;
     }
@@ -206,6 +242,7 @@ class AccountRepositoryImpl implements AccountRepository {
         success: true,
       );
     }
+    print('Login berhasil');
     return apiResponse;
   }
 
@@ -227,6 +264,24 @@ class AccountRepositoryImpl implements AccountRepository {
     if (email.isEmpty || token == null) {
       throw Exception('Gagal ambil data toko dari DB');
     }
+
+    // // TESTING =====================
+    // final json = await remoteDataSource.getBiayaOperasi(email, token);
+    // print(json);
+    // print('======================================================');
+    // final db = await localDataSource.getPembelian();
+    // print(db);
+    // print('======================================================');
+    // final db2 = await localDataSource.getPenjualan();
+    // print(db2);
+    // print('======================================================');
+    // final db3 = await localDataSource.getBiayaOperasional();
+    // print(db3);
+    // print('======================================================');
+    // return ApiResponse(data: null, message: 'message', success: false);
+    // // TESTING =====================
+
+    // Sincroniase All Data
     await syncAllData();
 
     final json = await remoteDataSource.logout(email, token);
@@ -350,7 +405,7 @@ class AccountRepositoryImpl implements AccountRepository {
     );
     final apiResponseProfile = ApiResponse<String>.fromJson(
       jsonToko,
-      (data) => data as String,
+      (_) => null,
     );
 
     if (!apiResponseProfile.success) {
@@ -418,11 +473,16 @@ class AccountRepositoryImpl implements AccountRepository {
     required TModel Function(Map<String, dynamic>) fromMap,
     required Map<String, dynamic> Function(TModel) toMap,
     required Future<void> Function(List<Map<String, dynamic>>) saveList,
+    String? tableName,
+    String? idKey,
   }) async {
     final raw = await fetch();
+
     final response = ApiResponse<List<Map<String, dynamic>>>.fromJson(
       raw,
-      (data) => data,
+      (data) => (data as List)
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList(),
     );
     if (!response.success || response.data == null) {
       throw Exception(response.message);
@@ -430,6 +490,17 @@ class AccountRepositoryImpl implements AccountRepository {
     if (response.data!.isNotEmpty) {
       final maps = response.data!.map(fromMap).map(toMap).toList();
       await saveList(maps);
+
+      if (tableName != null && idKey != null) {
+        // reset auto increment to higher than the previos id
+        final maxId = response.data!
+            .map((e) => e[idKey] as int)
+            .reduce((a, b) => a > b ? a : b);
+        await localDataSource.resetAutoIncrement(tableName, maxId);
+      }
+    } else if (tableName != null && idKey != null) {
+      // reset auto increment to be 0
+      await localDataSource.resetAutoIncrement(tableName, 0);
     }
   }
 }

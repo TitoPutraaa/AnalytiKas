@@ -27,7 +27,7 @@ class ProductPerPenjualanModel extends ProductPerPenjualanEntity {
 
   Map<String, dynamic> toMap() {
     return {
-      'id_penjualan': idProduct,
+      'id_penjualan': idPenjualan,
       'id_product': idProduct,
       'jumlah': jumlah,
     };

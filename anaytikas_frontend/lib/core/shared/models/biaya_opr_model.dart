@@ -13,8 +13,8 @@ class BiayaOprModel extends BiayaOprEntity {
     return BiayaOprModel(
       idBiaya: data["id_biaya"] as int,
       nama: data["nama"] as String,
-      tanggal: DateTime.parse(data["tanggal"] as String),
-      waktu: DateTime.parse(data["waktu"] as String),
+      tanggal: data["tanggal"] as String,
+      waktu: data["waktu"] as String,
       totalBiaya: (data["total_biaya"] as num).toDouble(),
     );
   }

@@ -27,7 +27,6 @@ class ApiHelper {
         print("DEBUG: Response Body: ${respone.body}");
       }
       final json = jsonDecode(respone.body) as Map<String, dynamic>;
-
       if (respone.statusCode == 200 || respone.statusCode == 201) {
         return json;
       } else {

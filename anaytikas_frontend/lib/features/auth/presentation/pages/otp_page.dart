@@ -1,4 +1,6 @@
 // lib/features/auth/presentation/pages/otp_page.dart
+import 'package:anaytikas_frontend/features/auth/presentation/pages/create_new_pass_page.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/pages/success_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +28,7 @@ class _OtpPageState extends State<OtpPage> {
   );
 
   bool _isLoading = false;
+  bool _isLoad = false;
 
   @override
   void dispose() {
@@ -71,6 +74,14 @@ class _OtpPageState extends State<OtpPage> {
         await context.read<AuthProvider>().validateAccount(
           int.tryParse(_otpValue)!,
         );
+        print('register');
+        final status = context.read<AuthProvider>().status;
+        final message = context.read<AuthProvider>().message;
+        if (status == Status.success) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => SuccessPage(message: message)),
+          );
+        }
       } finally {
         if (mounted) {
           setState(() => _isLoading = false);
@@ -79,6 +90,13 @@ class _OtpPageState extends State<OtpPage> {
     } else if (widget.jenisOtp == 'forgotPass') {
       try {
         await context.read<AuthProvider>().passOtp(int.tryParse(_otpValue)!);
+        final status = context.read<AuthProvider>().status;
+        print('masuk forgotPass');
+        if (status == Status.success) {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => CreateNewPassPage()));
+        }
       } finally {
         if (mounted) {
           setState(() => _isLoading = false);
@@ -88,14 +106,14 @@ class _OtpPageState extends State<OtpPage> {
   }
 
   void _onResend() async {
-    setState(() => _isLoading = true);
+    setState(() => _isLoad = true);
     // TODO: wire to AuthProvider.resendOtp(email)
     if (widget.jenisOtp == 'register') {
       try {
         await context.read<AuthProvider>().resedOtp();
       } finally {
         if (mounted) {
-          setState(() => _isLoading = false);
+          setState(() => _isLoad = false);
         }
       }
     } else if (widget.jenisOtp == 'forgotPass') {
@@ -103,7 +121,7 @@ class _OtpPageState extends State<OtpPage> {
         await context.read<AuthProvider>().resedOtpPass();
       } finally {
         if (mounted) {
-          setState(() => _isLoading = false);
+          setState(() => _isLoad = false);
         }
       }
     }
@@ -234,11 +252,13 @@ class _OtpPageState extends State<OtpPage> {
                     style: TextStyle(color: Colors.black54, fontSize: 13),
                   ),
                   GestureDetector(
-                    onTap: _isLoading ? null : _onResend,
-                    child: const Text(
+                    onTap: _isLoad ? null : _onResend,
+                    child: Text(
                       'Kirim ulang',
                       style: TextStyle(
-                        color: Color(0xFF1A2B4C),
+                        color: _isLoad
+                            ? Color(0xFF1A2B4C).withValues(alpha: 0.5)
+                            : Color(0xFF1A2B4C),
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
                         decoration: TextDecoration.underline,

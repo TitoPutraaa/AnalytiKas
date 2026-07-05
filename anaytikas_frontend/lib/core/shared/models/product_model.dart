@@ -18,8 +18,8 @@ class ProductModel extends ProdukEntity {
       idProduct: map['id_product'] as int,
       namaProduct: map['nama_product'] as String,
       jmlhStok: map['jmlh_stok'] as int,
-      isGrosir: (map['is_grosir'] as int) == 1,
-      isActivate: (map['is_active'] as int) == 1,
+      isGrosir: _parseBool(map['is_grosir']),
+      isActivate: _parseBool(map['is_active']),
       idKategori: map['id_kategori'] as int,
       idHarga: map['id_harga'] as int,
       stokWarning: map['stok_warning'] as int,
@@ -37,5 +37,12 @@ class ProductModel extends ProdukEntity {
       'id_harga': idHarga,
       'stok_warning': stokWarning,
     };
+  }
+
+  static bool _parseBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) return value == '1' || value.toLowerCase() == 'true';
+    return false;
   }
 }

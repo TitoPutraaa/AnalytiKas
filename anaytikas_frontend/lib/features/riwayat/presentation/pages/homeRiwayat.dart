@@ -125,7 +125,7 @@ class _HomeriwayatState extends State<Homeriwayat> {
                     itemBuilder: (context, index) {
                       final tanggal = tanggalList[index];
                       final entries = grouped[tanggal]!;
-                      print(entries);
+                      // print(entries);
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

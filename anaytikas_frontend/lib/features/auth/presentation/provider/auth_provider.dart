@@ -43,14 +43,17 @@ class AuthProvider with ChangeNotifier {
       if (result.success) {
         status = Status.success;
         _message = result.message;
+        print(_message);
       } else {
         status = Status.error;
         _message = result.message;
+        print(_message);
       }
       notifyListeners();
     } catch (e) {
       status = Status.error;
       _message = e.toString();
+      print(_message);
       notifyListeners();
     }
   }
@@ -184,6 +187,7 @@ class AuthProvider with ChangeNotifier {
       _message = result.message;
       if (result.success) {
         status = Status.success;
+        _emailUsr = '';
       } else {
         status = Status.error;
       }

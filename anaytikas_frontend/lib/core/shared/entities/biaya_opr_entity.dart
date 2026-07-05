@@ -1,8 +1,8 @@
 class BiayaOprEntity {
   final int idBiaya;
   final String nama;
-  final DateTime tanggal;
-  final DateTime waktu;
+  final String tanggal;
+  final String waktu;
   final double totalBiaya;
 
   BiayaOprEntity({
