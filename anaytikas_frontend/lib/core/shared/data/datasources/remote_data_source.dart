@@ -240,23 +240,35 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<AnalisisModel> analitcLaba(String email, String token) async {
-    var data = await apiHelper.post('/wh/laba/latest', {
-      'email': email,
-      'token': token,
-    });
+    var data;
+    try {
+      data = await apiHelper.post('/wh/laba/latest', {
+        'email': email,
+        'token': token,
+      });
+      print("data anal : ${data}");
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      if (data == null) {
+        throw Exception('kosong');
+      }
 
-    final datalist = data["data"] as List<dynamic>;
-    final check = data['success'] as bool;
+      final datalist = data["data"] as Map<String, dynamic>;
+      final check = data['success'] as bool;
 
-    if (datalist.isEmpty) {
-      throw Exception("Data Analisis Kosong");
+      if (datalist.isEmpty) {
+        print("kosong");
+        throw Exception("Data Analisis Kosong");
+      }
+
+      if (!check) {
+        print("++++gagal memuat");
+        throw Exception("Gagal Memuat Analisis Data");
+      }
+      final getFirst = datalist;
+      print("+-+-+ ${data}");
+      return AnalisisModel.fromJson(getFirst);
     }
-
-    if (check) {
-      throw Exception("Gagal Memuat Analisis Data");
-    }
-
-    final getFirst = datalist.first as Map<String, dynamic>;
-    return AnalisisModel.fromJson(getFirst);
   }
 }

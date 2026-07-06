@@ -1,7 +1,9 @@
 import 'package:anaytikas_frontend/core/config/theme/app_theme.dart';
 import 'package:anaytikas_frontend/core/di/get_it.dart';
+import 'package:anaytikas_frontend/core/shared/data/datasources/token_local_data_source.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/home_auth.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/pages/login_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/cart_provider.dart';
@@ -16,6 +18,7 @@ import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +35,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<bool> _checkToken() async {
+    final tokenLocal = TokenLocalDataSourceImpl(
+      secureStorage: const FlutterSecureStorage(),
+    );
+    final token = await tokenLocal.getToken();
+    print(token);
+    return token != null && token.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -46,8 +58,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => getIt<NotaPenjualanProvider>()),
 
         // stok
-        ChangeNotifierProvider(create: (_) => getIt<StokHomeProvider>()),
-        ChangeNotifierProvider(create: (_) => getIt<GetKategoriProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<BarangBaruProvider>()),
         ChangeNotifierProvider(
           create: (_) => getIt<BiayaOperasionalProvider>(),
@@ -80,9 +90,23 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: AppTheme.mainTheme,
-        // home: const HomeAuth(),
-        home: const MainSheel(),
+        home: FutureBuilder<bool>(
+          future: _checkToken(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+            if (snapshot.data == true) {
+              return const MainSheel();
+            }
+            return const HomeAuth();
+          },
+        ),
       ),
+      // home: isToken ? MainSheel() : MainSheel(),
+      // home: isToken ? HomeAuth() : HomeAuth(),
     );
   }
 }

@@ -1,9 +1,11 @@
 // lib/features/auth/presentation/pages/login_page.dart
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart'
+    hide Status;
 import 'package:anaytikas_frontend/features/auth/presentation/pages/forgate_password_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
-import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart'
-    hide Status;
+
+import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +44,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _onSubmit() async {
+    final provider = context.read<AuthProvider>();
+    final analProv = context.read<AnalisisProvider>();
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -53,9 +58,16 @@ class _LoginPageState extends State<LoginPage> {
         _passwordController.text,
       );
 
-      final status = context.read<AuthProvider>().status;
-      if (status == Status.error) {
+      if (provider.status == Status.error) {
         print('gagal login');
+      }
+
+      if (provider.status == Status.success) {
+        await analProv.loadAnalisis();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainSheel()),
+        );
       }
     } finally {
       if (mounted) {

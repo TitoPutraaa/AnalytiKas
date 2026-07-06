@@ -5,7 +5,7 @@ extension CurrencyExtension on num {
   String toRupiah() {
     return NumberFormat.currency(
       locale: 'id_ID',
-      symbol: 'Rp ',
+      symbol: 'Rp. ',
       decimalDigits: 0,
     ).format(this);
   }

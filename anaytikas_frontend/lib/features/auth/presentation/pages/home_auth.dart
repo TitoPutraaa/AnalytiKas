@@ -106,6 +106,7 @@ class HomeAuth extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () {
                     context.read<AuthProvider>().resetMessage();
+
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const LoginPage()),
                     );

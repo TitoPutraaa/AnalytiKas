@@ -1,3 +1,6 @@
+import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
+
 import '../../../../core/shared/extensions/currency_extension.dart';
 import '../../../../core/shared/extensions/datetime_extension.dart';
 import '../../../../core/shared/formatter/currency_input_formatter.dart';
@@ -251,6 +254,10 @@ class _PembayaranPageState extends State<PembayaranPage> {
                           if (!context.mounted) return;
                           if (idPenjualan != null) {
                             context.read<CartProvider>().clearCart();
+                            context.read<StokHomeProvider>().getAllProducts();
+                            context.read<RiwayatProvider>().loadRiwayat();
+                            context.read<KasirProvider>().loadProduct();
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(

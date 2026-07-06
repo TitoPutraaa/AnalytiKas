@@ -1,6 +1,7 @@
 // lib/features/auth/presentation/pages/akun_saya_page.dart
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/edit_profile_page.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/pages/home_auth.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart'
     hide Status;
@@ -223,27 +224,26 @@ class _ProfilePageState extends State<ProfilePage> {
                         errorMessage = null;
                       });
 
-                      // TODO: wire to AuthProvider.logout() once domain layer exists
                       await context.read<AuthProvider>().logout();
-                      final status = context.read<AuthProvider>().status;
+                      final prov = context.read<AuthProvider>();
 
                       if (!dialogContext.mounted) return;
-
-                      if (status == Status.success) {
-                        // then navigate back to WelcomePage, clearing the nav stack:
-                        Navigator.of(dialogContext).pop();
-                        // if (!context.mounted) return;
-                        // Navigator.of(context).pushAndRemoveUntil(
-                        //   MaterialPageRoute(
-                        //     builder: (_) => const WelcomePage(),
-                        //   ),
-                        //   (route) => false,
-                        // );
-                      } else {
-                        setDialogState(() {
-                          isLoggingOut = false;
-                          errorMessage = 'Gagal keluar, silakan coba lagi';
-                        });
+                      if (dialogContext.mounted) {
+                        if (prov.status == Status.success) {
+                          // then navigate back to WelcomePage, clearing the nav stack:
+                          Navigator.of(dialogContext).pop();
+                          if (!context.mounted) return;
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (_) => const HomeAuth()),
+                            (route) => false,
+                          );
+                        }
+                        if (prov.status == Status.error) {
+                          setDialogState(() {
+                            isLoggingOut = false;
+                            errorMessage = 'Gagal keluar, silakan coba lagi';
+                          });
+                        }
                       }
                     },
               child: isLoggingOut

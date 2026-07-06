@@ -1,3 +1,4 @@
+import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,12 +10,14 @@ class HomeAnalisis extends StatefulWidget {
   State<HomeAnalisis> createState() => _HomeAnalisisState();
 }
 
+dynamic provider;
+
 class _HomeAnalisisState extends State<HomeAnalisis> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnalisisProvider>();
+      provider = context.read<AnalisisProvider>();
     });
   }
 
@@ -23,6 +26,9 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
     return SizedBox(
       child: Consumer<AnalisisProvider>(
         builder: (context, value, child) {
+          if (value.status == Status.loading) {
+            return Center(child: CircularProgressIndicator());
+          }
           if (value.message != "") {
             return Center(child: Text(value.message));
           }
@@ -72,7 +78,7 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          value.analisisEntitiy.netto.toString(),
+                          value.analisisEntitiy.netto.toRupiah(),
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
@@ -99,10 +105,12 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
                               ),
                               SizedBox(width: 4),
                               Text(
-                                value.analisisEntitiy.presentase.toString(),
+                                "${value.analisisEntitiy.presentase} %",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1A2B4C),
+                                  color: value.analisisEntitiy.presentase < 0
+                                      ? Colors.green
+                                      : Colors.redAccent,
                                   fontSize: 14,
                                 ),
                               ),
@@ -129,12 +137,12 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
                   _buildStatCard(
                     label: 'Biaya Operasional',
                     value: value.analisisEntitiy.totalBiayaOperasional
-                        .toString(),
+                        .toRupiah(),
                   ),
                   const SizedBox(height: 12),
                   _buildStatCard(
                     label: 'Laba Kotor',
-                    value: value.analisisEntitiy.brutto.toString(),
+                    value: value.analisisEntitiy.brutto.toRupiah(),
                   ),
 
                   const SizedBox(height: 24),
