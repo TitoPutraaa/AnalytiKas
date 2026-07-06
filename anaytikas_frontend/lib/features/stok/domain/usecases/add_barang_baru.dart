@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
 
 class AddBarangBaru {
@@ -7,25 +7,7 @@ class AddBarangBaru {
 
   AddBarangBaru({required this.stokRepository});
 
-  Future<void> call(
-    int idProduct,
-    Kategori kategori,
-    HargaProduct harga,
-    String namaProduct,
-    int jmlhStok,
-    int stokWarning,
-    bool isGrosir,
-    bool isActivate,
-  ) {
-    return stokRepository.addBarangBaru(
-      idProduct,
-      kategori,
-      harga,
-      namaProduct,
-      jmlhStok,
-      stokWarning,
-      isGrosir,
-      isActivate,
-    );
+  Future<void> call(Pembelian pembelian, ProductEntity product, int jumlah) {
+    return stokRepository.addBarangBaru(pembelian, product, jumlah);
   }
 }

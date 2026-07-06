@@ -1,9 +1,12 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/entities/pembelian_entity.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/pages/camera_scanner_page.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/camera_scan.dart';
@@ -132,15 +135,26 @@ class _BarangBaruState extends State<BarangBaru> {
       satuan: _selectedSatuan!,
     );
 
-    await provider.barangBaru(
+    final pemebelian = Pembelian(
+      idPembelian: 0,
+      tanggal: DateTime.now(),
+      waktu: "",
+      totalHarga: jmlhStok * hargaBeli,
+    );
+
+    final product = ProductEntity(
       idProduct: kodeBarangConv,
       kategori: _selectedCategory!,
       harga: harga,
       namaProduct: name,
       jmlhStok: jmlhStok,
       stokWarning: stokWarning,
-      isGrosir: _isGrosir,
-      isActivate: true,
+    );
+
+    await provider.barangBaru(
+      pembelian: pemebelian,
+      product: product,
+      jumlah: jmlhStok,
     );
 
     if (mounted) {

@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
+import 'package:anaytikas_frontend/core/shared/data/datasources/remote_data_source.dart';
 import 'package:anaytikas_frontend/features/analisis/data/repository/analisis_repository_impl.dart';
 import 'package:anaytikas_frontend/features/analisis/domain/repository/analisis_repository.dart';
 import 'package:anaytikas_frontend/features/analisis/domain/usecases/get_analisis.dart';
@@ -147,7 +148,9 @@ void registerRepository() {
   getIt.registerLazySingleton<AnalisisRepository>(
     () => AnalisisRepositoryImpl(
       remoteDataSource: getIt(),
-      connectivityHelper: ConnectivityHelper(),
+      connectivityHelper: getIt(),
+      localDataSource: getIt(),
+      tokenLocalDataSource: getIt(),
     ),
   );
 }

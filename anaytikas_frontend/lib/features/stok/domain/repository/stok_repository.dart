@@ -6,14 +6,9 @@ import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.
 abstract class StokRepository {
   Future<List<ProductEntity>> getAllProducts();
   Future<void> addBarangBaru(
-    int idProduct,
-    Kategori kategori,
-    HargaProduct harga,
-    String namaProduct,
-    int jmlhStok,
-    int stokWarning,
-    bool isGrosir,
-    bool isActivate,
+    Pembelian pembelian,
+    ProductEntity product,
+    int jumlah,
   );
   Future<void> addBiayaOperasional(
     int idBiaya,

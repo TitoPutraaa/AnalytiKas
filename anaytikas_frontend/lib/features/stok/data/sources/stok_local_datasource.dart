@@ -1,8 +1,10 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
+import 'package:anaytikas_frontend/core/shared/models/harga_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/kategori_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
+import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:sqflite/sqflite.dart';
@@ -10,7 +12,7 @@ import 'package:sqflite/sqflite.dart';
 abstract class StokLocalDatasource {
   Future<List<ProductModel>> getAllProductsData();
   Future<List<Kategori>> getAllCategory();
-  Future<void> addBarangBaruData(ProductModel addBarang);
+  Future<void> addBarangBaruData(ProductPerPembelianModel addBarang);
   Future<void> addBiayaOperasionalData(BiayaOperasionalModel addBiayaOps);
   Future<void> addStokData(ProductPerPembelianModel addStok);
   Future<void> updateProductData(ProductModel updProduct);
@@ -31,16 +33,34 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   }
 
   @override
-  Future<void> addBarangBaruData(ProductModel addBarang) async {
+  Future<void> addBarangBaruData(ProductPerPembelianModel addBarang) async {
     final db = await dbHelper.database;
+    final now = DateTime.now();
+
     await db.transaction((txn) async {
       final idHarga = await txn.insert("harga_product", {
-        "harga_jual": addBarang.harga.hargaJual,
-        "harga_beli": addBarang.harga.hargaBeli,
-        "satuan": addBarang.harga.satuan,
+        "harga_jual": addBarang.product.harga.hargaJual,
+        "harga_beli": addBarang.product.harga.hargaBeli,
+        "satuan": addBarang.product.harga.satuan,
       }, conflictAlgorithm: ConflictAlgorithm.fail);
 
-      final productMap = addBarang.toMap();
+      final idPembelian = await txn.insert("pembelian", {
+        "tanggal": now.toIso8601String().split("T")[0],
+        "waktu": now.toIso8601String().split("T")[1].substring(0, 8),
+        "total_harga": addBarang.product.harga.hargaBeli * addBarang.jumlah,
+      });
+
+      final productMap = ProductModel(
+        idProduct: addBarang.product.idProduct,
+        kategori: addBarang.product.kategori,
+        harga: addBarang.product.harga,
+        namaProduct: addBarang.product.namaProduct,
+        jmlhStok: addBarang.product.jmlhStok,
+        stokWarning: addBarang.product.stokWarning,
+        isActivate: addBarang.product.isActivate,
+        isGrosir: addBarang.product.isGrosir,
+      ).toMap();
+
       productMap["id_harga"] = idHarga;
 
       await txn.insert(
@@ -48,6 +68,11 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
         productMap,
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
+      await txn.insert("product_per_pembelian", {
+        "id_pembelian": idPembelian,
+        "id_product": addBarang.product.idProduct,
+        "jumlah": addBarang.jumlah,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
     });
   }
 

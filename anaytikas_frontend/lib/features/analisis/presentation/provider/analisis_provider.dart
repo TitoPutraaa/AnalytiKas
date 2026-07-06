@@ -1,4 +1,3 @@
-import 'package:anaytikas_frontend/core/config/network/connectivity_helper.dart';
 import 'package:anaytikas_frontend/features/analisis/domain/entities/analisis_entitiy.dart';
 import 'package:anaytikas_frontend/features/analisis/domain/usecases/get_analisis.dart';
 import 'package:flutter/material.dart';
@@ -23,28 +22,19 @@ class AnalisisProvider extends ChangeNotifier {
     bulan: "",
   );
   String message = "";
-  var connection = ConnectivityHelper().isOnline();
 
-  Future<void> loadAnalisis({
-    required String email,
-    required String token,
-  }) async {
+  Future<void> loadAnalisis() async {
     status = Status.loading;
     notifyListeners();
     try {
-      analisisEntitiy = await getAnalisis.call(email, token);
+      analisisEntitiy = await getAnalisis.call();
       status = Status.success;
       notifyListeners();
     } catch (e) {
       status = Status.error;
-      message = 'gagal memuat data analisis. err: ${e.toString()}';
+      message = 'gagal memuat data analisis rthrow. err: ${e.toString()}';
       notifyListeners();
-    }
-    if (!await connection) {
-      status = Status.offline;
-      message =
-          "Pastikan anda terhubung dengan internet untuk mengakses halaman ini";
-      notifyListeners();
+      rethrow;
     }
   }
 }
