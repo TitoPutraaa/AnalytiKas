@@ -258,7 +258,7 @@ class AccountRepositoryImpl implements AccountRepository {
       email = await localDataSource.getEmail();
       token = await tokenLocalDataSource.getToken();
       print("email from repo :${email}");
-      print("email from repo :${email}");
+      print("token from repo :${token}");
     } catch (e) {
       throw Exception('Gagal ambil data toko / token: $e');
     }
@@ -266,22 +266,6 @@ class AccountRepositoryImpl implements AccountRepository {
     if (email.isEmpty || token == null) {
       throw Exception('Gagal ambil data toko dari DB');
     }
-
-    // // TESTING =====================
-    // final json = await remoteDataSource.analitcLaba(email, token);
-    // print(json);
-    // print('======================================================');
-    // final db = await localDataSource.getPembelian();
-    // print(db);
-    // print('======================================================');
-    // final db2 = await localDataSource.getPenjualan();
-    // print(db2);
-    // print('======================================================');
-    // final db3 = await localDataSource.getBiayaOperasional();
-    // print(db3);
-    // print('======================================================');
-    // return ApiResponse(data: null, message: 'message', success: false);
-    // // TESTING =====================
 
     // Sincroniase All Data
     await syncAllData();
@@ -301,6 +285,21 @@ class AccountRepositoryImpl implements AccountRepository {
       throw Exception(e);
     }
     return apiResponse;
+    // // TESTING =====================
+    // final json = await remoteDataSource.analitcLaba(email, token);
+    // print(json);
+    // print('======================================================');
+    // final db = await localDataSource.getPembelian();
+    // print(db);
+    // print('======================================================');
+    // final db2 = await localDataSource.getPenjualan();
+    // print(db2);
+    // print('======================================================');
+    // final db3 = await localDataSource.getBiayaOperasional();
+    // print(db3);
+    // print('======================================================');
+    // return ApiResponse(data: null, message: 'message', success: false);
+    // // TESTING =====================
   }
 
   @override

@@ -54,7 +54,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _onSubmit() async {
-    setState(() => _isLoading = true);
     final editProvider = context.read<ProfileProvider>();
 
     if (!_formKey.currentState!.validate()) return;
@@ -64,8 +63,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final alamat = _alamatController.text.trim();
     final idToko = provider.profile.idToko;
 
-    await editProvider.editProfile(namatoko, noTlp, alamat, idToko);
-
     if (namatoko.isEmpty || noTlp.isEmpty || alamat.isEmpty) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
@@ -74,8 +71,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       return;
     }
 
+    await editProvider.editProfile(namatoko, noTlp, alamat, idToko);
     if (mounted) {
-      setState(() => _isLoading = false);
       if (editProvider.status == Status.success) {
         context.read<ProfileProvider>().getProfile();
 

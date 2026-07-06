@@ -44,10 +44,12 @@ class AuthProvider with ChangeNotifier {
         status = Status.success;
         _message = result.message;
         print(_message);
+        notifyListeners();
       } else {
         status = Status.error;
         _message = result.message;
         print(_message);
+        notifyListeners();
       }
       notifyListeners();
     } catch (e) {

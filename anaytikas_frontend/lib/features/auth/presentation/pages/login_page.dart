@@ -60,9 +60,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (provider.status == Status.error) {
         print('gagal login');
-      }
-
-      if (provider.status == Status.success) {
+      } else {
         await analProv.loadAnalisis();
         Navigator.pushReplacement(
           context,
