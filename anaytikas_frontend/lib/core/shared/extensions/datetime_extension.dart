@@ -20,4 +20,18 @@ extension DatetimeExtension on DateTime {
   String toTime() {
     return DateFormat('HH:mm:ss').format(this);
   }
+
+  // 01:11
+  static String parseToShortTime(String timeStr) {
+    try {
+      final DateTime dateTime = DateFormat('HH:mm:ss').parse(timeStr);
+      return DateFormat('HH:mm').format(dateTime);
+    } catch (e) {
+      // Fallback jika format tidak sesuai
+      if (timeStr.length >= 5) {
+        return timeStr.substring(0, 5);
+      }
+      return timeStr;
+    }
+  }
 }

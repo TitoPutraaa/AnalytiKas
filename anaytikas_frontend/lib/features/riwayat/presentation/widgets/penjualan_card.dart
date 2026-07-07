@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/core/shared/extensions/datetime_extension.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_entry_entity.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/pages/detail_riwayat_penjualan_page.dart';
 import 'package:flutter/material.dart';
@@ -35,15 +36,41 @@ class PenjualanCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              padding: const EdgeInsets.only(left: 14, top: 17),
+              child: const Text(
+                'Penjualan',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
             // ── Row atas: tanggal | TOTAL + nominal ──
             Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    data.tanggal,
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  Row(
+                    children: [
+                      Text(
+                        DateTime.parse(data.tanggal).toFullDate(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        DatetimeExtension.parseToShortTime(data.waktu),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -105,7 +132,7 @@ class PenjualanCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: Colors.green,
+                      color: AppColor.primary,
                     ),
                   ),
                 ],

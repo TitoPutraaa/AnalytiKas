@@ -1,6 +1,8 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/core/shared/extensions/datetime_extension.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_entry_entity.dart';
+import 'package:anaytikas_frontend/features/riwayat/presentation/pages/detail_riwayat_pembelian_page.dart';
 import 'package:flutter/material.dart';
 
 class PembelianCard extends StatelessWidget {
@@ -22,95 +24,131 @@ class PembelianCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Row atas: tanggal | TOTAL + nominal ──
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  data.tanggal,
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'TOTAL',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.black45,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '- ${data.totalHarga.toRupiah()}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailRiwayatPembelianPage(pembelian: data),
             ),
-          ),
-
-          const Divider(height: 1, color: Color(0xFFEEEEEE)),
-
-          // ── Row bawah: nama item + harga ──
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.namaProduct,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      'Jumlah: ${data.jumlah}',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.black45,
-                      ),
-                    ),
-                  ],
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 14, top: 17),
+              child: const Text(
+                'Pembelian',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
-                Text(
-                  '${data.totalHarga}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.primary,
+              ),
+            ),
+            // ── Row atas: tanggal | TOTAL + nominal ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        DateTime.parse(data.tanggal).toFullDate(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        DatetimeExtension.parseToShortTime(data.waktu),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'TOTAL',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black45,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '- ${data.totalHarga.toRupiah()}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          // ── "+ 1 item lainnya.." ──
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
-            // child: const Text(
-            //   '+ 1 item lainnya..',
-            //   style: TextStyle(fontSize: 11, color: Colors.black45),
-            // ),
-          ),
-        ],
+            const Divider(height: 1, color: Color(0xFFEEEEEE)),
+
+            // ── Row bawah: nama item + harga ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.namaProduct,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Jumlah: ${data.jumlah}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    data.totalHarga.toRupiah(),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── "+ 1 item lainnya.." ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+              // child: const Text(
+              //   '+ 1 item lainnya..',
+              //   style: TextStyle(fontSize: 11, color: Colors.black45),
+              // ),
+            ),
+          ],
+        ),
       ),
     );
   }

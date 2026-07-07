@@ -2,15 +2,15 @@ import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/datetime_extension.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_entry_entity.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/pages/homeRiwayat.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/detail_transaksi_item.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/detail_transaksi_toko_item.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/total_bayar_item.dart';
+
 import 'package:flutter/material.dart';
 
-class DetailRiwayatPenjualanPage extends StatelessWidget {
-  final RiwayatPenjualan penjualan;
-  const DetailRiwayatPenjualanPage({super.key, required this.penjualan});
+class DetailRiwayatBiayaOperasionalPage extends StatelessWidget {
+  final RiwayatOperasional biayaOperasional;
+  const DetailRiwayatBiayaOperasionalPage({
+    super.key,
+    required this.biayaOperasional,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class DetailRiwayatPenjualanPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 35),
+            const SizedBox(height: 70),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -91,25 +91,27 @@ class DetailRiwayatPenjualanPage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      DateTime.parse(penjualan.tanggal).toFullDate(),
+                      DateTime.parse(biayaOperasional.tanggal).toFullDate(),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: AppColor.darkGray.withValues(alpha: 0.9),
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      DatetimeExtension.parseToShortTime(penjualan.waktu),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.darkGray.withValues(alpha: 0.9),
-                      ),
-                    ),
+                    // const SizedBox(width: 4),
+                    // Text(
+                    //   DatetimeExtension.parseToShortTime(
+                    //     biayaOperasional.waktu,
+                    //   ),
+                    //   style: TextStyle(
+                    //     fontWeight: FontWeight.w500,
+                    //     color: AppColor.darkGray.withValues(alpha: 0.9),
+                    //   ),
+                    // ),
                   ],
                 ),
-                // Id Penjualan
+                // Id Biaya Operasional
                 Text(
-                  '${penjualan.idPenjualan}',
+                  '${biayaOperasional.idBiaya}',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: AppColor.darkGray.withValues(alpha: 0.9),
@@ -128,21 +130,33 @@ class DetailRiwayatPenjualanPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: penjualan.items.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final products = penjualan.items[index];
-                return DetailTransaksiItem(
-                  namaProduct: products.namaProduct,
-                  quantity: products.jumlah,
-                  satuan: products.satuan,
-                  totalHarga: products.totalHargaPerProduct,
-                );
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      biayaOperasional.namaBiaya,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.darkGray.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  biayaOperasional.totalBiaya.toRupiah(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.darkGray.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,7 +167,7 @@ class DetailRiwayatPenjualanPage extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  penjualan.totalHarga.toRupiah(),
+                  biayaOperasional.totalBiaya.toRupiah(),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ],
@@ -205,11 +219,6 @@ class DetailRiwayatPenjualanPage extends StatelessWidget {
             ),
             SizedBox(height: 30),
             Divider(height: 0),
-            SizedBox(height: 15),
-            DetailTransaksiTokoItem(
-              namaToko: penjualan.namaToko,
-              alamat: penjualan.alamat,
-            ),
 
             const SizedBox(height: 120),
           ],

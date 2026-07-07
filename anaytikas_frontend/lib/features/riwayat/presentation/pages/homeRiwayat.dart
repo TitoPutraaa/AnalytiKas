@@ -19,15 +19,14 @@ class _HomeriwayatState extends State<Homeriwayat> {
   bool isFiltered = false;
 
   void _showFilterDialog() {
+    final provider = context.read<RiwayatProvider>();
     showDialog(
       context: context,
       builder: (_) => DateFilterDialog(
+        initialStartDate: provider.startDate,
+        initialEndDate: provider.endDate,
         onApply: (filter) {
-          setState(() {
-            isFiltered =
-                filter.isLast13Months ||
-                (filter.startDate != null && filter.endDate != null);
-          });
+          context.read<RiwayatProvider>().applyDateFilter(filter);
         },
       ),
     );
