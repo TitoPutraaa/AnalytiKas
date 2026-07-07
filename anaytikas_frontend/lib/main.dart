@@ -3,7 +3,6 @@ import 'package:anaytikas_frontend/core/di/get_it.dart';
 import 'package:anaytikas_frontend/core/shared/data/datasources/token_local_data_source.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/home_auth.dart';
-import 'package:anaytikas_frontend/features/auth/presentation/pages/login_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/cart_provider.dart';

@@ -22,6 +22,7 @@ class _OpsStokState extends State<OpsStok> {
     'Sewa Tempat',
     'Listrik',
     "Air",
+    "Lainnya",
   ];
   String? selectedBiaya;
 
@@ -61,6 +62,9 @@ class _OpsStokState extends State<OpsStok> {
 
     final nominalParse = double.tryParse(nominal);
     final tanggalParse = DateTime.tryParse(tanggal);
+    final waktu = DateTime.now();
+    print(tanggal);
+    print(waktu);
 
     if (nominalParse == null) {
       ScaffoldMessenger.of(
@@ -81,7 +85,7 @@ class _OpsStokState extends State<OpsStok> {
       nama: selectedBiaya!,
       tanggal: tanggalParse,
       totalBiaya: nominalParse,
-      waktu: tanggalParse,
+      waktu: waktu,
     );
 
     if (mounted) {

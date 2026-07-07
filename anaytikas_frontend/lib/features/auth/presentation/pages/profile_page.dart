@@ -235,7 +235,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           if (!context.mounted) return;
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(builder: (_) => const HomeAuth()),
-                            (route) => false,
+                            (Route<dynamic> route) => false,
                           );
                         }
                         if (prov.status == Status.error) {

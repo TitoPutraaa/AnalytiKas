@@ -110,7 +110,7 @@ class AccountRepositoryImpl implements AccountRepository {
       (data) => data as String,
     );
 
-    if (!apiResponse.success || apiResponse.data == null) {
+    if (!apiResponse.success) {
       throw Exception(apiResponse.message);
     }
     final String token = apiResponse.data!;

@@ -232,10 +232,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   // DATA MARKET
   @override
   Future<Map<String, dynamic>> etlBegin(String email, String token) {
-    return apiHelper.post('/getdata/productpenjualan', {
-      'email': email,
-      'token': token,
-    });
+    return apiHelper.post('/wh/etl', {'email': email, 'token': token});
   }
 
   @override
@@ -249,26 +246,26 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print("data anal : ${data}");
     } catch (e) {
       print(e.toString());
-    } finally {
-      if (data == null) {
-        throw Exception('kosong');
-      }
-
-      final datalist = data["data"] as Map<String, dynamic>;
-      final check = data['success'] as bool;
-
-      if (datalist.isEmpty) {
-        print("kosong");
-        throw Exception("Data Analisis Kosong");
-      }
-
-      if (!check) {
-        print("++++gagal memuat");
-        throw Exception("Gagal Memuat Analisis Data");
-      }
-      final getFirst = datalist;
-      print("+-+-+ ${data}");
-      return AnalisisModel.fromJson(getFirst);
     }
+    if (data == null) {
+      throw Exception('kosong');
+    }
+
+    final datalist = data["data"] as Map<String, dynamic>;
+    final check = data['success'] as bool;
+
+    if (datalist.isEmpty) {
+      print("kosong");
+      throw Exception("Data Analisis Kosong");
+    }
+
+    if (!check) {
+      print("++++gagal memuat");
+      throw Exception("Gagal Memuat Analisis Data");
+    }
+    final getFirst = datalist;
+    print("+-+-+ ${data}");
+
+    return AnalisisModel.fromJson(getFirst);
   }
 }

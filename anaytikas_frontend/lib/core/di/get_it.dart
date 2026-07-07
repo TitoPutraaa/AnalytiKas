@@ -193,7 +193,9 @@ void registerUseCase() {
   // TEST
   getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
   // Analisis
-  getIt.registerLazySingleton(() => GetAnalisis(analisisRepository: getIt()));
+  getIt.registerLazySingleton(
+    () => GetAnalisis(analisisRepository: getIt(), accountRepository: getIt()),
+  );
 }
 
 void registerProvider() {

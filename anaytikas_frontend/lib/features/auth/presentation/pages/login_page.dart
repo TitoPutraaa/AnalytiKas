@@ -4,6 +4,7 @@ import 'package:anaytikas_frontend/features/analisis/presentation/provider/anali
     hide Status;
 import 'package:anaytikas_frontend/features/auth/presentation/pages/forgate_password_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/auth_provider.dart';
+import 'package:anaytikas_frontend/main.dart';
 
 import 'package:anaytikas_frontend/shared/widgets/main_sheel.dart';
 import 'package:flutter/material.dart';
@@ -60,16 +61,18 @@ class _LoginPageState extends State<LoginPage> {
 
       if (provider.status == Status.error) {
         print('gagal login');
-      } else {
-        await analProv.loadAnalisis();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainSheel()),
-        );
-      }
-    } finally {
-      if (mounted) {
         setState(() => _isLoading = false);
+      } else {}
+    } finally {
+      if (provider.status == Status.success) {
+        print("++++++");
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MyApp()),
+          (Route<dynamic> route) => false,
+        );
+        setState(() => _isLoading = false);
+        await analProv.loadAnalisis();
       }
     }
   }
@@ -111,18 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 28),
-                Selector<AuthProvider, String?>(
-                  selector: (_, provider) =>
-                      provider.status == Status.error ? provider.message : null,
-                  builder: (context, message, child) {
-                    if (message == null) return const SizedBox.shrink();
 
-                    return Text(
-                      message,
-                      style: const TextStyle(color: Colors.red, fontSize: 13),
-                    );
-                  },
-                ),
                 _buildLabel('Email'),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -156,6 +148,18 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                   ),
+                ),
+                Selector<AuthProvider, String?>(
+                  selector: (_, provider) =>
+                      provider.status == Status.error ? provider.message : null,
+                  builder: (context, message, child) {
+                    if (message == null) return const SizedBox.shrink();
+
+                    return Text(
+                      message.replaceFirst("Exception: ", ""),
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
                 SizedBox(

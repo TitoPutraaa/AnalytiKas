@@ -27,7 +27,7 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<List<ProductModel>> getAllProductsData() async {
     final db = await dbHelper.database;
-    List<Map<String, dynamic>> maps = await db.rawQuery(queryGetAll, [true]);
+    List<Map<String, dynamic>> maps = await db.rawQuery(queryGetAll, [1]);
 
     return maps.map((row) => ProductModel.fromJoinedMap(row)).toList();
   }
@@ -152,7 +152,12 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<void> deleteProduct(ProductEntity delProduct) async {
     final db = await dbHelper.database;
-    await db.update("product", {"is_active": delProduct.isActivate});
+    await db.update(
+      "product",
+      {"is_active": 0},
+      where: "id_product = ?",
+      whereArgs: [delProduct.idProduct],
+    );
   }
 
   final String queryGetAll = '''

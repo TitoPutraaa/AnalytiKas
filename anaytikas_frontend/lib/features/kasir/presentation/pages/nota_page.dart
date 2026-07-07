@@ -275,10 +275,10 @@ class _NotaPageState extends State<NotaPage> {
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MainSheel()),
-              );
+              Navigator.of(context)
+                ..pop()
+                ..pop()
+                ..pop();
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 20),

@@ -91,7 +91,7 @@ class PembelianCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${data.totalHarga}',
+                  '${data.totalHarga.toRupiah()}',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

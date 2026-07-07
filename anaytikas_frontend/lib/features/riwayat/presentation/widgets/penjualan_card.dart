@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_entry_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +91,7 @@ class PenjualanCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${data.items[0].totalHargaPerProduct}',
+                  '${data.items[0].totalHargaPerProduct.toRupiah()}',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
