@@ -4,7 +4,15 @@ import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 class DateFilterDialog extends StatefulWidget {
   final Function(DateFilter) onApply;
 
-  const DateFilterDialog({Key? key, required this.onApply}) : super(key: key);
+  final DateTime? initialStartDate;
+  final DateTime? initialEndDate;
+
+  const DateFilterDialog({
+    super.key,
+    required this.onApply,
+    this.initialStartDate,
+    this.initialEndDate,
+  });
 
   @override
   State<DateFilterDialog> createState() => _DateFilterDialogState();
@@ -18,9 +26,9 @@ class _DateFilterDialogState extends State<DateFilterDialog> {
   @override
   void initState() {
     super.initState();
-    // Set default dates
-    endDate = DateTime.now();
-    startDate = endDate!.subtract(const Duration(days: 30));
+    endDate = widget.initialEndDate ?? DateTime.now();
+    startDate =
+        widget.initialStartDate ?? endDate!.subtract(const Duration(days: 30));
   }
 
   Future<void> _selectStartDate(BuildContext context) async {
