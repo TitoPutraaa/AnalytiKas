@@ -1,3 +1,4 @@
+import 'package:anaytikas_frontend/core/shared/extensions/datetime_extension.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/biaya_operasional.dart';
 
 class BiayaOperasionalModel extends BiayaOperasional {
@@ -23,8 +24,8 @@ class BiayaOperasionalModel extends BiayaOperasional {
     final map = {
       "id_biaya": idBiaya,
       "nama": nama,
-      "tanggal": tanggal.toString(),
-      "waktu": waktu.toString(),
+      "tanggal": tanggal.toDBDate(),
+      "waktu": waktu.toTime(),
       "total_biaya": totalBiaya,
     };
     if (!includeId) map.remove("id_biaya");

@@ -2,10 +2,10 @@ import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/datetime_extension.dart';
 import 'package:anaytikas_frontend/features/riwayat/domain/entities/riwayat_entry_entity.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/pages/homeRiwayat.dart';
+
 import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/detail_transaksi_item.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/detail_transaksi_toko_item.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/widgets/total_bayar_item.dart';
+
 import 'package:flutter/material.dart';
 
 class DetailRiwayatPenjualanPage extends StatelessWidget {

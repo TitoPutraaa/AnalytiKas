@@ -11,16 +11,16 @@ class HomeAnalisis extends StatefulWidget {
 }
 
 class _HomeAnalisisState extends State<HomeAnalisis> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnalisisProvider>().loadAnalisis();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     context.read<AnalisisProvider>().loadAnalisis();
+  //   });
+  // }
 
   Future<void> _loadData() async {
-    context.read<AnalisisProvider>().loadAnalisis();
+    context.read<AnalisisProvider>().updateAnalisis();
   }
 
   @override
@@ -32,23 +32,30 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
             return Center(child: CircularProgressIndicator());
           }
           if (value.message != "") {
-            return Column(
-              children: [
-                Center(
-                  child: Image.asset(
-                    'assets/images/analitik_notfound.png',
-                    height: 220,
-                    errorBuilder: (_, _, _) => const Icon(
-                      Icons.desktop_mac_outlined,
-                      size: 160,
-                      color: Color(0xFFB9C6F2),
-                    ),
+            return RefreshIndicator(
+              onRefresh: _loadData,
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          'assets/images/analitik_notfound.png',
+                          height: 220,
+                          errorBuilder: (_, _, _) => const Icon(
+                            Icons.desktop_mac_outlined,
+                            size: 160,
+                            color: Color(0xFFB9C6F2),
+                          ),
+                        ),
+                      ),
+                      Center(child: Text(value.message)),
+                    ],
                   ),
                 ),
-                Center(
-                  child: Text("Pastikan anda online dan silahkan login ulang"),
-                ),
-              ],
+              ),
             );
           }
 
@@ -104,7 +111,9 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF1A2B4C),
+                              color: value.analisisEntitiy.netto > 0
+                                  ? Color(0xFF1A2B4C)
+                                  : Colors.red,
                             ),
                           ),
                           const SizedBox(height: 14),

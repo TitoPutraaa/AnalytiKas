@@ -81,17 +81,17 @@ class ProductCardItem extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: warningStok <= stokValue
+                            color: warningStok < stokValue
                                 ? Colors.green.withValues(alpha: 0.2)
                                 : Colors.red.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            warningStok <= stokValue
+                            warningStok < stokValue
                                 ? 'Stok ada'
                                 : 'Stok menipis ($stokValue)',
                             style: TextStyle(
-                              color: warningStok <= stokValue
+                              color: warningStok < stokValue
                                   ? Colors.green
                                   : Colors.red,
                               fontWeight: FontWeight.w500,
@@ -125,6 +125,15 @@ class ProductCardItem extends StatelessWidget {
                             SnackBar(
                               content: Text(
                                 '${product.product.namaProduct} sudah di keranjang!',
+                              ),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        } else if (product.product.jmlhStok == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${product.product.namaProduct} sudah habis!',
                               ),
                               duration: Duration(seconds: 1),
                             ),

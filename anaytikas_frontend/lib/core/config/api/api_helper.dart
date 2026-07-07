@@ -22,10 +22,14 @@ class ApiHelper {
           )
           .timeout(const Duration(seconds: 30));
 
-      if (respone.statusCode != 200) {
+      if (respone.statusCode != 200 && respone.statusCode != 201) {
         print("DEBUG: Status Code: ${respone.statusCode}");
         print("DEBUG: Response Body: ${respone.body}");
       }
+      if (respone.statusCode == 500) {
+        throw Exception('${respone.statusCode}');
+      }
+
       final json = jsonDecode(respone.body) as Map<String, dynamic>;
       if (respone.statusCode == 200 || respone.statusCode == 201) {
         return json;

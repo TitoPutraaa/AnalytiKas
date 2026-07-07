@@ -22,6 +22,10 @@ class AnalisisRepositoryImpl implements AnalisisRepository {
     if (!await connectivityHelper.isOnline()) {
       throw Exception('Tidak ada koneksi internet');
     }
+    // Check Token
+    // if (await tokenLocalDataSource.isTokenExpired()) {
+    //   throw Exception('sesi habis');
+    // }
 
     String email;
     String? token;

@@ -243,7 +243,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         'email': email,
         'token': token,
       });
-      print("data anal : ${data}");
+      // print("data anal : ${data}");
     } catch (e) {
       print(e.toString());
     }
@@ -263,9 +263,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print("++++gagal memuat");
       throw Exception("Gagal Memuat Analisis Data");
     }
-    final getFirst = datalist;
-    print("+-+-+ ${data}");
 
-    return AnalisisModel.fromJson(getFirst);
+    return AnalisisModel.fromJson(datalist);
   }
 }

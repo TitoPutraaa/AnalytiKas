@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../../../core/config/theme/app_color.dart';
 import '../../../../core/shared/extensions/currency_extension.dart';
 import '../../../../core/shared/extensions/datetime_extension.dart';
-import '../../../../shared/widgets/main_sheel.dart';
 import '../manager/nota_penjualan_provider.dart';
 import '../widgets/detail_transaksi_item.dart';
 import '../widgets/detail_transaksi_toko_item.dart';

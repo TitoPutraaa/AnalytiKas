@@ -1,10 +1,8 @@
 import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
-import 'package:anaytikas_frontend/core/shared/models/harga_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/kategori_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:sqflite/sqflite.dart';

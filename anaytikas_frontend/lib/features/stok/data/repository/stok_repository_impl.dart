@@ -1,4 +1,3 @@
-import 'package:anaytikas_frontend/core/shared/models/pembelian_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
 import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
@@ -118,12 +117,12 @@ class StokRepositoryImpl implements StokRepository {
     }
   }
 
-  @override
-  Future<void> deleteProduk(ProductEntity updProd) async {
-    try {
-      await datasource.deleteProduct(updProd);
-    } catch (e) {
-      throw ArgumentError("gagal menghapus produk. err: ${e.toString()}");
-    }
-  }
+  // @override
+  // Future<void> deleteProduk(ProductEntity updProd) async {
+  //   try {
+  //     await datasource.deleteProduct(updProd);
+  //   } catch (e) {
+  //     throw ArgumentError("gagal menghapus produk. err: ${e.toString()}");
+  //   }
+  // }
 }

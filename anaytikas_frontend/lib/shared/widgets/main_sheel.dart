@@ -1,14 +1,19 @@
-import 'package:anaytikas_frontend/core/shared/data/datasources/token_local_data_source.dart';
-import 'package:anaytikas_frontend/features/auth/presentation/pages/login_page.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/pages/profile_page.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/home_stok.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
 
 import '../../core/config/theme/app_color.dart';
 import '../../features/analisis/presentation/pages/home_analisis.dart';
+// import '../../features/analisis/presentation/provider/analisis_provider.dart';
+import '../../features/analisis/presentation/provider/analisis_provider.dart';
+import '../../features/kasir/presentation/manager/kasir_provider.dart';
 import '../../features/kasir/presentation/pages/home_kasir.dart';
+import '../../features/riwayat/presentation/manager/riwayat_provider.dart';
 import '../../features/riwayat/presentation/pages/homeRiwayat.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../features/stok/presentation/provider/get_kategori_provider.dart';
 
 class MainSheel extends StatefulWidget {
   const MainSheel({super.key});
@@ -18,6 +23,20 @@ class MainSheel extends StatefulWidget {
 }
 
 class _MainSheelState extends State<MainSheel> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<KasirProvider>().loadProduct();
+      context.read<KasirProvider>().loadCategory();
+      context.read<StokHomeProvider>().getAllProducts();
+      context.read<GetKategoriProvider>().loadCategory();
+      context.read<RiwayatProvider>().loadRiwayat();
+      context.read<AnalisisProvider>().loadAnalisis();
+    });
+  }
+
   int _currentPageIndex = 0;
 
   final List<Widget> _screen = [

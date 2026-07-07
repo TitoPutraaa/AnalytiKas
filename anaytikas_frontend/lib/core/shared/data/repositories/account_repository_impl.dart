@@ -257,8 +257,8 @@ class AccountRepositoryImpl implements AccountRepository {
     try {
       email = await localDataSource.getEmail();
       token = await tokenLocalDataSource.getToken();
-      print("email from repo :${email}");
-      print("token from repo :${token}");
+      // print("email from repo :${email}");
+      // print("token from repo :${token}");
     } catch (e) {
       throw Exception('Gagal ambil data toko / token: $e');
     }

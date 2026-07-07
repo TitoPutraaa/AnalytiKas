@@ -165,7 +165,7 @@ class _OtpPageState extends State<OtpPage> {
                   if (message == null) return const SizedBox.shrink();
 
                   return Text(
-                    message,
+                    message.replaceFirst("Exception: ", ""),
                     style: const TextStyle(color: Colors.red, fontSize: 13),
                   );
                 },

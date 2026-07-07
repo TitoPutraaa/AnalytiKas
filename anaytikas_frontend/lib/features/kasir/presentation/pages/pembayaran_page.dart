@@ -24,6 +24,7 @@ class PembayaranPage extends StatefulWidget {
 
 class _PembayaranPageState extends State<PembayaranPage> {
   final TextEditingController _uangPembeliC = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -32,10 +33,57 @@ class _PembayaranPageState extends State<PembayaranPage> {
     super.dispose();
   }
 
+  Future<void> _onSubmit() async {
+    final totalSeluruhHarga = context.read<CartProvider>().totalSeluruhHarga;
+    final kasirProvider = context.read<KasirProvider>();
+    setState(() => _isLoading = true);
+
+    String cleanValue = _uangPembeliC.text.replaceAll(RegExp(r'[^0-9]'), '');
+    double uangMasuk = double.tryParse(cleanValue) ?? 0.0;
+    // Validate
+    kasirProvider.validateUangPembeli(
+      cleanValue,
+      totalSeluruhHarga: totalSeluruhHarga,
+    );
+    if (kasirProvider.errorUangPembeli == null) {
+      List<CartItemEntity> cart = context
+          .read<CartProvider>()
+          .items
+          .values
+          .toList();
+
+      if (!mounted) return;
+      try {
+        await kasirProvider.prosesTransaction(cart, uangMasuk);
+        final idPenjualan = kasirProvider.idPenjualan;
+        if (!context.mounted) return;
+        if (idPenjualan != null) {
+          if (!mounted) return;
+          context.read<CartProvider>().clearCart();
+          context.read<StokHomeProvider>().getAllProducts();
+          context.read<RiwayatProvider>().loadRiwayat();
+          context.read<KasirProvider>().loadProduct();
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NotaPage(idPenjualan: idPenjualan),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Gagal memproses transaksi")));
+        }
+      } finally {
+        setState(() => _isLoading = true);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final totalSeluruhHarga = context.read<CartProvider>().totalSeluruhHarga;
-    final kasirProvider = context.read<KasirProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -224,72 +272,37 @@ class _PembayaranPageState extends State<PembayaranPage> {
               ),
               SizedBox(height: 20),
 
-              ElevatedButton(
-                onPressed: kasirProvider.isLoading
-                    ? null
-                    : () async {
-                        String cleanValue = _uangPembeliC.text.replaceAll(
-                          RegExp(r'[^0-9]'),
-                          '',
-                        );
-                        double uangMasuk = double.tryParse(cleanValue) ?? 0.0;
-                        // Validate
-                        kasirProvider.validateUangPembeli(
-                          cleanValue,
-                          totalSeluruhHarga: totalSeluruhHarga,
-                        );
-                        if (kasirProvider.errorUangPembeli == null) {
-                          List<CartItemEntity> cart = context
-                              .read<CartProvider>()
-                              .items
-                              .values
-                              .toList();
-
-                          if (!context.mounted) return;
-                          await kasirProvider.prosesTransaction(
-                            cart,
-                            uangMasuk,
-                          );
-                          final idPenjualan = kasirProvider.idPenjualan;
-                          if (!context.mounted) return;
-                          if (idPenjualan != null) {
-                            context.read<CartProvider>().clearCart();
-                            context.read<StokHomeProvider>().getAllProducts();
-                            context.read<RiwayatProvider>().loadRiwayat();
-                            context.read<KasirProvider>().loadProduct();
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    NotaPage(idPenjualan: idPenjualan),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Gagal memproses transaksi"),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.payment_rounded),
-                    SizedBox(width: 15),
-                    Text(
-                      'Bayar Sekarang',
-                      style: TextStyle(fontWeight: FontWeight.w400),
+              SizedBox(
+                width: double.infinity,
+                // height: 52,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _onSubmit,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.payment_rounded),
+                            SizedBox(width: 15),
+                            Text(
+                              'Bayar Sekarang',
+                              style: TextStyle(fontWeight: FontWeight.w400),
+                            ),
+                          ],
+                        ),
                 ),
               ),
             ],

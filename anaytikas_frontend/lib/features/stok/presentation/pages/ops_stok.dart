@@ -63,8 +63,6 @@ class _OpsStokState extends State<OpsStok> {
     final nominalParse = double.tryParse(nominal);
     final tanggalParse = DateTime.tryParse(tanggal);
     final waktu = DateTime.now();
-    print(tanggal);
-    print(waktu);
 
     if (nominalParse == null) {
       ScaffoldMessenger.of(

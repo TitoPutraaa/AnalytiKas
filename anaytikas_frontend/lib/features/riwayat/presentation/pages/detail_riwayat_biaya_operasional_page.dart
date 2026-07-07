@@ -97,16 +97,16 @@ class DetailRiwayatBiayaOperasionalPage extends StatelessWidget {
                         color: AppColor.darkGray.withValues(alpha: 0.9),
                       ),
                     ),
-                    // const SizedBox(width: 4),
-                    // Text(
-                    //   DatetimeExtension.parseToShortTime(
-                    //     biayaOperasional.waktu,
-                    //   ),
-                    //   style: TextStyle(
-                    //     fontWeight: FontWeight.w500,
-                    //     color: AppColor.darkGray.withValues(alpha: 0.9),
-                    //   ),
-                    // ),
+                    const SizedBox(width: 4),
+                    Text(
+                      DatetimeExtension.parseToShortTime(
+                        biayaOperasional.waktu,
+                      ),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.darkGray.withValues(alpha: 0.9),
+                      ),
+                    ),
                   ],
                 ),
                 // Id Biaya Operasional

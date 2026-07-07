@@ -193,70 +193,133 @@ class _ProfilePageState extends State<ProfilePage> {
       barrierDismissible: false,
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
-          title: const Text('Keluar Akun'),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Column(
+            children: [
+              Icon(Icons.logout_rounded, color: Colors.red, size: 50),
+              const SizedBox(height: 10),
+              isLoggingOut
+                  ? const Text(
+                      'Harap Tunggu!',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  : const Text(
+                      'Keluar Akun',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
-              if (errorMessage != null) ...[
-                const SizedBox(height: 12),
-                Text(
-                  errorMessage!,
-                  style: const TextStyle(color: Colors.red, fontSize: 13),
-                ),
-              ],
-            ],
+            children: isLoggingOut
+                ? [
+                    const Text('Sistem sedang menyimpan data toko...'),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                          strokeWidth: 2.5,
+                        ),
+                      ),
+                    ),
+                  ]
+                : [
+                    const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+                    if (errorMessage != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        errorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 13),
+                      ),
+                    ],
+                  ],
           ),
-          actions: [
-            TextButton(
-              onPressed: isLoggingOut
-                  ? null
-                  : () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            TextButton(
-              onPressed: isLoggingOut
-                  ? null
-                  : () async {
-                      setDialogState(() {
-                        isLoggingOut = true;
-                        errorMessage = null;
-                      });
+          actions: isLoggingOut
+              ? null
+              : [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: isLoggingOut
+                        ? null
+                        : () => Navigator.of(dialogContext).pop(),
+                    child: Text(
+                      'Batal',
+                      style: TextStyle(
+                        color: AppColor.black,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: isLoggingOut
+                        ? null
+                        : () async {
+                            setDialogState(() {
+                              isLoggingOut = true;
+                              errorMessage = null;
+                            });
 
-                      await context.read<AuthProvider>().logout();
-                      final prov = context.read<AuthProvider>();
+                            final prov = context.read<AuthProvider>();
+                            await prov.logout();
 
-                      if (!dialogContext.mounted) return;
-                      if (dialogContext.mounted) {
-                        if (prov.status == Status.success) {
-                          // then navigate back to WelcomePage, clearing the nav stack:
-                          Navigator.of(dialogContext).pop();
-                          if (!context.mounted) return;
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (_) => const HomeAuth()),
-                            (Route<dynamic> route) => false,
-                          );
-                        }
-                        if (prov.status == Status.error) {
-                          setDialogState(() {
-                            isLoggingOut = false;
-                            errorMessage = 'Gagal keluar, silakan coba lagi';
-                          });
-                        }
-                      }
-                    },
-              child: isLoggingOut
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Keluar', style: TextStyle(color: Colors.red)),
-            ),
-          ],
+                            if (!dialogContext.mounted) return;
+                            if (prov.status == Status.success) {
+                              // then navigate back to WelcomePage, clearing the nav stack:
+                              Navigator.of(dialogContext).pop();
+                              if (!context.mounted) return;
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (_) => const HomeAuth(),
+                                ),
+                                (Route<dynamic> route) => false,
+                              );
+                            }
+                            if (prov.status == Status.error) {
+                              setDialogState(() {
+                                isLoggingOut = false;
+                                errorMessage =
+                                    'Gagal keluar, silakan coba lagi';
+                              });
+                            }
+                          },
+                    child: Text(
+                      'Keluar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
         ),
       ),
     );
   }
+
+  // Widget _alertDialog() {
+  //   return
+  // }
 }

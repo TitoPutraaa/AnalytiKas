@@ -3,6 +3,7 @@ import 'package:anaytikas_frontend/core/shared/data/datasources/remote_data_sour
 import 'package:anaytikas_frontend/features/analisis/data/repository/analisis_repository_impl.dart';
 import 'package:anaytikas_frontend/features/analisis/domain/repository/analisis_repository.dart';
 import 'package:anaytikas_frontend/features/analisis/domain/usecases/get_analisis.dart';
+import 'package:anaytikas_frontend/features/analisis/domain/usecases/sync_analisis.dart';
 import 'package:anaytikas_frontend/features/analisis/presentation/provider/analisis_provider.dart';
 import 'package:anaytikas_frontend/features/auth/data/repository/profile_repository_impl.dart';
 import 'package:anaytikas_frontend/features/auth/data/sources/profile_local_datasource.dart';
@@ -56,11 +57,9 @@ import 'package:http/http.dart' as http;
 import 'package:anaytikas_frontend/core/config/api/api_helper.dart';
 import '../config/network/connectivity_helper.dart';
 import '../shared/data/datasources/local_data_source.dart';
-import '../shared/data/datasources/remote_data_source.dart';
 import '../shared/data/datasources/token_local_data_source.dart';
 import '../shared/data/repositories/account_repository_impl.dart';
 import '../shared/domain/repositories/account_repository.dart';
-import '../shared/domain/usecases/register_usecase.dart';
 
 final getIt = GetIt.instance;
 
@@ -190,11 +189,10 @@ void registerUseCase() {
   // riwayat
   getIt.registerLazySingleton(() => GetRiwayatUsecase(getIt()));
 
-  // TEST
-  getIt.registerLazySingleton(() => RegisterUsecase(getIt()));
   // Analisis
+  getIt.registerLazySingleton(() => GetAnalisis(analisisRepository: getIt()));
   getIt.registerLazySingleton(
-    () => GetAnalisis(analisisRepository: getIt(), accountRepository: getIt()),
+    () => SyncAnalisis(analisisRepository: getIt(), accountRepository: getIt()),
   );
 }
 
@@ -265,6 +263,9 @@ void registerProvider() {
 
   // Analisis
   getIt.registerFactory<AnalisisProvider>(
-    () => AnalisisProvider(getAnalisis: getIt<GetAnalisis>()),
+    () => AnalisisProvider(
+      getAnalisis: getIt<GetAnalisis>(),
+      syncAnalisis: getIt<SyncAnalisis>(),
+    ),
   );
 }

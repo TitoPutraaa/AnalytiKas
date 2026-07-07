@@ -54,9 +54,24 @@ class BiayaOperasionalCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    DateTime.parse(data.tanggal).toFullDate(),
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  Row(
+                    children: [
+                      Text(
+                        DateTime.parse(data.tanggal).toFullDate(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        DatetimeExtension.parseToShortTime(data.waktu),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,

@@ -39,7 +39,6 @@ class MyApp extends StatelessWidget {
       secureStorage: const FlutterSecureStorage(),
     );
     final token = await tokenLocal.getToken();
-    print(token);
     return token != null && token.isNotEmpty;
   }
 
@@ -48,11 +47,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // kasir
-        ChangeNotifierProvider(
-          create: (_) => getIt<KasirProvider>()
-            ..loadProduct()
-            ..loadCategory(),
-        ),
+        ChangeNotifierProvider(create: (_) => getIt<KasirProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<CartProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<NotaPenjualanProvider>()),
 
@@ -63,17 +58,11 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => getIt<EditProductProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<TambahStokProvider>()),
-        ChangeNotifierProvider(
-          create: (_) => getIt<StokHomeProvider>()..getAllProducts(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => getIt<GetKategoriProvider>()..loadCategory(),
-        ),
+        ChangeNotifierProvider(create: (_) => getIt<StokHomeProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<GetKategoriProvider>()),
 
         // riwayat
-        ChangeNotifierProvider(
-          create: (_) => getIt<RiwayatProvider>()..loadRiwayat(),
-        ),
+        ChangeNotifierProvider(create: (_) => getIt<RiwayatProvider>()),
 
         // Auth
         ChangeNotifierProvider(create: (_) => getIt<ProfileProvider>()),
@@ -81,9 +70,7 @@ class MyApp extends StatelessWidget {
         // TEST
         ChangeNotifierProvider(create: (_) => getIt<RegisterProvider>()),
         // Analisis
-        ChangeNotifierProvider(
-          create: (_) => getIt<AnalisisProvider>()..loadAnalisis(),
-        ),
+        ChangeNotifierProvider(create: (_) => getIt<AnalisisProvider>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
