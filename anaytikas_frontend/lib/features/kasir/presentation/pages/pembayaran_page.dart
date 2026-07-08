@@ -76,7 +76,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
           ).showSnackBar(SnackBar(content: Text("Gagal memproses transaksi")));
         }
       } finally {
-        setState(() => _isLoading = true);
+        setState(() => _isLoading = false);
       }
     }
   }
