@@ -35,7 +35,14 @@ class _BarangBaruState extends State<BarangBaru> {
   List<String> get _categories =>
       provider.allCategory.map((kategori) => kategori.namaKategori).toList();
   Kategori? _selectedCategory;
-  final List<String> _satuan = ['Gram', 'Krat', 'Dus', "Pcs"];
+  final List<String> _satuan = [
+    'Krat',
+    'Dus',
+    "Pcs",
+    'Renteng',
+    'Bal',
+    'lusin',
+  ];
   String? _selectedSatuan;
   // final bool _isGrosir = false;
 
