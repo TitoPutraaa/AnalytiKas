@@ -111,7 +111,7 @@ class _HomeAnalisisState extends State<HomeAnalisis> {
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w800,
-                              color: value.analisisEntitiy.netto > 0
+                              color: value.analisisEntitiy.netto >= 0
                                   ? Color(0xFF1A2B4C)
                                   : Colors.red,
                             ),

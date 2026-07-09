@@ -40,11 +40,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
 
     String cleanValue = _uangPembeliC.text.replaceAll(RegExp(r'[^0-9]'), '');
     double uangMasuk = double.tryParse(cleanValue) ?? 0.0;
-    // Validate
-    kasirProvider.validateUangPembeli(
-      cleanValue,
-      totalSeluruhHarga: totalSeluruhHarga,
-    );
+
     if (kasirProvider.errorUangPembeli == null) {
       List<CartItemEntity> cart = context
           .read<CartProvider>()
@@ -54,26 +50,33 @@ class _PembayaranPageState extends State<PembayaranPage> {
 
       if (!mounted) return;
       try {
-        await kasirProvider.prosesTransaction(cart, uangMasuk);
-        final idPenjualan = kasirProvider.idPenjualan;
-        if (!context.mounted) return;
-        if (idPenjualan != null) {
-          if (!mounted) return;
-          context.read<CartProvider>().clearCart();
-          context.read<StokHomeProvider>().getAllProducts();
-          context.read<RiwayatProvider>().loadRiwayat();
-          context.read<KasirProvider>().loadProduct();
+        // Validate
+        kasirProvider.validateUangPembeli(
+          cleanValue,
+          totalSeluruhHarga: totalSeluruhHarga,
+        );
+        if (kasirProvider.errorUangPembeli == null) {
+          await kasirProvider.prosesTransaction(cart, uangMasuk);
+          final idPenjualan = kasirProvider.idPenjualan;
+          if (!context.mounted) return;
+          if (idPenjualan != null) {
+            if (!mounted) return;
+            context.read<CartProvider>().clearCart();
+            context.read<StokHomeProvider>().getAllProducts();
+            context.read<RiwayatProvider>().loadRiwayat();
+            context.read<KasirProvider>().loadProduct();
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NotaPage(idPenjualan: idPenjualan),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Gagal memproses transaksi")));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NotaPage(idPenjualan: idPenjualan),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Gagal memproses transaksi")),
+            );
+          }
         }
       } finally {
         setState(() => _isLoading = false);
@@ -207,105 +210,111 @@ class _PembayaranPageState extends State<PembayaranPage> {
             ],
           ),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Masukkan uang pembeli dibawah.',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.darkGray.withValues(alpha: 0.6),
-                ),
-              ),
-              SizedBox(height: 8),
-              TextFormField(
-                controller: _uangPembeliC,
-                onChanged: (value) {
-                  context.read<KasirProvider>().validateUangPembeli(value);
-                },
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
 
-                keyboardType: TextInputType.number,
-                inputFormatters: [CurrencyInputFormatter()],
-                decoration: InputDecoration(
-                  labelText: 'Uang Pembeli',
-                  labelStyle: TextStyle(fontSize: 14, color: AppColor.darkGray),
-                  prefixText: 'Rp  ',
-                  prefixStyle: TextStyle(),
-                  hintText: '0',
-                  hintStyle: TextStyle(fontSize: 14, color: AppColor.lowGray),
-                  errorText: context.select<KasirProvider, String?>(
-                    (p) => p.errorUangPembeli,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColor.lowGray),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColor.primary),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+              children: [
+                Text(
+                  'Masukkan uang pembeli dibawah.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.darkGray.withValues(alpha: 0.6),
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'TOTAL BELANJA ',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColor.darkGray.withValues(alpha: 0.5),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    totalSeluruhHarga.toRupiah(),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColor.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
+                SizedBox(height: 8),
+                TextFormField(
+                  controller: _uangPembeliC,
+                  onChanged: (value) {
+                    context.read<KasirProvider>().validateUangPembeli(value);
+                  },
 
-              SizedBox(
-                width: double.infinity,
-                // height: 52,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _onSubmit,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [CurrencyInputFormatter()],
+                  decoration: InputDecoration(
+                    labelText: 'Uang Pembeli',
+                    labelStyle: TextStyle(
+                      fontSize: 14,
+                      color: AppColor.darkGray,
+                    ),
+                    prefixText: 'Rp  ',
+                    prefixStyle: TextStyle(),
+                    hintText: '0',
+                    hintStyle: TextStyle(fontSize: 14, color: AppColor.lowGray),
+                    errorText: context.select<KasirProvider, String?>(
+                      (p) => p.errorUangPembeli,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.lowGray),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.primary),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2.5,
-                          ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.payment_rounded),
-                            SizedBox(width: 15),
-                            Text(
-                              'Bayar Sekarang',
-                              style: TextStyle(fontWeight: FontWeight.w400),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'TOTAL BELANJA ',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColor.darkGray.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      totalSeluruhHarga.toRupiah(),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColor.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+
+                SizedBox(
+                  width: double.infinity,
+                  // height: 52,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _onSubmit,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
                             ),
-                          ],
-                        ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.payment_rounded),
+                              SizedBox(width: 15),
+                              Text(
+                                'Bayar Sekarang',
+                                style: TextStyle(fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
