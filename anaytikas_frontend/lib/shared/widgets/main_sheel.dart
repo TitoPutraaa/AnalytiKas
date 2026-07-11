@@ -1,13 +1,21 @@
-import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
-import 'package:anaytikas_frontend/features/analisis/presentation/pages/homeAnalisis.dart';
-import 'package:anaytikas_frontend/features/kasir/presentation/pages/homeKasir.dart';
-import 'package:anaytikas_frontend/features/riwayat/presentation/pages/homeRiwayat.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/pages/homeStok.dart';
+import 'package:anaytikas_frontend/features/auth/presentation/pages/profile_page.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/pages/home_stok.dart';
+import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
+
+import '../../core/config/theme/app_color.dart';
+import '../../features/analisis/presentation/pages/home_analisis.dart';
+// import '../../features/analisis/presentation/provider/analisis_provider.dart';
+import '../../features/analisis/presentation/provider/analisis_provider.dart';
+import '../../features/kasir/presentation/manager/kasir_provider.dart';
+import '../../features/kasir/presentation/pages/home_kasir.dart';
+import '../../features/riwayat/presentation/manager/riwayat_provider.dart';
+import '../../features/riwayat/presentation/pages/homeRiwayat.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widget_previews.dart';
+import 'package:provider/provider.dart';
+
+import '../../features/stok/presentation/provider/get_kategori_provider.dart';
 
 class MainSheel extends StatefulWidget {
-  @Preview(name: "mainsheel")
   const MainSheel({super.key});
 
   @override
@@ -15,13 +23,27 @@ class MainSheel extends StatefulWidget {
 }
 
 class _MainSheelState extends State<MainSheel> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<KasirProvider>().loadProduct();
+      context.read<KasirProvider>().loadCategory();
+      context.read<StokHomeProvider>().getAllProducts();
+      context.read<GetKategoriProvider>().loadCategory();
+      context.read<RiwayatProvider>().loadRiwayat();
+      context.read<AnalisisProvider>().loadAnalisis();
+    });
+  }
+
   int _currentPageIndex = 0;
 
   final List<Widget> _screen = [
     Homekasir(),
     Homeriwayat(),
     Homestok(),
-    Homeanalisis(),
+    HomeAnalisis(),
   ];
 
   String headerTitle() {
@@ -40,7 +62,19 @@ class _MainSheelState extends State<MainSheel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.account_circle),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 25),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
+              },
+              icon: Icon(Icons.storefront_outlined, size: 30),
+            ),
+          ),
+        ],
         title: Text(headerTitle()),
         centerTitle: true,
         backgroundColor: AppColor.white,
