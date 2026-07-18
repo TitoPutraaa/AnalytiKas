@@ -1,4 +1,6 @@
-import '../entities/penjualan_entity.dart';
+import 'package:intl/intl.dart';
+import '../../domain/entitties/penjualan_entity.dart';
+import '../../extensions/datetime_extension.dart';
 
 class PenjualanModel extends PenjualanEntity {
   PenjualanModel({
@@ -12,8 +14,8 @@ class PenjualanModel extends PenjualanEntity {
   factory PenjualanModel.fromMap(Map<String, dynamic> map) {
     return PenjualanModel(
       idPenjualan: map['id_penjualan'] as int,
-      tanggal: map['tanggal'] as String,
-      waktu: map['waktu'] as String,
+      tanggal: DateTime.parse(map['tanggal'] as String),
+      waktu: DateFormat('HH:mm:ss').parse(map['waktu'] as String),
       totalItem: map['total_item'] as int,
       totalHarga: (map['total_harga'] as num).toDouble(),
     );
@@ -29,11 +31,11 @@ class PenjualanModel extends PenjualanEntity {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = true}) {
     return {
-      'id_penjualan': idPenjualan,
-      'tanggal': tanggal,
-      'waktu': waktu,
+      if (includeId) 'id_penjualan': idPenjualan,
+      'tanggal': tanggal.toDBDate(),
+      'waktu': waktu.toTime(),
       'total_item': totalItem,
       'total_harga': totalHarga,
     };

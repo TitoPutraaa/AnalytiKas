@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../../../../core/shared/entities/product_with_details_entity.dart';
+import '../../../../core/shared/domain/entitties/product_entity.dart';
 import '../../domain/entities/cart_item_entity.dart';
 
 class CartProvider extends ChangeNotifier {
   final Map<int, CartItemEntity> _items = {};
-  Map<int, CartItemEntity> get items => Map.unmodifiable(_items);
+  Map<int, CartItemEntity> get items => _items;
 
   bool isProductInCart(int idProduct) {
     return _items.containsKey(idProduct);
@@ -19,24 +18,19 @@ class CartProvider extends ChangeNotifier {
     return totalSeluruhHarga;
   }
 
-  void addItemToCart(ProductWithDetailsEntity product) {
-    _items[product.product.idProduct] = CartItemEntity(
-      idProduct: product.product.idProduct,
-      namaProduct: product.product.namaProduct,
-      jmlhStok: product.product.jmlhStok,
-      isGrosir: product.product.isGrosir,
-      hargaJual: product.harga.hargaJual,
-      satuan: product.harga.satuan,
+  void addItemToCart(ProductEntity product) {
+    _items[product.idProduct] = CartItemEntity(
+      product: product,
       totalHarga: 0,
       quantity: 1,
     );
-    _items[product.product.idProduct]!.setTotalHarga();
+    _items[product.idProduct]!.setTotalHarga();
 
     notifyListeners();
   }
 
   void addItem(int idProduct) {
-    if (_items[idProduct]!.quantity < _items[idProduct]!.jmlhStok) {
+    if (_items[idProduct]!.quantity < _items[idProduct]!.product.jmlhStok) {
       _items[idProduct]!.add();
     }
     notifyListeners();

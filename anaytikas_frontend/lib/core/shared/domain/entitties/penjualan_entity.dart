@@ -1,7 +1,7 @@
 class PenjualanEntity {
   final int idPenjualan;
-  final String tanggal;
-  final String waktu;
+  final DateTime tanggal;
+  final DateTime waktu;
   final int totalItem;
   final double totalHarga;
 

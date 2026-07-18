@@ -1,5 +1,5 @@
+import 'package:anaytikas_frontend/core/shared/domain/entitties/toko_entity.dart';
 import 'package:anaytikas_frontend/features/auth/data/sources/profile_local_datasource.dart';
-import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
 import 'package:anaytikas_frontend/features/auth/domain/repository/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
@@ -24,7 +24,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<ProfileEntity> getProfile() async {
+  Future<TokoEntity> getProfile() async {
     try {
       return await profileLocalDatasource.getLocalProfile();
     } catch (e) {

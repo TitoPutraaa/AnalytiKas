@@ -1,7 +1,7 @@
-import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/toko_entity.dart';
 
 abstract class ProfileRepository {
-  Future<ProfileEntity> getProfile();
+  Future<TokoEntity> getProfile();
   Future<void> editProfile(
     String namaToko,
     String noTelp,

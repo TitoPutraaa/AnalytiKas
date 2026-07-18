@@ -1,6 +1,6 @@
-import 'package:anaytikas_frontend/core/shared/models/api_response.dart';
+import 'package:anaytikas_frontend/core/shared/data/models/api_response.dart';
 
-import '../../entities/toko_entity.dart';
+import '../entitties/toko_entity.dart';
 
 abstract class AccountRepository {
   Future<ApiResponse> register(String email);

@@ -1,6 +1,6 @@
 import 'package:anaytikas_frontend/core/shared/domain/repositories/account_repository.dart';
-import 'package:anaytikas_frontend/core/shared/entities/toko_entity.dart';
-import 'package:anaytikas_frontend/core/shared/models/api_response.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/toko_entity.dart';
+import 'package:anaytikas_frontend/core/shared/data/models/api_response.dart';
 
 class ValidateAccountUsecase {
   final AccountRepository repository;

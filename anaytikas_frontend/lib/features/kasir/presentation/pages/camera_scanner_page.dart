@@ -167,9 +167,9 @@ class _CameraScannerPageState extends State<CameraScannerPage> {
                             children: items
                                 .map(
                                   (item) => ListTile(
-                                    title: Text(item.namaProduct),
+                                    title: Text(item.product.namaProduct),
                                     subtitle: Text(
-                                      '${item.hargaJual.toRupiah()} / ${item.satuan}',
+                                      '${item.product.harga.hargaJual.toRupiah()} / ${item.product.harga.satuan}',
                                     ),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -178,8 +178,9 @@ class _CameraScannerPageState extends State<CameraScannerPage> {
                                           icon: const Icon(
                                             Icons.remove_circle_outline,
                                           ),
-                                          onPressed: () =>
-                                              cart.reduceItem(item.idProduct),
+                                          onPressed: () => cart.reduceItem(
+                                            item.product.idProduct,
+                                          ),
                                         ),
                                         Text(
                                           '${item.quantity}',
@@ -192,8 +193,9 @@ class _CameraScannerPageState extends State<CameraScannerPage> {
                                           icon: const Icon(
                                             Icons.add_circle_outline,
                                           ),
-                                          onPressed: () =>
-                                              cart.addItem(item.idProduct),
+                                          onPressed: () => cart.addItem(
+                                            item.product.idProduct,
+                                          ),
                                         ),
                                       ],
                                     ),

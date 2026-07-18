@@ -1,4 +1,6 @@
-import '../entities/pembelian_entity.dart';
+import '../../domain/entitties/pembelian_entity.dart';
+import '../../extensions/datetime_extension.dart';
+import 'package:intl/intl.dart';
 
 class PembelianModel extends PembelianEntity {
   PembelianModel({
@@ -11,17 +13,17 @@ class PembelianModel extends PembelianEntity {
   factory PembelianModel.fromMap(Map<String, dynamic> map) {
     return PembelianModel(
       idPembelian: map['id_pembelian'] as int,
-      tanggal: map['tanggal'] as String,
-      waktu: map['waktu'] as String,
+      tanggal: DateTime.parse(map['tanggal'] as String),
+      waktu: DateFormat('HH:mm:ss').parse(map['waktu'] as String),
       totalHarga: (map['total_harga'] as num).toDouble(),
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = true}) {
     return {
-      'id_pembelian': idPembelian,
-      'tanggal': tanggal,
-      'waktu': waktu,
+      if (includeId) 'id_pembelian': idPembelian,
+      'tanggal': tanggal.toDBDate(),
+      'waktu': waktu.toTime(),
       'total_harga': totalHarga,
     };
   }

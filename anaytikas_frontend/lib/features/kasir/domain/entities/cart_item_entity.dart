@@ -1,43 +1,32 @@
-import '../../../../core/shared/entities/product_with_details_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 
 class CartItemEntity {
-  final int idProduct;
-  final String namaProduct;
-  final int jmlhStok;
-  final bool isGrosir;
-  final double hargaJual;
-  final String satuan;
+  final ProductEntity product;
   double totalHarga;
   int quantity;
 
   CartItemEntity({
-    required this.idProduct,
-    required this.namaProduct,
-    required this.jmlhStok,
-    required this.isGrosir,
-    required this.hargaJual,
-    required this.satuan,
+    required this.product,
     this.totalHarga = 0,
     this.quantity = 0,
   });
 
-  factory CartItemEntity.fromProduct(ProductWithDetailsEntity product) {
-    return CartItemEntity(
-      idProduct: product.product.idProduct,
-      namaProduct: product.product.namaProduct,
-      jmlhStok: product.product.jmlhStok,
-      isGrosir: product.product.isGrosir,
-      hargaJual: product.harga.hargaJual,
-      satuan: product.harga.satuan,
-    );
-  }
+  // factory CartItemEntity.fromProduct(ProductWithDetailsEntity product) {
+  //   return CartItemEntity(
+  //     idProduct: product.product.idProduct,
+  //     namaProduct: product.product.namaProduct,
+  //     jmlhStok: product.product.jmlhStok,
+  //     hargaJual: product.harga.hargaJual,
+  //     satuan: product.harga.satuan,
+  //   );
+  // }
 
   void setTotalHarga() {
-    totalHarga = hargaJual * quantity;
+    totalHarga = product.harga.hargaJual * quantity;
   }
 
   void add() {
-    if (quantity <= jmlhStok) {
+    if (quantity <= product.jmlhStok) {
       quantity += 1;
       setTotalHarga();
     }

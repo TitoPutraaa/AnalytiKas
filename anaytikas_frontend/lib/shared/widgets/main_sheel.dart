@@ -30,10 +30,10 @@ class _MainSheelState extends State<MainSheel> {
       if (!mounted) return;
       context.read<KasirProvider>().loadProduct();
       context.read<KasirProvider>().loadCategory();
-      context.read<StokHomeProvider>().getAllProducts();
-      context.read<GetKategoriProvider>().loadCategory();
-      context.read<RiwayatProvider>().loadRiwayat();
-      context.read<AnalisisProvider>().loadAnalisis();
+      // context.read<StokHomeProvider>().getAllProducts();
+      // context.read<GetKategoriProvider>().loadCategory();
+      // context.read<RiwayatProvider>().loadRiwayat();
+      // context.read<AnalisisProvider>().loadAnalisis();
     });
   }
 

@@ -1,15 +1,10 @@
-import '../../../../core/shared/entities/kategori_entity.dart';
-import '../../../../core/shared/entities/penjualan_entity.dart';
-import '../../../../core/shared/entities/product_per_penjualan_entity.dart';
-import '../../../../core/shared/entities/product_with_details_entity.dart';
-import '../../../../core/shared/models/kategori_model.dart';
-import '../../../../core/shared/models/penjualan_model.dart';
-import '../../../../core/shared/models/product_per_penjualan_model.dart';
-import '../../../../core/shared/models/product_with_details_model.dart';
-import '../../domain/entities/penjualan_detail_entity.dart';
+import '../../../../core/shared/data/models/product_model.dart';
+import '../../../../core/shared/domain/entitties/toko_entity.dart';
+import '../../../../core/shared/domain/entitties/kategori_entity.dart';
+import '../../../../core/shared/domain/entitties/product_per_penjualan_entity.dart';
+import '../../../../core/shared/data/models/product_per_penjualan_model.dart';
 import '../../domain/repositories/kasir_repository.dart';
 import '../datasources/kasir_local_data_source.dart';
-import '../models/penjualan_detail_model.dart';
 
 class KasirRepositoryImpl implements KasirRepository {
   final KasirLocalDataSource localDataSource;
@@ -17,47 +12,63 @@ class KasirRepositoryImpl implements KasirRepository {
   KasirRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<List<ProductWithDetailsEntity>> getAllProduct() async {
-    final rawData = await localDataSource.getAllProduct();
-    return rawData.map((map) => ProductWithDetailsModel.fromMap(map)).toList();
+  Future<List<ProductModel>> getAllProduct() async {
+    try {
+      return await localDataSource.getAllProduct();
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   @override
-  Future<int> saveTransaction(
-    PenjualanEntity penjualan,
-    List<ProductPerPenjualanEntity> items,
-  ) async {
-    final penjualanModel = PenjualanModel.fromEntity(penjualan);
-    final penjualanMap = penjualanModel.toMap();
-    penjualanMap.remove('id_penjualan'); // to create increment in db.
-    // print(penjualanMap);
-
-    final itemsModel = items
-        .map((item) => ProductPerPenjualanModel.fromEntity(item))
+  Future<int> saveTransaction(List<ProductPerPenjualanEntity> data) async {
+    List<ProductPerPenjualanModel> dataModel = data
+        .map(
+          (item) => ProductPerPenjualanModel(
+            penjualan: item.penjualan,
+            product: item.product,
+            hargaSatuan: item.hargaSatuan,
+            jumlah: item.jumlah,
+          ),
+        )
         .toList();
-    final itemsMap = itemsModel.map((item) {
-      final map = item.toMap();
-      map.remove('id_penjualan');
-      return map;
-    }).toList();
-
-    final int idPejualan = await localDataSource.saveTransaction(
-      penjualanMap,
-      itemsMap,
-    );
-    // print(idPejualan);
-    return idPejualan;
+    try {
+      int idPenjualan = await localDataSource.saveTransaction(dataModel);
+      return idPenjualan;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   @override
   Future<List<KategoriEntity>> getAllCategory() async {
-    final rawData = await localDataSource.getAllCategory();
-    return rawData.map((map) => KategoriModel.fromMap(map)).toList();
+    try {
+      return localDataSource.getAllCategory();
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   @override
-  Future<PenjualanDetailEntity> getNotaPenjualan(int idPenjualan) async {
-    final rawData = await localDataSource.getNota(idPenjualan);
-    return PenjualanDetailModel.fromMap(rawData);
+  Future<List<ProductPerPenjualanEntity>> getNotaPenjualan(
+    int idPenjualan,
+  ) async {
+    try {
+      print('masuk repo nota');
+      final data = await localDataSource.getNota(idPenjualan);
+      print('berhasil ambil data repo nota');
+      return data;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<TokoEntity> getToko() async {
+    try {
+      return await localDataSource.getToko();
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

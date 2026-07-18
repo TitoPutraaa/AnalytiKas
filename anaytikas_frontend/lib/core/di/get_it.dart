@@ -25,6 +25,7 @@ import 'package:anaytikas_frontend/features/kasir/domain/repositories/kasir_repo
 import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_all_category_usecase.dart';
 import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_all_product_usecase.dart';
 import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_nota_penjualan_usecase.dart';
+import 'package:anaytikas_frontend/features/kasir/domain/usecases/get_toko_usecase.dart';
 import 'package:anaytikas_frontend/features/kasir/domain/usecases/save_transaction_usecase.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/cart_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
@@ -159,6 +160,7 @@ void registerUseCase() {
   getIt.registerLazySingleton(() => GetAllCategoryUsecase(getIt()));
   getIt.registerLazySingleton(() => GetAllProductUsecase(getIt()));
   getIt.registerLazySingleton(() => GetNotaPenjualanUsecase(getIt()));
+  getIt.registerLazySingleton(() => GetTokoUsecase(getIt()));
   getIt.registerLazySingleton(() => SaveTransactionUsecase(getIt()));
 
   // stok
@@ -211,6 +213,7 @@ void registerProvider() {
   getIt.registerFactory<NotaPenjualanProvider>(
     () => NotaPenjualanProvider(
       getNotaPenjualan: getIt<GetNotaPenjualanUsecase>(),
+      getTokoUsecase: getIt<GetTokoUsecase>(),
     ),
   );
 

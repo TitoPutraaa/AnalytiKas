@@ -1,7 +1,7 @@
-import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
+import '../../domain/entitties/toko_entity.dart';
 
-class ProfilModel extends ProfileEntity {
-  ProfilModel({
+class TokoModel extends TokoEntity {
+  TokoModel({
     required super.idToko,
     required super.namaToko,
     required super.email,
@@ -10,13 +10,13 @@ class ProfilModel extends ProfileEntity {
     required super.alamat,
   });
 
-  factory ProfilModel.fromMap(Map<String, dynamic> map) {
-    return ProfilModel(
+  factory TokoModel.fromMap(Map<String, dynamic> map) {
+    return TokoModel(
       idToko: map['id_toko'] as int,
       namaToko: map['nama_toko'] as String,
       email: map['email'] as String,
       noTelp: map['no_telp'] as String,
-      password: map['password'] as String,
+      password: map['password'] ?? '',
       alamat: map['alamat'] as String,
     );
   }

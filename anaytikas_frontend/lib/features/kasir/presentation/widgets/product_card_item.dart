@@ -1,13 +1,13 @@
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/config/theme/app_color.dart';
-import '../../../../core/shared/entities/product_with_details_entity.dart';
 import '../../../../core/shared/extensions/currency_extension.dart';
 import '../manager/cart_provider.dart';
 
 class ProductCardItem extends StatelessWidget {
-  final ProductWithDetailsEntity product;
+  final ProductEntity product;
 
   const ProductCardItem({super.key, required this.product});
 
@@ -31,14 +31,14 @@ class ProductCardItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.product.namaProduct,
+                    product.namaProduct,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     // maxLines: 1,
                     // overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'KODE: ${product.product.idProduct}',
+                    'KODE: ${product.idProduct}',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   SizedBox(height: 8),
@@ -72,9 +72,9 @@ class ProductCardItem extends StatelessWidget {
                   children: [
                     Builder(
                       builder: (context) {
-                        final warningStok = product.product.stokWarning;
+                        final warningStok = product.pengingatStok;
 
-                        final stokValue = product.product.jmlhStok;
+                        final stokValue = product.jmlhStok;
                         return Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -120,20 +120,20 @@ class ProductCardItem extends StatelessWidget {
                       ),
                       onPressed: () {
                         final cart = context.read<CartProvider>();
-                        if (cart.isProductInCart(product.product.idProduct)) {
+                        if (cart.isProductInCart(product.idProduct)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                '${product.product.namaProduct} sudah di keranjang!',
+                                '${product.namaProduct} sudah di keranjang!',
                               ),
                               duration: Duration(seconds: 1),
                             ),
                           );
-                        } else if (product.product.jmlhStok == 0) {
+                        } else if (product.jmlhStok == 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                '${product.product.namaProduct} sudah habis!',
+                                '${product.namaProduct} sudah habis!',
                               ),
                               duration: Duration(seconds: 1),
                             ),
@@ -143,7 +143,7 @@ class ProductCardItem extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                '${product.product.namaProduct} berhasil ditambahkan!',
+                                '${product.namaProduct} berhasil ditambahkan!',
                               ),
 
                               duration: Duration(seconds: 1),

@@ -1,4 +1,4 @@
-import 'package:anaytikas_frontend/core/shared/entities/toko_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/toko_entity.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/forgot_pass_otp_usecase.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/forgot_pass_usecase.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/login_usecase.dart';

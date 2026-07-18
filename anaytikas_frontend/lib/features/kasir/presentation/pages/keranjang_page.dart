@@ -80,7 +80,7 @@ class KeranjangPage extends StatelessWidget {
                     itemCount: listProduct.length,
                     itemBuilder: (context, index) {
                       final product = listProduct[index];
-                      return CartCardItem(product: product);
+                      return CartCardItem(cart: product);
                     },
                   ),
                 );

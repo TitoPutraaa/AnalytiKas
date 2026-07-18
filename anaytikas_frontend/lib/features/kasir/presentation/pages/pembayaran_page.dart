@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
-import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
+// import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
+// import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
 
 import '../../../../core/shared/extensions/currency_extension.dart';
 import '../../../../core/shared/extensions/datetime_extension.dart';
@@ -62,8 +62,8 @@ class _PembayaranPageState extends State<PembayaranPage> {
           if (idPenjualan != null) {
             if (!mounted) return;
             context.read<CartProvider>().clearCart();
-            context.read<StokHomeProvider>().getAllProducts();
-            context.read<RiwayatProvider>().loadRiwayat();
+            // context.read<StokHomeProvider>().getAllProducts();
+            // context.read<RiwayatProvider>().loadRiwayat();
             context.read<KasirProvider>().loadProduct();
 
             Navigator.push(
@@ -147,9 +147,9 @@ class _PembayaranPageState extends State<PembayaranPage> {
                     itemBuilder: (context, index) {
                       final product = products[index];
                       return DetailTransaksiItem(
-                        namaProduct: product.namaProduct,
+                        namaProduct: product.product.namaProduct,
                         quantity: product.quantity,
-                        satuan: product.satuan,
+                        satuan: product.product.harga.satuan,
                         totalHarga: product.totalHarga,
                       );
                     },

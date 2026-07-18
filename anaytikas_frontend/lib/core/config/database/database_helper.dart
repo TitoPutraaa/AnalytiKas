@@ -59,7 +59,8 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE kategori(
         id_kategori $idTypeInc,
-        nama_kategori $textType 
+        nama_kategori $textType,
+        is_active $intType
       )
     ''');
 
@@ -83,7 +84,7 @@ class DatabaseHelper {
         is_active $intType,
         id_kategori $intType,
         id_harga $intType,
-        stok_warning $intType,
+        pengingat_stok $intType,
         FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategori) ON DELETE RESTRICT,
         FOREIGN KEY (id_harga) REFERENCES harga_product (id_harga) ON DELETE RESTRICT
       )
@@ -114,6 +115,7 @@ class DatabaseHelper {
       CREATE TABLE product_per_penjualan (
         id_penjualan $intType,
         id_product $intType,
+        harga_satuan $doubleType,
         jumlah $intType,
         PRIMARY KEY (id_penjualan, id_product),
         FOREIGN KEY (id_penjualan) REFERENCES penjualan (id_penjualan) ON DELETE CASCADE,
@@ -125,6 +127,7 @@ class DatabaseHelper {
       CREATE TABLE product_per_pembelian (
         id_pembelian $intType,
         id_product $intType,
+        harga_satuan $doubleType,
         jumlah $intType,
         PRIMARY KEY (id_pembelian, id_product),
         FOREIGN KEY (id_pembelian) REFERENCES pembelian (id_pembelian) ON DELETE CASCADE,
@@ -136,8 +139,8 @@ class DatabaseHelper {
       CREATE TABLE biaya_operasional (
         id_biaya $idTypeInc,
         nama $textType,
-        total_biaya $doubleType,
         tanggal $textType,
+        harga $doubleType,
         waktu $textType
       )
     ''');

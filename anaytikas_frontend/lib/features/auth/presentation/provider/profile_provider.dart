@@ -1,4 +1,4 @@
-import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/toko_entity.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/edit_profile_usecase.dart';
 import 'package:anaytikas_frontend/features/auth/domain/usecases/get_profile_usecase.dart';
 // import 'package:anaytikas_frontend/features/auth/domain/usecases/login_usecase.dart';
@@ -18,7 +18,7 @@ class ProfileProvider with ChangeNotifier {
     required this.editProfileUsecase,
   });
 
-  ProfileEntity _profile = ProfileEntity(
+  TokoEntity _profile = TokoEntity(
     idToko: 1,
     namaToko: "",
     email: "",
@@ -29,7 +29,7 @@ class ProfileProvider with ChangeNotifier {
 
   String _message = "";
   Status status = Status.initial;
-  ProfileEntity get profile => _profile;
+  TokoEntity get profile => _profile;
   String get message => _message;
 
   Future<void> getProfile() async {

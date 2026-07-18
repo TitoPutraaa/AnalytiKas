@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/core/shared/entities/kategori_entity.dart';
-import 'package:anaytikas_frontend/features/kasir/domain/repositories/kasir_repository.dart';
+import '../../../../core/shared/domain/entitties/kategori_entity.dart';
+import '../repositories/kasir_repository.dart';
 
 class GetAllCategoryUsecase {
   final KasirRepository repository;

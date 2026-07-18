@@ -31,6 +31,7 @@ class _NotaPageState extends State<NotaPage> {
 
   @override
   Widget build(BuildContext context) {
+    // return Text('Hello');
     return Scaffold(
       appBar: AppBar(
         leading: SizedBox(),
@@ -46,12 +47,8 @@ class _NotaPageState extends State<NotaPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Consumer<NotaPenjualanProvider>(
           builder: (context, nota, child) {
-            final notaDetail = nota.notaPenjualan;
             if (nota.isLoading) {
               return Center(child: CircularProgressIndicator());
-            }
-            if (notaDetail == null) {
-              return Center(child: Text('Nota Bermasalah '));
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,7 +112,7 @@ class _NotaPageState extends State<NotaPage> {
                   children: [
                     // Tanggal
                     Text(
-                      DateTime.parse(notaDetail.penjualan.tanggal).toFullDate(),
+                      nota.penjualan?.tanggal.toFullDate() ?? 'tanggal kosong',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: AppColor.darkGray.withValues(alpha: 0.9),
@@ -123,7 +120,7 @@ class _NotaPageState extends State<NotaPage> {
                     ),
                     // Id Penjualan
                     Text(
-                      '${notaDetail.penjualan.idPenjualan}',
+                      '${nota.penjualan?.idPenjualan}',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: AppColor.darkGray.withValues(alpha: 0.9),
@@ -135,7 +132,7 @@ class _NotaPageState extends State<NotaPage> {
                 const Divider(height: 25),
                 const SizedBox(height: 10),
                 TotalBayarItem(
-                  totalSeluruhHarga: notaDetail.penjualan.totalHarga,
+                  totalSeluruhHarga: nota.penjualan?.totalHarga ?? 0,
                 ),
                 SizedBox(height: 20),
 
@@ -230,24 +227,24 @@ class _NotaPageState extends State<NotaPage> {
 
                 SizedBox(height: 15),
                 DetailTransaksiTokoItem(
-                  namaToko: notaDetail.namaToko,
-                  alamat: notaDetail.alamat,
+                  namaToko: nota.toko?.namaToko ?? 'kosong',
+                  alamat: nota.toko?.alamat ?? 'kosong',
                 ),
 
                 Divider(height: 45),
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: notaDetail.products.length,
+                  itemCount: nota.notaDetail.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    final products = notaDetail.products[index];
+                    final products = nota.notaDetail[index];
                     return DetailTransaksiItem(
-                      namaProduct: products.namaProduct,
+                      namaProduct: products.product.namaProduct,
                       quantity: products.jumlah,
-                      satuan: products.satuan,
-                      totalHarga: products.totalHargaProduct,
+                      satuan: products.product.harga.satuan,
+                      totalHarga: (products.jumlah * products.hargaSatuan),
                     );
                   },
                 ),

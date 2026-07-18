@@ -1,5 +1,5 @@
 import 'package:anaytikas_frontend/core/shared/domain/repositories/account_repository.dart';
-import 'package:anaytikas_frontend/core/shared/models/api_response.dart';
+import 'package:anaytikas_frontend/core/shared/data/models/api_response.dart';
 
 class LogoutUsecase {
   final AccountRepository accountRepository;

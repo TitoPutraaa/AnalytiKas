@@ -1,5 +1,5 @@
 // lib/features/auth/presentation/pages/ubah_profil_toko_page.dart
-import 'package:anaytikas_frontend/features/auth/domain/entities/profile_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/toko_entity.dart';
 import 'package:anaytikas_frontend/features/auth/presentation/provider/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +18,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   var _alamatController = TextEditingController();
   ProfileProvider get provider => context.read<ProfileProvider>();
   bool _isLoading = false;
-  ProfileEntity get dataToko => provider.profile;
+  TokoEntity get dataToko => provider.profile;
 
   @override
   void initState() {

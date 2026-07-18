@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/shared/entities/kategori_entity.dart';
-import '../../../../core/shared/entities/penjualan_entity.dart';
-import '../../../../core/shared/entities/product_per_penjualan_entity.dart';
-import '../../../../core/shared/entities/product_with_details_entity.dart';
-import '../../../../core/shared/extensions/datetime_extension.dart';
+import '../../../../core/shared/domain/entitties/kategori_entity.dart';
+import '../../../../core/shared/domain/entitties/penjualan_entity.dart';
+import '../../../../core/shared/domain/entitties/product_entity.dart';
+import '../../../../core/shared/domain/entitties/product_per_penjualan_entity.dart';
 import '../../domain/entities/cart_item_entity.dart';
 import '../../domain/usecases/get_all_category_usecase.dart';
 import '../../domain/usecases/get_all_product_usecase.dart';
@@ -21,8 +20,8 @@ class KasirProvider extends ChangeNotifier {
     required this.getAllCategory,
   });
 
-  List<ProductWithDetailsEntity> _allProducts = [];
-  List<ProductWithDetailsEntity> _filteredProduct = [];
+  List<ProductEntity> _allProducts = [];
+  List<ProductEntity> _filteredProduct = [];
   List<KategoriEntity> _allCategory = [];
   bool _isLoading = false;
   bool _isSearching = false;
@@ -31,7 +30,7 @@ class KasirProvider extends ChangeNotifier {
   double _uangMasuk = 0.0;
   double _uangKembali = 0.0;
 
-  List<ProductWithDetailsEntity> get allProducts => _filteredProduct;
+  List<ProductEntity> get allProducts => _filteredProduct;
   List<KategoriEntity> get allCategory => _allCategory;
   bool get isLoading => _isLoading;
   bool get isSearching => _isSearching;
@@ -56,9 +55,12 @@ class KasirProvider extends ChangeNotifier {
 
   Future<void> loadCategory() async {
     try {
+      print('sedang ngambil kategori');
       final categories = await getAllCategory.call();
+      print('berhasil');
       final allCategory = KategoriEntity(
         idKategori: 0,
+        isActive: true,
         namaKategori: 'Semua Kategori',
       );
       _allCategory = [allCategory, ...categories];
@@ -78,17 +80,13 @@ class KasirProvider extends ChangeNotifier {
     final isCategorySelected = categoryId != null && categoryId != 0;
 
     _filteredProduct = _allProducts.where((p) {
-      if (isCategorySelected && p.product.idKategori != categoryId) {
+      if (isCategorySelected && p.kategori.idKategori != categoryId) {
         return false;
       }
 
       if (lowerQuery.isNotEmpty) {
-        final matchesQuery = p.product.namaProduct.toLowerCase().contains(
-          lowerQuery,
-        );
-        final matchesQueryId = p.product.idProduct.toString().contains(
-          lowerQuery,
-        );
+        final matchesQuery = p.namaProduct.toLowerCase().contains(lowerQuery);
+        final matchesQueryId = p.idProduct.toString().contains(lowerQuery);
         return matchesQuery || matchesQueryId;
       }
       return true;
@@ -97,14 +95,14 @@ class KasirProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  ProductWithDetailsEntity? findProductByBarcode(String barcode) {
+  ProductEntity? findProductByBarcode(String barcode) {
     final id = int.tryParse(barcode.trim());
     if (id == null) {
       return null;
     }
 
     for (final p in _allProducts) {
-      if (p.product.idProduct == id) {
+      if (p.idProduct == id) {
         return p;
       }
     }
@@ -126,23 +124,24 @@ class KasirProvider extends ChangeNotifier {
     );
     final PenjualanEntity penjualan = PenjualanEntity(
       idPenjualan: 0,
-      tanggal: now.toDBDate(),
-      waktu: now.toTime(),
+      tanggal: now,
+      waktu: now,
       totalItem: totalItems,
       totalHarga: totalPrices,
     );
 
-    final List<ProductPerPenjualanEntity> detailItems = cart
+    final List<ProductPerPenjualanEntity> dataTransaction = cart
         .map(
           (item) => ProductPerPenjualanEntity(
-            idPenjualan: 0,
-            idProduct: item.idProduct,
+            penjualan: penjualan,
+            product: item.product,
+            hargaSatuan: item.product.harga.hargaJual,
             jumlah: item.quantity,
           ),
         )
         .toList();
     try {
-      _idPenjualan = await saveTransaction.call(penjualan, detailItems);
+      _idPenjualan = await saveTransaction.call(dataTransaction);
       _uangMasuk = uangMasuk;
       _uangKembali = _uangMasuk - totalPrices;
     } catch (e) {

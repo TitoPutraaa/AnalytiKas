@@ -30,6 +30,8 @@ abstract class LocalDataSource {
 
   Future<void> clearAllTables();
   Future<void> resetAutoIncrement(String tableName, int maxId);
+  Future<void> addKategory();
+  Future<void> addDummyProducts();
 }
 
 class LocalDataSourceImpl implements LocalDataSource {
@@ -289,5 +291,69 @@ class LocalDataSourceImpl implements LocalDataSource {
         whereArgs: [tableName],
       );
     }
+  }
+
+  @override
+  Future<void> addKategory() async {
+    final db = await dbHelper.database;
+    await db.insert('kategori', {
+      'id_kategori': '1',
+      'nama_kategori': 'Minuman',
+      'is_active': 1,
+    });
+  }
+
+  @override
+  Future<void> addDummyProducts() async {
+    final db = await dbHelper.database;
+
+    // Contoh data dummy dalam bentuk List
+    // 1. Tambahkan data ke harga_product terlebih dahulu
+    await db.insert('toko', {
+      'id_toko': 1,
+      'nama_toko': 'Toko Maju',
+      'email': 'maju#gmail.com',
+      'no_telp': '08123456',
+      'password': '123',
+      'alamat': 'Jl. Maju',
+    });
+    print('berhasil tambah toko');
+    await db.insert('harga_product', {
+      'id_harga': 1,
+      'harga_jual': 50000.0,
+      'harga_beli': 40000.0,
+      'satuan': 'Pack',
+    });
+
+    await db.insert('harga_product', {
+      'id_harga': 2,
+      'harga_jual': 15000.0,
+      'harga_beli': 10000.0,
+      'satuan': 'Box',
+    });
+
+    // 2. Tambahkan data ke product
+    // Pastikan id_harga (1, 2) dan id_kategori (1) sudah ada di tabel terkait
+    await db.insert('product', {
+      'id_product': 1,
+      'nama_product': 'Kopi Arabika 250g',
+      'jmlh_stok': 50,
+      'is_grosir': 1,
+      'is_active': 1,
+      'id_kategori': 1,
+      'id_harga': 1, // Merujuk ke id_harga 1 di atas
+      'pengingat_stok': 10,
+    });
+
+    await db.insert('product', {
+      'id_product': 2,
+      'nama_product': 'Teh Celup Melati',
+      'jmlh_stok': 100,
+      'is_grosir': 0,
+      'is_active': 1,
+      'id_kategori': 1,
+      'id_harga': 2, // Merujuk ke id_harga 2 di atas
+      'pengingat_stok': 20,
+    });
   }
 }

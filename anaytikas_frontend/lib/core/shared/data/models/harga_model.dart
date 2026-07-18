@@ -1,4 +1,4 @@
-import '../entities/harga_entity.dart';
+import '../../domain/entitties/harga_entity.dart';
 
 class HargaModel extends HargaEntity {
   HargaModel({
@@ -16,9 +16,9 @@ class HargaModel extends HargaEntity {
       satuan: map['satuan'] as String,
     );
   }
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeId = true}) {
     return {
-      'id_harga': idHarga,
+      if (includeId) 'id_harga': idHarga,
       'harga_jual': hargaJual,
       'harga_beli': hargaBeli,
       'satuan': satuan,

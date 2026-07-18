@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/core/shared/entities/kategori_entity.dart';
-import 'package:anaytikas_frontend/core/shared/entities/product_with_details_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/kategori_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/pages/camera_scanner_page.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/widgets/hardware_scanner_listener.dart';
 import 'package:flutter/material.dart';
@@ -152,10 +152,9 @@ class Homekasir extends StatelessWidget {
               Builder(
                 builder: (context) {
                   final state = context
-                      .select<
-                        KasirProvider,
-                        (bool, bool, List<ProductWithDetailsEntity>)
-                      >((k) => (k.isLoading, k.isSearching, k.allProducts));
+                      .select<KasirProvider, (bool, bool, List<ProductEntity>)>(
+                        (k) => (k.isLoading, k.isSearching, k.allProducts),
+                      );
                   final (isLoading, isSearching, allProducts) = state;
                   if (isLoading) {
                     return Center(child: CircularProgressIndicator());

@@ -1,4 +1,5 @@
-import 'package:anaytikas_frontend/features/kasir/domain/entities/penjualan_detail_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_per_penjualan_entity.dart';
+
 import 'package:anaytikas_frontend/features/kasir/domain/repositories/kasir_repository.dart';
 
 class GetNotaPenjualanUsecase {
@@ -6,7 +7,7 @@ class GetNotaPenjualanUsecase {
 
   GetNotaPenjualanUsecase(this.repository);
 
-  Future<PenjualanDetailEntity> call(int idPenjualan) async {
+  Future<List<ProductPerPenjualanEntity>> call(int idPenjualan) async {
     return await repository.getNotaPenjualan(idPenjualan);
   }
 }
