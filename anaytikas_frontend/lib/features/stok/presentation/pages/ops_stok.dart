@@ -82,7 +82,7 @@ class _OpsStokState extends State<OpsStok> {
       idBiaya: 0,
       nama: selectedBiaya!,
       tanggal: tanggalParse,
-      totalBiaya: nominalParse,
+      harga: nominalParse,
       waktu: waktu,
     );
 

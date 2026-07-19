@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/harga_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/kategori_entity.dart';
 import 'package:anaytikas_frontend/features/stok/domain/usecases/update_product.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +15,11 @@ class EditProductProvider with ChangeNotifier {
 
   Future<void> edit(
     int idProduct,
-    Kategori kategori,
-    HargaProduct harga,
+    KategoriEntity kategori,
+    HargaEntity harga,
     String namaProduct,
     int jmlhStok,
-    int stokWarning,
+    int pengingatStok,
     bool isGrosir,
     bool isActivate,
   ) async {
@@ -33,7 +33,7 @@ class EditProductProvider with ChangeNotifier {
         harga,
         namaProduct,
         jmlhStok,
-        stokWarning,
+        pengingatStok,
         isGrosir,
         isActivate,
       );

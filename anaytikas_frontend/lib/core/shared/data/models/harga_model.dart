@@ -16,6 +16,15 @@ class HargaModel extends HargaEntity {
       satuan: map['satuan'] as String,
     );
   }
+
+  factory HargaModel.fromEntity(HargaEntity entity) {
+    return HargaModel(
+      idHarga: entity.idHarga,
+      hargaJual: entity.hargaJual,
+      hargaBeli: entity.hargaBeli,
+      satuan: entity.satuan,
+    );
+  }
   Map<String, dynamic> toMap({bool includeId = true}) {
     return {
       if (includeId) 'id_harga': idHarga,

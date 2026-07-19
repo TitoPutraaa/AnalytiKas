@@ -21,6 +21,16 @@ class BiayaOperasionalModel extends BiayaOperasionalEntity {
     );
   }
 
+  factory BiayaOperasionalModel.fromEntity(BiayaOperasionalEntity entity) {
+    return BiayaOperasionalModel(
+      idBiaya: entity.idBiaya,
+      nama: entity.nama,
+      tanggal: entity.tanggal,
+      harga: entity.harga,
+      waktu: entity.waktu,
+    );
+  }
+
   Map<String, dynamic> toMap({bool includeId = true}) {
     return {
       if (includeId) "id_biaya": idBiaya,

@@ -1,12 +1,12 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/harga_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/kategori_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/pembelian_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 // import 'package:anaytikas_frontend/core/shared/entities/pembelian_entity.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 // import 'package:anaytikas_frontend/features/kasir/presentation/pages/camera_scanner_page.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/barang_baru_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/camera_scan.dart';
@@ -34,7 +34,7 @@ class _BarangBaruState extends State<BarangBaru> {
 
   List<String> get _categories =>
       provider.allCategory.map((kategori) => kategori.namaKategori).toList();
-  Kategori? _selectedCategory;
+  KategoriEntity? _selectedCategory;
   final List<String> _satuan = [
     'Krat',
     'Dus',
@@ -135,17 +135,17 @@ class _BarangBaruState extends State<BarangBaru> {
     final stokWarning = int.tryParse(warningStokText) ?? 0;
     final kodeBarangConv = int.tryParse(kodeBarang) ?? 0;
 
-    final harga = HargaProduct(
+    final harga = HargaEntity(
       idHarga: 0,
       hargaJual: hargaJual,
       hargaBeli: hargaBeli,
       satuan: _selectedSatuan!,
     );
 
-    final pemebelian = Pembelian(
+    final pemebelian = PembelianEntity(
       idPembelian: 0,
       tanggal: DateTime.now(),
-      waktu: "",
+      waktu: DateTime.now(),
       totalHarga: jmlhStok * hargaBeli,
     );
 
@@ -155,7 +155,9 @@ class _BarangBaruState extends State<BarangBaru> {
       harga: harga,
       namaProduct: name,
       jmlhStok: jmlhStok,
-      stokWarning: stokWarning,
+      pengingatStok: stokWarning,
+      isGrosir: true,
+      isActive: true,
     );
 
     await provider.barangBaru(

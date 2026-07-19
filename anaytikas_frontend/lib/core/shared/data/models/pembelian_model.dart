@@ -19,6 +19,15 @@ class PembelianModel extends PembelianEntity {
     );
   }
 
+  factory PembelianModel.fromEntity(PembelianEntity entity) {
+    return PembelianModel(
+      idPembelian: entity.idPembelian,
+      tanggal: entity.tanggal,
+      waktu: entity.waktu,
+      totalHarga: entity.totalHarga,
+    );
+  }
+
   Map<String, dynamic> toMap({bool includeId = true}) {
     return {
       if (includeId) 'id_pembelian': idPembelian,

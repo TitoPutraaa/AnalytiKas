@@ -31,7 +31,6 @@ class _NotaPageState extends State<NotaPage> {
 
   @override
   Widget build(BuildContext context) {
-    // return Text('Hello');
     return Scaffold(
       appBar: AppBar(
         leading: SizedBox(),
@@ -112,7 +111,7 @@ class _NotaPageState extends State<NotaPage> {
                   children: [
                     // Tanggal
                     Text(
-                      nota.penjualan?.tanggal.toFullDate() ?? 'tanggal kosong',
+                      nota.penjualan?.tanggal.toFullDate() ?? '-',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: AppColor.darkGray.withValues(alpha: 0.9),
@@ -227,8 +226,8 @@ class _NotaPageState extends State<NotaPage> {
 
                 SizedBox(height: 15),
                 DetailTransaksiTokoItem(
-                  namaToko: nota.toko?.namaToko ?? 'kosong',
-                  alamat: nota.toko?.alamat ?? 'kosong',
+                  namaToko: nota.toko?.namaToko ?? '-',
+                  alamat: nota.toko?.alamat ?? '-',
                 ),
 
                 Divider(height: 45),

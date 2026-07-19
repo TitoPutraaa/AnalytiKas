@@ -23,14 +23,7 @@ class KasirRepositoryImpl implements KasirRepository {
   @override
   Future<int> saveTransaction(List<ProductPerPenjualanEntity> data) async {
     List<ProductPerPenjualanModel> dataModel = data
-        .map(
-          (item) => ProductPerPenjualanModel(
-            penjualan: item.penjualan,
-            product: item.product,
-            hargaSatuan: item.hargaSatuan,
-            jumlah: item.jumlah,
-          ),
-        )
+        .map((item) => ProductPerPenjualanModel.fromEntity(item))
         .toList();
     try {
       int idPenjualan = await localDataSource.saveTransaction(dataModel);
@@ -54,9 +47,7 @@ class KasirRepositoryImpl implements KasirRepository {
     int idPenjualan,
   ) async {
     try {
-      print('masuk repo nota');
       final data = await localDataSource.getNota(idPenjualan);
-      print('berhasil ambil data repo nota');
       return data;
     } catch (e) {
       throw Exception(e);

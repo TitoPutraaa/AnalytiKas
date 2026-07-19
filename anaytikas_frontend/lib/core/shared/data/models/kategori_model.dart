@@ -17,6 +17,14 @@ class KategoriModel extends KategoriEntity {
     );
   }
 
+  factory KategoriModel.fromEntity(KategoriEntity entity) {
+    return KategoriModel(
+      idKategori: entity.idKategori,
+      namaKategori: entity.namaKategori,
+      isActive: entity.isActive,
+    );
+  }
+
   Map<String, dynamic> toMap({bool includeId = true}) {
     return {
       if (includeId) 'id_kategori': idKategori,

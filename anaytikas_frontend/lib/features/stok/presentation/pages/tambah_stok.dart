@@ -1,9 +1,9 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/pembelian_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/tambah_stok_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
@@ -55,11 +55,10 @@ class _TambahstokState extends State<Tambahstok> {
         widget.product.harga.hargaBeli;
 
     final now = DateTime.now();
-    final pembelian = Pembelian(
+    final pembelian = PembelianEntity(
       idPembelian: 0,
       tanggal: now,
-      waktu:
-          "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}",
+      waktu: now,
       totalHarga: hargaBeli * jumlah,
     );
 
@@ -85,7 +84,7 @@ class _TambahstokState extends State<Tambahstok> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStok = widget.product.jmlhStok <= widget.product.stokWarning;
+    bool isLowStok = widget.product.jmlhStok <= widget.product.pengingatStok;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tambah Stok"),

@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
-import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
+import '../../../../core/shared/domain/entitties/product_entity.dart';
+import '../repository/stok_repository.dart';
 
 class GetAllProducts {
   final StokRepository stokRepository;

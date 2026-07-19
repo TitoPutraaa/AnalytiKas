@@ -18,12 +18,12 @@ class BiayaOperasionalProvider with ChangeNotifier {
     required String nama,
     required DateTime tanggal,
     required DateTime waktu,
-    required double totalBiaya,
+    required double harga,
   }) async {
     _status = Status.loading;
     notifyListeners();
     try {
-      await addBiayaOperasional.call(idBiaya, nama, tanggal, waktu, totalBiaya);
+      await addBiayaOperasional.call(idBiaya, nama, tanggal, waktu, harga);
       _status = Status.success;
       succes = true;
       notifyListeners();

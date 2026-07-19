@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/pembelian_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/domain/usecases/add_stok.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,7 @@ class TambahStokProvider with ChangeNotifier {
   Status status = Status.initial;
 
   Future<void> add(
-    Pembelian pembelian,
+    PembelianEntity pembelian,
     ProductEntity product,
     int jumlah,
   ) async {

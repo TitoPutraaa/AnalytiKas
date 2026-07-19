@@ -21,6 +21,17 @@ class TokoModel extends TokoEntity {
     );
   }
 
+  factory TokoModel.fromEntity(TokoEntity entity) {
+    return TokoModel(
+      idToko: entity.idToko,
+      namaToko: entity.namaToko,
+      email: entity.email,
+      noTelp: entity.noTelp,
+      password: entity.password,
+      alamat: entity.alamat,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id_toko': idToko,

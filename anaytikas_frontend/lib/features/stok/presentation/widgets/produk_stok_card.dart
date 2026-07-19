@@ -1,5 +1,5 @@
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/edit_produk.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/pages/tambah_stok.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/stok_home_provider.dart';
@@ -14,7 +14,7 @@ class ProductStockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStock = product.jmlhStok <= product.stokWarning;
+    bool isLowStock = product.jmlhStok <= product.pengingatStok;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),

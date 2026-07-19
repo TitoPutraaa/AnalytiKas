@@ -39,29 +39,18 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
   Future<int> saveTransaction(List<ProductPerPenjualanModel> data) async {
     final db = await dbHelper.database;
 
-    PenjualanModel penjualan = PenjualanModel(
-      idPenjualan: data.first.penjualan.idPenjualan,
-      tanggal: data.first.penjualan.tanggal,
-      waktu: data.first.penjualan.waktu,
-      totalItem: data.first.penjualan.totalItem,
-      totalHarga: data.first.penjualan.totalHarga,
+    final PenjualanModel penjualanModel = PenjualanModel.fromEntity(
+      data.first.penjualan,
     );
-    Map<String, dynamic> penjualanMap = penjualan.toMap(includeId: false);
+    final Map<String, dynamic> penjualanMap = penjualanModel.toMap(
+      includeId: false,
+    );
     int newId = await db.transaction((txn) async {
-      // 1. Save penjualan
-      // print(data);
       int id = await txn.insert('penjualan', penjualanMap);
-      // print('id penjualan: $id');
-      // 2. Save detail item & update stok
       for (var item in data) {
-        // print('data item: $item');
         Map<String, dynamic> itemMap = item.toMap();
-        await txn.insert('product_per_penjualan', {
-          'id_penjualan': id,
-          'id_product': itemMap['id_product'],
-          'harga_satuan': itemMap['harga_satuan'],
-          'jumlah': itemMap['jumlah'],
-        });
+        itemMap['id_penjualan'] = id;
+        await txn.insert('product_per_penjualan', itemMap);
         // Less stok barang
         await txn.rawUpdate(
           'UPDATE product set jmlh_stok = jmlh_stok - ? WHERE id_product = ?',
@@ -71,13 +60,6 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
 
       return id;
     });
-    // final data0 = await db.query('product_per_penjualan');
-    // final data1 = await db.query('penjualan');
-    // final data2 = await db.query('product');
-    // print(data0);
-    // print(data1);
-    // print(data2);
-    // print(newId);
     return newId;
   }
 
@@ -108,7 +90,6 @@ class KasirLocalDataSourceImpl implements KasirLocalDataSource {
     ''',
       [idPenjualan],
     );
-    print(maps);
     return maps.map((map) => ProductPerPenjualanModel.fromMap(map)).toList();
   }
 

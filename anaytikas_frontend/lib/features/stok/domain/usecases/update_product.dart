@@ -1,6 +1,7 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/harga_product.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
-import 'package:anaytikas_frontend/features/stok/domain/repository/stok_repository.dart';
+import '../../../../core/shared/domain/entitties/harga_entity.dart';
+import '../../../../core/shared/domain/entitties/kategori_entity.dart';
+import '../../../../core/shared/domain/entitties/product_entity.dart';
+import '../repository/stok_repository.dart';
 
 class UpdateProduct {
   final StokRepository stokRepository;
@@ -9,23 +10,24 @@ class UpdateProduct {
 
   Future<void> call(
     int idProduct,
-    Kategori kategori,
-    HargaProduct harga,
+    KategoriEntity kategori,
+    HargaEntity harga,
     String namaProduct,
     int jmlhStok,
-    int stokWarning,
+    int pengingatStok,
     bool isGrosir,
-    bool isActivate,
+    bool isActive,
   ) {
-    return stokRepository.updateProduct(
-      idProduct,
-      kategori,
-      harga,
-      namaProduct,
-      jmlhStok,
-      stokWarning,
-      isGrosir,
-      isActivate,
+    final ProductEntity data = ProductEntity(
+      idProduct: idProduct,
+      namaProduct: namaProduct,
+      jmlhStok: jmlhStok,
+      isGrosir: isGrosir,
+      isActive: isActive,
+      pengingatStok: pengingatStok,
+      kategori: kategori,
+      harga: harga,
     );
+    return stokRepository.updateProduct(data);
   }
 }

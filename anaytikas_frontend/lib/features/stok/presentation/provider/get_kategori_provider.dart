@@ -1,4 +1,4 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/kategori_entity.dart';
 import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_category.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +7,8 @@ class GetKategoriProvider with ChangeNotifier {
 
   GetKategoriProvider({required this.getAllCategory});
 
-  List<Kategori> _allCategory = [];
-  List<Kategori> get allCategory => _allCategory;
+  List<KategoriEntity> _allCategory = [];
+  List<KategoriEntity> get allCategory => _allCategory;
 
   Future<void> loadCategory() async {
     try {

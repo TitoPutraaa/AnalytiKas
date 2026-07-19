@@ -9,7 +9,6 @@ import 'package:anaytikas_frontend/core/shared/data/models/product_model.dart';
 import 'package:anaytikas_frontend/core/shared/data/models/product_per_pembelian_model.dart';
 import 'package:anaytikas_frontend/core/shared/data/models/product_per_penjualan_model.dart';
 import 'package:anaytikas_frontend/core/shared/data/models/toko_model.dart';
-import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
 
 import '../../../config/network/connectivity_helper.dart';
 import '../../domain/repositories/account_repository.dart';

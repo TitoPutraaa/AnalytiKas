@@ -1,18 +1,20 @@
-import 'package:anaytikas_frontend/core/config/database/database_helper.dart';
-import 'package:anaytikas_frontend/features/stok/data/models/biaya_operasional_model.dart';
-import 'package:anaytikas_frontend/features/stok/data/models/kategori_model.dart';
-import 'package:anaytikas_frontend/features/stok/data/models/product_model.dart';
-import 'package:anaytikas_frontend/features/stok/data/models/product_per_pembelian_model.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
+import '../../../../core/shared/data/models/biaya_operasional_model.dart';
+import '../../../../core/shared/data/models/harga_model.dart';
+import '../../../../core/shared/data/models/kategori_model.dart';
+import '../../../../core/shared/data/models/pembelian_model.dart';
+import '../../../../core/shared/data/models/product_model.dart';
+import '../../../../core/shared/data/models/product_per_pembelian_model.dart';
+import '../../../../core/shared/domain/entitties/product_entity.dart';
+
+import '../../../../core/config/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class StokLocalDatasource {
   Future<List<ProductModel>> getAllProductsData();
-  Future<List<Kategori>> getAllCategory();
-  Future<void> addBarangBaruData(ProductPerPembelianModel addBarang);
+  Future<List<KategoriModel>> getAllCategory();
+  Future<void> addBarangBaru(ProductPerPembelianModel data);
   Future<void> addBiayaOperasionalData(BiayaOperasionalModel addBiayaOps);
-  Future<void> addStokData(ProductPerPembelianModel addStok);
+  Future<void> addStokData(ProductPerPembelianModel data);
   Future<void> updateProductData(ProductModel updProduct);
   Future<void> deleteProduct(ProductEntity delProduct);
 }
@@ -25,52 +27,56 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<List<ProductModel>> getAllProductsData() async {
     final db = await dbHelper.database;
-    List<Map<String, dynamic>> maps = await db.rawQuery(queryGetAll, [1]);
+    List<Map<String, dynamic>> maps = await db.rawQuery('''
+        SELECT 
+          p.id_product, p.nama_product, p.jmlh_stok, p.is_grosir, p.is_active AS is_active_product, p.pengingat_stok, 
+          k.id_kategori, k.nama_kategori, k.is_active AS is_active_kategori,
+          h.id_harga, h.harga_jual, h.harga_beli, h.satuan 
 
-    return maps.map((row) => ProductModel.fromJoinedMap(row)).toList();
+        FROM product p
+        INNER JOIN kategori k ON p.id_kategori = k.id_kategori
+        INNER JOIN harga_product h ON p.id_harga = h.id_harga
+        
+        WHERE p.is_active = 1;
+    ''');
+
+    return maps.map((row) => ProductModel.fromMap(row)).toList();
   }
 
   @override
-  Future<void> addBarangBaruData(ProductPerPembelianModel addBarang) async {
+  Future<void> addBarangBaru(ProductPerPembelianModel data) async {
     final db = await dbHelper.database;
-    final now = DateTime.now();
+
+    final hargaMap = HargaModel.fromEntity(
+      data.product.harga,
+    ).toMap(includeId: false);
+    final pembelianMap = PembelianModel.fromEntity(
+      data.pembelian,
+    ).toMap(includeId: false);
+    final productMap = ProductModel.fromEntity(data.product).toMap();
+    final pppembelianMap = data.toMap();
 
     await db.transaction((txn) async {
-      final idHarga = await txn.insert("harga_product", {
-        "harga_jual": addBarang.product.harga.hargaJual,
-        "harga_beli": addBarang.product.harga.hargaBeli,
-        "satuan": addBarang.product.harga.satuan,
-      }, conflictAlgorithm: ConflictAlgorithm.fail);
+      final idHarga = await txn.insert(
+        "harga_product",
+        hargaMap,
+        conflictAlgorithm: ConflictAlgorithm.fail,
+      );
+      final idPembelian = await txn.insert("pembelian", pembelianMap);
 
-      final idPembelian = await txn.insert("pembelian", {
-        "tanggal": now.toIso8601String().split("T")[0],
-        "waktu": now.toIso8601String().split("T")[1].substring(0, 8),
-        "total_harga": addBarang.product.harga.hargaBeli * addBarang.jumlah,
-      });
-
-      final productMap = ProductModel(
-        idProduct: addBarang.product.idProduct,
-        kategori: addBarang.product.kategori,
-        harga: addBarang.product.harga,
-        namaProduct: addBarang.product.namaProduct,
-        jmlhStok: addBarang.product.jmlhStok,
-        stokWarning: addBarang.product.stokWarning,
-        isActivate: addBarang.product.isActivate,
-        isGrosir: addBarang.product.isGrosir,
-      ).toMap();
-
-      productMap["id_harga"] = idHarga;
-
+      productMap['id_harga'] = idHarga;
       await txn.insert(
         "product",
         productMap,
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
-      await txn.insert("product_per_pembelian", {
-        "id_pembelian": idPembelian,
-        "id_product": addBarang.product.idProduct,
-        "jumlah": addBarang.jumlah,
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+
+      pppembelianMap['id_pembelian'] = idPembelian;
+      await txn.insert(
+        "product_per_pembelian",
+        pppembelianMap,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     });
   }
 
@@ -87,28 +93,31 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   }
 
   @override
-  Future<void> addStokData(ProductPerPembelianModel addStok) async {
+  Future<void> addStokData(ProductPerPembelianModel data) async {
     final db = await dbHelper.database;
+
+    final pembelianMap = PembelianModel.fromEntity(
+      data.pembelian,
+    ).toMap(includeId: false);
+
+    final Map<String, dynamic> pppembelianMap = data.toMap();
+
     await db.transaction((txn) async {
       // 1. Create pembelian record
-      final now = DateTime.now();
-      final idPembelian = await txn.insert("pembelian", {
-        "tanggal": now.toIso8601String().split("T")[0],
-        "waktu": now.toIso8601String().split("T")[1].substring(0, 8),
-        "total_harga": addStok.product.harga.hargaBeli * addStok.jumlah,
-      });
+      final idPembelian = await txn.insert("pembelian", pembelianMap);
 
       // 2. Insert product_per_pembelian
-      await txn.insert("product_per_pembelian", {
-        "id_pembelian": idPembelian,
-        "id_product": addStok.product.idProduct,
-        "jumlah": addStok.jumlah,
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      pppembelianMap['id_pembelian'] = idPembelian;
+      await txn.insert(
+        "product_per_pembelian",
+        pppembelianMap,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
 
       // 3. Update jmlh_stok on the product
       await txn.rawUpdate(
         "UPDATE product SET jmlh_stok = jmlh_stok + ? WHERE id_product = ?",
-        [addStok.jumlah, addStok.product.idProduct],
+        [pppembelianMap['jumlah'], pppembelianMap['id_product']],
       );
     });
   }
@@ -116,9 +125,13 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   @override
   Future<void> updateProductData(ProductModel updProduct) async {
     final db = await dbHelper.database;
+    final hargaMap = HargaModel.fromEntity(
+      updProduct.harga,
+    ).toMap(includeId: false);
+    final productMap = updProduct.toMap();
+
     await db.transaction((txn) async {
       // Update the product record (without id_harga, id_kategori FK fields conflicting)
-      final productMap = updProduct.toMap();
       await txn.update(
         "product",
         productMap,
@@ -128,11 +141,7 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
 
       await txn.update(
         "harga_product",
-        {
-          "harga_jual": updProduct.harga.hargaJual,
-          "harga_beli": updProduct.harga.hargaBeli,
-          "satuan": updProduct.harga.satuan,
-        },
+        hargaMap,
         where: "id_harga = ?",
         whereArgs: [updProduct.harga.idHarga],
       );
@@ -140,7 +149,7 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
   }
 
   @override
-  Future<List<Kategori>> getAllCategory() async {
+  Future<List<KategoriModel>> getAllCategory() async {
     final db = await dbHelper.database;
     List<Map<String, dynamic>> data = await db.query("kategori");
 
@@ -157,24 +166,4 @@ class StokLocalDatasourceImpl implements StokLocalDatasource {
       whereArgs: [delProduct.idProduct],
     );
   }
-
-  final String queryGetAll = '''
-  SELECT
-    product.id_product,
-    product.nama_product,
-    product.jmlh_stok,
-    product.stok_warning,
-    product.is_active,
-    product.is_grosir,
-    kategori.id_kategori,
-    kategori.nama_kategori,
-    harga_product.id_harga,
-    harga_product.harga_jual,
-    harga_product.harga_beli,
-    harga_product.satuan
-  FROM product
-  LEFT JOIN kategori      ON product.id_kategori = kategori.id_kategori
-  LEFT JOIN harga_product ON product.id_harga    = harga_product.id_harga
-  WHERE product.is_active = ?
-  ''';
 }

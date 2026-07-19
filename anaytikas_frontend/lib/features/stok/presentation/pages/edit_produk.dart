@@ -1,12 +1,12 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/kategori_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/widgets/custom_alert_dialog.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/edit_product_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/get_kategori_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/outlined_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +31,7 @@ class _EditProdukState extends State<EditProduk> {
   List<String> get _categories =>
       provider.allCategory.map((kategori) => kategori.namaKategori).toList();
   int stokValue = 0;
-  Kategori? _selectedCategory;
+  KategoriEntity? _selectedCategory;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _EditProdukState extends State<EditProduk> {
       text: widget.product.jmlhStok.toString(),
     );
     editWarningStok = TextEditingController(
-      text: widget.product.stokWarning.toString(),
+      text: widget.product.pengingatStok.toString(),
     );
     hargaJualController = TextEditingController(
       text: widget.product.harga.hargaJual.toInt().toString(),
@@ -102,7 +102,7 @@ class _EditProdukState extends State<EditProduk> {
       stokBaru,
       warningBaru,
       widget.product.isGrosir,
-      widget.product.isActivate,
+      widget.product.isActive,
     );
 
     if (mounted) {
@@ -177,7 +177,7 @@ class _EditProdukState extends State<EditProduk> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLowStok = widget.product.jmlhStok <= widget.product.stokWarning;
+    bool isLowStok = widget.product.jmlhStok <= widget.product.pengingatStok;
 
     return Scaffold(
       appBar: AppBar(

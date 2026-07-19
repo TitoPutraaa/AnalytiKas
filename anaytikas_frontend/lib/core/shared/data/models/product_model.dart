@@ -43,6 +43,19 @@ class ProductModel extends ProductEntity {
     );
   }
 
+  factory ProductModel.fromEntity(ProductEntity entity) {
+    return ProductModel(
+      idProduct: entity.idProduct,
+      namaProduct: entity.namaProduct,
+      jmlhStok: entity.jmlhStok,
+      isGrosir: entity.isGrosir,
+      isActive: entity.isActive,
+      pengingatStok: entity.pengingatStok,
+      kategori: entity.kategori,
+      harga: entity.harga,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id_product': idProduct,

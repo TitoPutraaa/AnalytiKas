@@ -30,13 +30,11 @@ class NotaPenjualanProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      print('masuk provider');
       _toko = await getTokoUsecase.call();
-      print('berhasil ombil toko');
       _notaDetail = await getNotaPenjualan.call(idPenjualan);
       _penjualan = _notaDetail.first.penjualan;
     } catch (e) {
-      debugPrint('data penjualan tidak masuk. $e');
+      debugPrint('gagal pada nota. $e');
     } finally {
       _isLoading = false;
       notifyListeners();

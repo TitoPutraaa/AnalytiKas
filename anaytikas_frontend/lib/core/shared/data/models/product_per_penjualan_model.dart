@@ -1,5 +1,3 @@
-import 'harga_model.dart';
-import 'kategori_model.dart';
 import 'penjualan_model.dart';
 import 'product_model.dart';
 
@@ -27,6 +25,17 @@ class ProductPerPenjualanModel extends ProductPerPenjualanEntity {
 
       hargaSatuan: (map['harga_satuan'] as num).toDouble(),
       jumlah: map['jumlah'] as int,
+    );
+  }
+
+  factory ProductPerPenjualanModel.fromEntity(
+    ProductPerPenjualanEntity entity,
+  ) {
+    return ProductPerPenjualanModel(
+      penjualan: entity.penjualan,
+      product: entity.product,
+      hargaSatuan: entity.hargaSatuan,
+      jumlah: entity.jumlah,
     );
   }
 

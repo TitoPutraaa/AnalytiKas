@@ -1,5 +1,5 @@
-import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
-import 'package:anaytikas_frontend/features/stok/domain/entities/product_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/kategori_entity.dart';
+import 'package:anaytikas_frontend/core/shared/domain/entitties/product_entity.dart';
 import 'package:anaytikas_frontend/features/stok/domain/usecases/get_all_products.dart';
 import 'package:flutter/material.dart';
 
@@ -12,14 +12,14 @@ class StokHomeProvider with ChangeNotifier {
   Status status = Status.initial;
   List<ProductEntity> _allProduct = [];
   List<ProductEntity> _filteredProduct = [];
-  final List<Kategori> _allCategory = [];
+  final List<KategoriEntity> _allCategory = [];
   bool _isLoading = true;
   bool _isSearching = false;
   String message = "";
   String _searchQuery = "";
 
   List<ProductEntity> get allProducts => _filteredProduct;
-  List<Kategori> get allCategory => _allCategory;
+  List<KategoriEntity> get allCategory => _allCategory;
   bool get isLoading => _isLoading;
   bool get isSearching => _isSearching;
 

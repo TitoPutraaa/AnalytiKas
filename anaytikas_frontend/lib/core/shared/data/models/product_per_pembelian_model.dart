@@ -47,6 +47,17 @@ class ProductPerPembelianModel extends ProductPerPembelianEntity {
     );
   }
 
+  factory ProductPerPembelianModel.fromEntity(
+    ProductPerPembelianEntity entity,
+  ) {
+    return ProductPerPembelianModel(
+      pembelian: entity.pembelian,
+      product: entity.product,
+      hargaSatuan: entity.hargaSatuan,
+      jumlah: entity.jumlah,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id_pembelian': pembelian.idPembelian,
