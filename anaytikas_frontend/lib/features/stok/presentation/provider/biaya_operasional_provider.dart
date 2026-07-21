@@ -27,6 +27,11 @@ class BiayaOperasionalProvider with ChangeNotifier {
       _status = Status.success;
       succes = true;
       notifyListeners();
+    } on BiayaOperasionalException catch (e) {
+      _status = Status.error;
+      message = e.message;
+      succes = false;
+      notifyListeners();
     } catch (e) {
       message = "gagal menyimpan biaya operasional. err:${e.toString()}";
       _status = Status.error;

@@ -29,6 +29,11 @@ class BarangBaruProvider with ChangeNotifier {
       _isLoading = false;
       await addBarangBaru.call(pembelian, product, jumlah);
       _status = Status.success;
+      notifyListeners();
+    } on AddBarangBaruException catch (e) {
+      _status = Status.error;
+      _message = e.message;
+      notifyListeners();
     } catch (e) {
       _message = "gagal menambahkan barang baru provider. err${e.toString()}";
       _status = Status.error;

@@ -39,6 +39,10 @@ class EditProductProvider with ChangeNotifier {
       );
       status = Status.success;
       notifyListeners();
+    } on UpdateProductException catch (e) {
+      message = e.message;
+      status = Status.error;
+      notifyListeners();
     } catch (e) {
       message = "gagal menyimpan edit product provider. err:${e.toString()}";
       status = Status.error;

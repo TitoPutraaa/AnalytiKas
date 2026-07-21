@@ -25,6 +25,10 @@ class TambahStokProvider with ChangeNotifier {
       await addStok.call(pembelian, product, jumlah);
       status = Status.success;
       notifyListeners();
+    } on AddStokException catch (e) {
+      message = e.message;
+      status = Status.error;
+      notifyListeners();
     } catch (e) {
       message = "gagal menyimpan stok baru. err:${e.toString()}";
       status = Status.error;
