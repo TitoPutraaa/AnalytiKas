@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/core/shared/formatter/currency_input_formatter.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/pembelian.dart';
@@ -29,7 +30,7 @@ class _TambahstokState extends State<Tambahstok> {
     super.initState();
     stokBaruController.text = stokValue.toString();
     hargaBeliController = TextEditingController(
-      text: widget.product.harga.hargaBeli.toInt().toString(),
+      text: widget.product.harga.hargaBeli.toThoushandsSeparator().toString(),
     );
   }
 
@@ -50,9 +51,13 @@ class _TambahstokState extends State<Tambahstok> {
       return;
     }
 
+    String cleanValueBeli = hargaBeliController.text.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
+
     final hargaBeli =
-        double.tryParse(hargaBeliController.text.trim()) ??
-        widget.product.harga.hargaBeli;
+        double.tryParse(cleanValueBeli) ?? widget.product.harga.hargaBeli;
 
     final now = DateTime.now();
     final pembelian = Pembelian(
@@ -283,9 +288,7 @@ class _TambahstokState extends State<Tambahstok> {
                             OutlinedField(
                               controller: hargaBeliController,
                               keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
+                              inputFormatters: [CurrencyInputFormatter()],
                               preFixText: "Rp.",
                             ),
                           ],

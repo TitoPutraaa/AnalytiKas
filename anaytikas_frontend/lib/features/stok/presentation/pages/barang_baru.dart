@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/formatter/currency_input_formatter.dart';
 // import 'package:anaytikas_frontend/core/shared/entities/pembelian_entity.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 // import 'package:anaytikas_frontend/features/kasir/presentation/pages/camera_scanner_page.dart';
@@ -27,8 +28,8 @@ class _BarangBaruState extends State<BarangBaru> {
   final _namaBarangController = TextEditingController();
   final _warningStok = TextEditingController();
   final _jumlahStok = TextEditingController();
-  final _hargaJualController = TextEditingController();
-  final _hargaBeliController = TextEditingController();
+  final _hargaJualController = TextEditingController(text: "0");
+  final _hargaBeliController = TextEditingController(text: "0");
   final _kodeBarangController = TextEditingController();
   GetKategoriProvider get provider => context.read<GetKategoriProvider>();
 
@@ -129,8 +130,11 @@ class _BarangBaruState extends State<BarangBaru> {
 
     final provider = context.read<BarangBaruProvider>();
 
-    final hargaBeli = double.tryParse(hargaBeliText) ?? 0.0;
-    final hargaJual = double.tryParse(hargaJualText) ?? 0.0;
+    String cleanValueBeli = hargaBeliText.replaceAll(RegExp(r'[^0-9]'), '');
+    String cleanValueJual = hargaJualText.replaceAll(RegExp(r'[^0-9]'), '');
+
+    final hargaBeli = double.tryParse(cleanValueBeli) ?? 0.0;
+    final hargaJual = double.tryParse(cleanValueJual) ?? 0.0;
     final jmlhStok = int.tryParse(jumlahStokText) ?? 0;
     final stokWarning = int.tryParse(warningStokText) ?? 0;
     final kodeBarangConv = int.tryParse(kodeBarang) ?? 0;
@@ -339,7 +343,7 @@ class _BarangBaruState extends State<BarangBaru> {
               ),
               const SizedBox(height: 16),
 
-              //  Harga Jual ─
+              //  Harga Jual dan Beli
               Row(
                 children: [
                   Expanded(
@@ -352,9 +356,7 @@ class _BarangBaruState extends State<BarangBaru> {
                           controller: _hargaBeliController,
                           hintText: '0',
                           keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          inputFormatters: [CurrencyInputFormatter()],
                           prefix: const Padding(
                             padding: EdgeInsets.only(left: 14, right: 4),
                             child: Text(
@@ -381,9 +383,7 @@ class _BarangBaruState extends State<BarangBaru> {
                           controller: _hargaJualController,
                           hintText: '0',
                           keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          inputFormatters: [CurrencyInputFormatter()],
                           prefix: const Padding(
                             padding: EdgeInsets.only(left: 14, right: 4),
                             child: Text(

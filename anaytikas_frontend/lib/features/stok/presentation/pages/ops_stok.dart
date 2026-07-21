@@ -1,4 +1,5 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
+import 'package:anaytikas_frontend/core/shared/formatter/currency_input_formatter.dart';
 import 'package:anaytikas_frontend/features/riwayat/presentation/manager/riwayat_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/provider/biaya_operasional_provider.dart';
 import 'package:anaytikas_frontend/features/stok/presentation/widgets/categori_dropdown.dart';
@@ -59,8 +60,9 @@ class _OpsStokState extends State<OpsStok> {
     }
 
     final provider = context.read<BiayaOperasionalProvider>();
+    String cleanValueNominal = nominal.replaceAll(RegExp(r'[^0-9]'), '');
 
-    final nominalParse = double.tryParse(nominal);
+    final nominalParse = double.tryParse(cleanValueNominal);
     final tanggalParse = DateTime.tryParse(tanggal);
     final waktu = DateTime.now();
 
@@ -163,6 +165,7 @@ class _OpsStokState extends State<OpsStok> {
                           controller: _nominalController,
                           hintText: "0",
                           keyboardType: TextInputType.number,
+                          inputFormatters: [CurrencyInputFormatter()],
                           prefix: Padding(
                             padding: const EdgeInsets.only(left: 6),
                             child: Text("Rp. "),

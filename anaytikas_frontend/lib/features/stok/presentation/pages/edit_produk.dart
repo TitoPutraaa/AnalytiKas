@@ -1,5 +1,6 @@
 import 'package:anaytikas_frontend/core/config/theme/app_color.dart';
 import 'package:anaytikas_frontend/core/shared/extensions/currency_extension.dart';
+import 'package:anaytikas_frontend/core/shared/formatter/currency_input_formatter.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/manager/kasir_provider.dart';
 import 'package:anaytikas_frontend/features/kasir/presentation/widgets/custom_alert_dialog.dart';
 import 'package:anaytikas_frontend/features/stok/domain/entities/kategori.dart';
@@ -45,10 +46,10 @@ class _EditProdukState extends State<EditProduk> {
       text: widget.product.stokWarning.toString(),
     );
     hargaJualController = TextEditingController(
-      text: widget.product.harga.hargaJual.toInt().toString(),
+      text: widget.product.harga.hargaJual.toThoushandsSeparator().toString(),
     );
     hargaBeliController = TextEditingController(
-      text: widget.product.harga.hargaBeli.toInt().toString(),
+      text: widget.product.harga.hargaBeli.toThoushandsSeparator().toString(),
     );
     // Initialize selected category from the current product
     _selectedCategory = widget.product.kategori;
@@ -70,11 +71,19 @@ class _EditProdukState extends State<EditProduk> {
   Future<void> _onSubmit() async {
     final editProvider = context.read<EditProductProvider>();
 
+    String cleanValueJual = hargaJualController.text.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
+    String cleanValueBeli = hargaBeliController.text.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
     final namaBaru = editNamaProduct.text.trim();
     final stokBaru = int.tryParse(editStokController.text);
     final warningBaru = int.tryParse(editWarningStok.text);
-    final hargaJualBaru = double.tryParse(hargaJualController.text);
-    final hargaBeliBaru = double.tryParse(hargaBeliController.text);
+    final hargaJualBaru = double.tryParse(cleanValueJual);
+    final hargaBeliBaru = double.tryParse(cleanValueBeli);
 
     if (namaBaru.isEmpty ||
         stokBaru == null ||
@@ -124,11 +133,19 @@ class _EditProdukState extends State<EditProduk> {
   Future<void> _onDelete() async {
     final editProvider = context.read<EditProductProvider>();
 
+    String cleanValueJual = hargaJualController.text.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
+    String cleanValueBeli = hargaBeliController.text.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
     final namaBaru = editNamaProduct.text.trim();
     final stokBaru = int.tryParse(editStokController.text);
     final warningBaru = int.tryParse(editWarningStok.text);
-    final hargaJualBaru = double.tryParse(hargaJualController.text);
-    final hargaBeliBaru = double.tryParse(hargaBeliController.text);
+    final hargaJualBaru = double.tryParse(cleanValueJual);
+    final hargaBeliBaru = double.tryParse(cleanValueBeli);
 
     if (namaBaru.isEmpty ||
         stokBaru == null ||
@@ -433,9 +450,7 @@ class _EditProdukState extends State<EditProduk> {
                         OutlinedField(
                           controller: hargaBeliController,
                           keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          inputFormatters: [CurrencyInputFormatter()],
                           preFixText: "Rp. ",
                         ),
                       ],
@@ -451,9 +466,7 @@ class _EditProdukState extends State<EditProduk> {
                         OutlinedField(
                           controller: hargaJualController,
                           keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          inputFormatters: [CurrencyInputFormatter()],
                           preFixText: "Rp. ",
                         ),
                       ],
